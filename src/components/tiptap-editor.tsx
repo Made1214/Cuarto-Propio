@@ -2,10 +2,12 @@
 
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/core";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
 const CONTENIDO_VACIO: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
+const COLOR_TEXTO_DEFECTO = "#171717";
+const COLOR_RESALTADO_DEFECTO = "#fde68a";
 
 type TiptapEditorProps = {
   name: string;
@@ -14,12 +16,16 @@ type TiptapEditorProps = {
 
 export function TiptapEditor({ name, contenidoInicial }: TiptapEditorProps) {
   const [json, setJson] = useState<JSONContent>(contenidoInicial ?? CONTENIDO_VACIO);
+  // Fuerza un re-render cuando solo cambia la selección (sin editar texto),
+  // para que la barra refleje el color/formato activo en el cursor.
+  const [, avisarSeleccion] = useReducer((tick: number) => tick + 1, 0);
 
   const editor = useEditor({
     extensions: tiptapExtensions,
     content: contenidoInicial ?? CONTENIDO_VACIO,
     immediatelyRender: false,
     onUpdate: ({ editor }) => setJson(editor.getJSON()),
+    onSelectionUpdate: () => avisarSeleccion(),
     editorProps: {
       attributes: {
         class:
@@ -102,8 +108,11 @@ function Barra({ editor }: { editor: Editor | null }) {
     },
   ];
 
+  const colorTexto = (editor.getAttributes("textStyle").color as string | undefined) ?? COLOR_TEXTO_DEFECTO;
+  const colorResaltado = (editor.getAttributes("highlight").color as string | undefined) ?? COLOR_RESALTADO_DEFECTO;
+
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap items-center gap-1">
       {botones.map((boton) => (
         <button
           key={boton.etiqueta}
@@ -139,6 +148,57 @@ function Barra({ editor }: { editor: Editor | null }) {
         }`}
       >
         Enlace
+      </button>
+
+      <span className="mx-1 h-5 w-px bg-black/10 dark:bg-white/15" aria-hidden="true" />
+
+      <label
+        title="Color de texto"
+        className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-sm font-semibold text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
+      >
+        A
+        <input
+          type="color"
+          value={colorTexto}
+          onChange={(evento) => editor.chain().focus().setColor(evento.target.value).run()}
+          className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
+        />
+      </label>
+      <button
+        type="button"
+        title="Quitar color de texto"
+        onClick={() => editor.chain().focus().unsetColor().run()}
+        className="rounded px-2 py-1 text-sm text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
+      >
+        ×
+      </button>
+
+      <label
+        title="Resaltar texto"
+        className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-sm text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
+      >
+        <span
+          className="rounded px-1"
+          style={{ backgroundColor: editor.isActive("highlight") ? colorResaltado : "transparent" }}
+        >
+          H
+        </span>
+        <input
+          type="color"
+          value={colorResaltado}
+          onChange={(evento) =>
+            editor.chain().focus().setHighlight({ color: evento.target.value }).run()
+          }
+          className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
+        />
+      </label>
+      <button
+        type="button"
+        title="Quitar resaltado"
+        onClick={() => editor.chain().focus().unsetHighlight().run()}
+        className="rounded px-2 py-1 text-sm text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
+      >
+        ×
       </button>
     </div>
   );
