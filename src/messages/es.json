@@ -17,7 +17,20 @@
   },
   "diario": {
     "titulo": "Diario",
-    "vacio": "Todavía no hay entradas. Pronto podrás escribir la primera."
+    "vacio": "Todavía no hay entradas. Escribí la primera.",
+    "sinResultados": "No encontramos entradas con ese filtro.",
+    "nuevaEntrada": "Nueva entrada",
+    "editarEntrada": "Editar entrada",
+    "buscar": "Buscar",
+    "buscarPlaceholder": "Buscar por palabra clave...",
+    "todasLasCategorias": "Todas las categorías",
+    "sinCategoria": "Sin categoría",
+    "tituloPlaceholder": "Título de la entrada",
+    "categoriaPlaceholder": "Categoría (opcional)",
+    "guardar": "Guardar",
+    "eliminar": "Eliminar",
+    "eliminarConfirmar": "¿Eliminar esta entrada? No se puede deshacer.",
+    "volver": "Volver al diario"
   },
   "listas": {
     "titulo": "Listas",
