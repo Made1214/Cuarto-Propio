@@ -29,7 +29,7 @@ Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Postgres + Auth 
    supabase db push
    ```
 
-   O bien pegar el contenido de `supabase/migrations/0001_init.sql` y `0002_storage.sql`, en ese orden, en el SQL Editor del dashboard de Supabase.
+   O bien pegar el contenido de los archivos en `supabase/migrations/`, en orden (`0001`, `0002`, `0003`...), en el SQL Editor del dashboard de Supabase.
 
 4. En Supabase → Authentication, crear el usuario personal (email + contraseña) con el que se va a iniciar sesión. El registro público no está expuesto en la interfaz — Fase 1 es de un solo usuario.
 
@@ -54,7 +54,7 @@ src/
   i18n/                  # Config de next-intl (routing, navegación, mensajes por request)
   lib/supabase/          # Clientes de Supabase (browser y server)
   messages/              # Textos es.json / en.json
-  middleware.ts           # Enrutamiento por idioma + refresco de sesión de Supabase
+  proxy.ts                # Enrutamiento por idioma + refresco de sesión de Supabase
 supabase/
   migrations/             # Esquema SQL (tablas, RLS, buckets de Storage)
 ```
