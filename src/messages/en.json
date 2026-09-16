@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "diario": "Journal",
+    "listas": "Lists",
+    "galeria": "Gallery",
+    "audio": "Audio",
+    "ajustes": "Settings",
+    "cerrarSesion": "Log out"
+  },
+  "login": {
+    "titulo": "Cuarto Propio",
+    "subtitulo": "Enter your personal space",
+    "email": "Email",
+    "password": "Password",
+    "entrar": "Sign in",
+    "error": "Could not sign in. Check your details and try again."
+  },
+  "diario": {
+    "titulo": "Journal",
+    "vacio": "No entries yet. You'll be able to write the first one soon."
+  },
+  "listas": {
+    "titulo": "Lists",
+    "vacio": "No lists yet. You'll be able to create the first one soon."
+  },
+  "galeria": {
+    "titulo": "Gallery",
+    "vacio": "No images yet. You'll be able to upload the first one soon."
+  },
+  "audio": {
+    "titulo": "Audio",
+    "vacio": "No audio notes yet. You'll be able to record the first one soon."
+  },
+  "ajustes": {
+    "titulo": "Settings",
+    "vacio": "Personalization (colors, cursor, icons, typography) will live here."
+  }
+}

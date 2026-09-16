@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "diario": "Diario",
+    "listas": "Listas",
+    "galeria": "Galería",
+    "audio": "Audio",
+    "ajustes": "Ajustes",
+    "cerrarSesion": "Cerrar sesión"
+  },
+  "login": {
+    "titulo": "Cuarto Propio",
+    "subtitulo": "Entra a tu espacio personal",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "entrar": "Entrar",
+    "error": "No se pudo iniciar sesión. Revisa tus datos e intenta de nuevo."
+  },
+  "diario": {
+    "titulo": "Diario",
+    "vacio": "Todavía no hay entradas. Pronto podrás escribir la primera."
+  },
+  "listas": {
+    "titulo": "Listas",
+    "vacio": "Todavía no hay listas. Pronto podrás crear la primera."
+  },
+  "galeria": {
+    "titulo": "Galería",
+    "vacio": "Todavía no hay imágenes. Pronto podrás subir la primera."
+  },
+  "audio": {
+    "titulo": "Audio",
+    "vacio": "Todavía no hay notas de audio. Pronto podrás grabar la primera."
+  },
+  "ajustes": {
+    "titulo": "Ajustes",
+    "vacio": "La personalización (colores, cursor, iconos, tipografía) llegará aquí."
+  }
+}
