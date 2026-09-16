@@ -112,4 +112,4 @@ Recomendación original: construir la Fase 1 completa como uso personal real dur
 
 ## Estado actual del código
 
-Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpetas.
+Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpetas. Para el esquema de base de datos explicado a fondo (qué guarda cada tabla, cómo funciona RLS, Storage, la búsqueda por palabra clave y las migraciones), ver `docs/base-de-datos.md`.
