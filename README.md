@@ -29,7 +29,7 @@ Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Postgres + Auth 
    supabase db push
    ```
 
-   O bien pegar el contenido de los archivos en `supabase/migrations/`, en orden (`0001`, `0002`, `0003`...), en el SQL Editor del dashboard de Supabase.
+   O bien pegar el contenido de `supabase/migrations/0001_esquema_completo.sql` en el SQL Editor del dashboard de Supabase y ejecutarlo una sola vez.
 
 4. En Supabase → Authentication, crear el usuario personal (email + contraseña) con el que se va a iniciar sesión. El registro público no está expuesto en la interfaz — Fase 1 es de un solo usuario.
 

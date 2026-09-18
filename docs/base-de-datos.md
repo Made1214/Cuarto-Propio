@@ -207,10 +207,8 @@ Cuando buscás "calma" en el Diario, la consulta compara contra `busqueda`, no c
 
 El esquema no se edita a mano en el dashboard de Supabase —vive como archivos `.sql` en `supabase/migrations/`, que se aplican en orden y nunca se modifican una vez creados (un cambio nuevo es siempre un archivo nuevo).
 
-| Archivo | Qué hace |
-| --- | --- |
-| `0001_init.sql` | Crea las 8 tablas, sus relaciones, los índices básicos, activa RLS con sus políticas, y el trigger que crea el perfil al registrarte |
-| `0002_storage.sql` | Crea los buckets `imagenes` y `audios`, y sus políticas de acceso por carpeta |
-| `0003_mejoras_esquema.sql` | Agrega `updated_at` automático, la búsqueda por palabra clave (`contenido_texto` + `busqueda`), índices en las categorías, y ajusta las políticas de Storage |
+Hoy es un solo archivo: `0001_esquema_completo.sql`, que crea las 8 tablas (con `categoria_id` en listas y `titulo` en audios ya incluidos, no como parche aparte), sus relaciones e índices, la búsqueda por palabra clave (`contenido_texto` + `busqueda`), RLS con sus políticas, el trigger que crea el perfil al registrarte, `updated_at` automático, y los buckets de Storage (`imagenes`, `audios`) con sus políticas de acceso por carpeta. El proyecto todavía no corrió contra una base de datos real, así que no hacía falta mantener el historial de pasos intermedios en el que se fue armando.
 
-Para aplicarlas en un proyecto de Supabase nuevo: con la Supabase CLI, `supabase db push`; o pegando cada archivo en el SQL Editor del dashboard, en ese mismo orden. El detalle de setup completo está en el `README.md` del repositorio.
+De acá en adelante, cualquier cambio de esquema (por ejemplo al construir Galería o Personalización) se agrega como un archivo nuevo (`0002_...`, `0003_...`), nunca editando este.
+
+Para aplicarlo en un proyecto de Supabase nuevo: con la Supabase CLI, `supabase db push`; o pegando el archivo en el SQL Editor del dashboard. El detalle de setup completo está en el `README.md` del repositorio.
