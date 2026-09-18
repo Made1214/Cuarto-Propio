@@ -14,7 +14,7 @@ Todo el modelo de datos cuelga de `usuario_id`, incluso con una sola usuaria act
 
 Sobre ese eje cuelgan cuatro colecciones de contenido independientes — diario, listas, galería, audio — que no se mezclan entre sí, pero comparten un segundo eje transversal: la Categoría (relación simple, una sola por elemento). Los hashtags son una etiqueta fina exclusiva de la galería; no compiten con las categorías ni las reemplazan.
 
-Los tres tipos de contenido "editorial" (diario, imagen, audio) comparten la misma forma — título opcional, categoría única, fecha — pensados para reutilizar el mismo componente de "tarjeta de contenido" en los tres módulos en vez de construir tres UIs distintas.
+Los tres tipos de contenido "editorial" (diario, imagen, audio) comparten la misma forma — título, categoría única, fecha — pensados para reutilizar el mismo componente de "tarjeta de contenido" en los tres módulos en vez de construir tres UIs distintas. El título deja de estar vacío distinto en cada uno: en el diario es obligatorio (no se guarda sin título); en audio, si se deja vacío, se completa solo con un default tipo fecha/hora.
 
 El pipeline de subida de imágenes (miniatura + versión completa con `sharp`) es un solo componente reutilizado en tres lugares: galería, imágenes incrustadas en el diario, y foto de perfil — no una implementación distinta por módulo.
 
@@ -68,8 +68,9 @@ Formato: *Como [usuaria], quiero [acción], para [beneficio]*, con criterios de 
 - Como usuaria, quiero escribir una entrada con texto enriquecido, para expresar mis pensamientos con formato (negritas, títulos, imágenes incrustadas).
   - Given que estoy en "Nueva entrada", When escribo contenido con formato y presiono "Guardar", Then la entrada se guarda con el formato intacto y aparece primero en la vista cronológica.
   - Given que el campo de texto está vacío, When presiono "Guardar", Then no se guarda nada y se muestra un aviso pidiendo contenido.
-- Como usuaria, quiero ponerle un título opcional a una entrada, para identificarla de un vistazo en la vista cronológica.
-  - Given que escribo una entrada, When le pongo un título y guardo, Then la vista cronológica muestra ese título; When dejo el título vacío, Then se muestra un fragmento del texto (o la fecha, si el texto también está vacío de formato reconocible).
+- Como usuaria, quiero ponerle título a cada entrada, para identificarla de un vistazo en la vista cronológica.
+  - Given que escribo una entrada, When le pongo un título y guardo, Then la vista cronológica muestra ese título.
+  - Given que el título está vacío, When presiono "Guardar", Then no se guarda nada y se muestra un aviso pidiendo título.
 - Como usuaria, quiero asignar una categoría a cada entrada, para poder filtrar mi diario después.
   - Given que estoy creando/editando una entrada, When elijo una categoría existente o creo una nueva, Then la entrada queda asociada a ella y aparece al filtrar por esa categoría.
 - Como usuaria, quiero editar o borrar una entrada existente, para corregir errores o eliminarla.
@@ -153,7 +154,7 @@ Relaciones principales:
 | Entidad | Campos principales |
 | --- | --- |
 | Usuario | id, nombre, foto de perfil, tema activo |
-| Entrada (diario) | id, título (opcional), texto (contenido enriquecido tipo JSON de Tiptap, no texto plano), categoría, fecha, usuario |
+| Entrada (diario) | id, título (obligatorio), texto (contenido enriquecido tipo JSON de Tiptap, no texto plano), categoría, fecha, usuario |
 | Lista | id, nombre, categoría, usuario |
 | Ítem de lista | id, lista, contenido, estado (marcado / no marcado) |
 | Imagen / Pin | id, archivo (miniatura + versión completa), título, descripción, hashtags, categoría, fecha, usuario |
@@ -185,7 +186,7 @@ Este mismo pipeline (miniatura + versión completa) se reutiliza en **toda** la 
 - Navegación principal cronológica, estilo blog.
 - Personalización de cursor e iconos: **ambas** opciones — set curado predefinido y subida de imagen propia.
 - Las notas de audio llevan título (editable, con default automático tipo fecha/hora si se deja vacío).
-- Las entradas de diario también llevan título, pero opcional — si se deja vacío, la vista cronológica muestra un fragmento del texto o la fecha (mismo patrón consistente que imagen y audio).
+- Las entradas de diario llevan título **obligatorio** — no se guarda una entrada sin título (a diferencia de imagen y audio, que sí resuelven el título vacío con un default). Validado tanto en el campo (`required`) como en la Server Action, para que no se pueda saltear.
 - Exportación/backup de datos: **no** es parte del MVP (se deja para una fase posterior).
 - Interfaz bilingüe (español/inglés) desde el MVP, con selector de idioma (next-intl).
 - No se sube video en ningún momento del MVP — solo fotos y audio, para mantener el proyecto dentro de planes gratuitos.
@@ -317,10 +318,9 @@ Recomendación original: construir la Fase 1 completa como uso personal real dur
 
 Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpetas. Para el esquema de base de datos explicado a fondo (qué guarda cada tabla, cómo funciona RLS, Storage, la búsqueda por palabra clave y las migraciones), ver `docs/base-de-datos.md`.
 
-**Módulos construidos hasta ahora:** login/logout (Supabase Auth), y Diario (categorías por texto libre, editor Tiptap con color/resaltado, listado cronológico con búsqueda y filtro por categoría). Listas, Galería, Audio y Personalización siguen como placeholders.
+**Módulos construidos hasta ahora:** login/logout (Supabase Auth), y Diario (categorías por texto libre, editor Tiptap con color/resaltado, listado cronológico con búsqueda y filtro por categoría, URLs con código corto por entrada). La lógica de categorías (consulta, resolución por nombre y asignación de color) vive en `src/lib/categorias/`, pensada para ser compartida por los módulos que vengan después. Listas, Galería, Audio y Personalización siguen como placeholders.
 
 **Implicaciones de este documento que todavía no están reflejadas en el código** (a resolver cuando se retome cada módulo, no automáticamente):
-- El esquema actual no tiene `categoria_id` en `listas` ni `titulo` en `audios` — este documento ahora pide categoría en Listas y título en Audio.
 - No hay pantalla de registro público ni de recuperación de contraseña — hoy solo existe login. Este documento ahora pide ambas.
 - No hay rate limiting de intentos de login todavía.
 - La paleta de colores confirmada en "Identidad visual" no está aplicada como tema por defecto (la interfaz actual usa los grises por defecto de Tailwind).
