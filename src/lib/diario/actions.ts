@@ -1,9 +1,11 @@
 "use server";
 
 import { generateText, type JSONContent } from "@tiptap/core";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { resolverCategoriaId } from "@/lib/categorias/resolver";
+import type { EntradaActionState } from "@/lib/diario/types";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
 function parseContenido(formData: FormData): JSONContent {
@@ -16,35 +18,11 @@ function parseContenido(formData: FormData): JSONContent {
   }
 }
 
-async function resolverCategoriaId(
-  supabase: SupabaseClient,
-  usuarioId: string,
-  nombreCategoria: string,
-): Promise<string | null> {
-  const nombre = nombreCategoria.trim();
-  if (!nombre) return null;
-
-  const { data: existente, error: errorBusqueda } = await supabase
-    .from("categorias")
-    .select("id")
-    .eq("usuario_id", usuarioId)
-    .eq("nombre", nombre)
-    .maybeSingle();
-
-  if (errorBusqueda) throw errorBusqueda;
-  if (existente) return existente.id as string;
-
-  const { data: nueva, error: errorCreacion } = await supabase
-    .from("categorias")
-    .insert({ usuario_id: usuarioId, nombre })
-    .select("id")
-    .single();
-
-  if (errorCreacion) throw errorCreacion;
-  return nueva.id as string;
-}
-
-export async function crearEntrada(locale: string, formData: FormData) {
+export async function crearEntrada(
+  locale: string,
+  _estadoPrevio: EntradaActionState,
+  formData: FormData,
+): Promise<EntradaActionState> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -54,7 +32,12 @@ export async function crearEntrada(locale: string, formData: FormData) {
     return;
   }
 
-  const titulo = String(formData.get("titulo") ?? "").trim() || null;
+  const titulo = String(formData.get("titulo") ?? "").trim();
+  if (!titulo) {
+    const t = await getTranslations({ locale, namespace: "diario" });
+    return { error: t("tituloRequerido") };
+  }
+
   const contenido = parseContenido(formData);
   const contenidoTexto = generateText(contenido, tiptapExtensions);
   const categoriaId = await resolverCategoriaId(
@@ -72,15 +55,20 @@ export async function crearEntrada(locale: string, formData: FormData) {
       contenido_texto: contenidoTexto,
       categoria_id: categoriaId,
     })
-    .select("id")
+    .select("codigo")
     .single();
 
   if (error) throw error;
 
-  redirect({ href: `/diario/${data.id}`, locale });
+  redirect({ href: `/diario/${data.codigo}`, locale });
 }
 
-export async function actualizarEntrada(locale: string, id: string, formData: FormData) {
+export async function actualizarEntrada(
+  locale: string,
+  id: string,
+  _estadoPrevio: EntradaActionState,
+  formData: FormData,
+): Promise<EntradaActionState> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -90,7 +78,12 @@ export async function actualizarEntrada(locale: string, id: string, formData: Fo
     return;
   }
 
-  const titulo = String(formData.get("titulo") ?? "").trim() || null;
+  const titulo = String(formData.get("titulo") ?? "").trim();
+  if (!titulo) {
+    const t = await getTranslations({ locale, namespace: "diario" });
+    return { error: t("tituloRequerido") };
+  }
+
   const contenido = parseContenido(formData);
   const contenidoTexto = generateText(contenido, tiptapExtensions);
   const categoriaId = await resolverCategoriaId(
@@ -108,12 +101,12 @@ export async function actualizarEntrada(locale: string, id: string, formData: Fo
       categoria_id: categoriaId,
     })
     .eq("id", id)
-    .select("id")
+    .select("codigo")
     .single();
 
   if (error) throw error;
 
-  redirect({ href: `/diario/${data.id}`, locale });
+  redirect({ href: `/diario/${data.codigo}`, locale });
 }
 
 export async function eliminarEntrada(locale: string, id: string) {

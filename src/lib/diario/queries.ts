@@ -1,25 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Categoria, Entrada, EntradaResumen } from "./types";
+import { normalizarCategoria } from "@/lib/categorias/queries";
+import type { Entrada, EntradaResumen } from "./types";
 
 const LARGO_EXTRACTO = 220;
-
-function normalizarCategoria(valor: unknown): Categoria | null {
-  if (!valor) return null;
-  const fila = Array.isArray(valor) ? valor[0] : valor;
-  if (!fila) return null;
-  return fila as Categoria;
-}
-
-export async function listarCategorias(): Promise<Categoria[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("categorias")
-    .select("id, nombre")
-    .order("nombre");
-
-  if (error) throw error;
-  return data ?? [];
-}
 
 export async function listarEntradas(filtros: {
   categoriaId?: string;
@@ -28,7 +11,7 @@ export async function listarEntradas(filtros: {
   const supabase = await createClient();
   let query = supabase
     .from("entradas")
-    .select("id, titulo, fecha, contenido_texto, categoria:categorias(id, nombre)")
+    .select("id, codigo, titulo, fecha, contenido_texto, categoria:categorias(id, nombre)")
     .order("fecha", { ascending: false });
 
   if (filtros.categoriaId) {
@@ -46,6 +29,7 @@ export async function listarEntradas(filtros: {
 
   return (data ?? []).map((fila) => ({
     id: fila.id as string,
+    codigo: fila.codigo as string,
     titulo: fila.titulo as string | null,
     fecha: fila.fecha as string,
     categoria: normalizarCategoria(fila.categoria),
@@ -53,12 +37,12 @@ export async function listarEntradas(filtros: {
   }));
 }
 
-export async function obtenerEntrada(id: string): Promise<Entrada | null> {
+export async function obtenerEntradaPorCodigo(codigo: string): Promise<Entrada | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("entradas")
-    .select("id, titulo, contenido, fecha, categoria_id, categoria:categorias(id, nombre)")
-    .eq("id", id)
+    .select("id, codigo, titulo, contenido, fecha, categoria_id, categoria:categorias(id, nombre)")
+    .eq("codigo", codigo)
     .maybeSingle();
 
   if (error) throw error;
@@ -68,6 +52,7 @@ export async function obtenerEntrada(id: string): Promise<Entrada | null> {
 
   return {
     id: data.id as string,
+    codigo: data.codigo as string,
     titulo: data.titulo as string | null,
     contenido: data.contenido as Entrada["contenido"],
     fecha: data.fecha as string,
