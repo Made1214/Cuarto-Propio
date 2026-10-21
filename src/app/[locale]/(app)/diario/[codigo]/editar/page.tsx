@@ -73,6 +73,7 @@ export default async function EditarEntradaPage({
         <div className="p-5">
           <EntradaForm
             formId={formId}
+            claveBorrador={codigo}
             action={actualizar}
             categorias={categorias}
             valoresIniciales={{

@@ -2,7 +2,20 @@
 
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/core";
+import { useTranslations } from "next-intl";
 import { useReducer, useState } from "react";
+import { DialogoEnlace } from "@/components/dialogo-enlace";
+import {
+  IconoCita,
+  IconoCursiva,
+  IconoEnlace,
+  IconoLista,
+  IconoListaNumerada,
+  IconoNegrita,
+  IconoQuitar,
+  IconoTachado,
+  IconoTitulo,
+} from "@/components/editor-iconos";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
 const CONTENIDO_VACIO: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
@@ -12,9 +25,11 @@ const COLOR_RESALTADO_DEFECTO = "#fde68a";
 type TiptapEditorProps = {
   name: string;
   contenidoInicial?: JSONContent | null;
+  /** Para que el formulario pueda guardar un borrador de lo que se escribe. */
+  onCambio?: (json: JSONContent) => void;
 };
 
-export function TiptapEditor({ name, contenidoInicial }: TiptapEditorProps) {
+export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorProps) {
   const [json, setJson] = useState<JSONContent>(contenidoInicial ?? CONTENIDO_VACIO);
   // Fuerza un re-render en CADA transacción, no solo cuando cambia el
   // contenido o la selección. Sin esto, marcar negrita/cursiva con el
@@ -29,7 +44,11 @@ export function TiptapEditor({ name, contenidoInicial }: TiptapEditorProps) {
     extensions: tiptapExtensions,
     content: contenidoInicial ?? CONTENIDO_VACIO,
     immediatelyRender: false,
-    onUpdate: ({ editor }) => setJson(editor.getJSON()),
+    onUpdate: ({ editor }) => {
+      const json = editor.getJSON();
+      setJson(json);
+      onCambio?.(json);
+    },
     onTransaction: () => avisarSeleccion(),
     editorProps: {
       attributes: {
@@ -50,63 +69,71 @@ export function TiptapEditor({ name, contenidoInicial }: TiptapEditorProps) {
 }
 
 function Barra({ editor }: { editor: Editor | null }) {
+  const t = useTranslations("editor");
+  const [enlaceAbierto, setEnlaceAbierto] = useState(false);
+
   if (!editor) return null;
 
   const botones: {
-    etiqueta: string;
+    clave: string;
+    icono: React.ReactNode;
     titulo: string;
     activo: boolean;
     accion: () => void;
-    claseExtra?: string;
   }[] = [
     {
-      etiqueta: "N",
-      titulo: "Negrita",
+      clave: "negrita",
+      icono: <IconoNegrita />,
+      titulo: t("negrita"),
       activo: editor.isActive("bold"),
       accion: () => editor.chain().focus().toggleBold().run(),
-      claseExtra: "font-bold",
     },
     {
-      etiqueta: "K",
-      titulo: "Cursiva",
+      clave: "cursiva",
+      icono: <IconoCursiva />,
+      titulo: t("cursiva"),
       activo: editor.isActive("italic"),
       accion: () => editor.chain().focus().toggleItalic().run(),
-      claseExtra: "italic",
     },
     {
-      etiqueta: "S",
-      titulo: "Tachado",
+      clave: "tachado",
+      icono: <IconoTachado />,
+      titulo: t("tachado"),
       activo: editor.isActive("strike"),
       accion: () => editor.chain().focus().toggleStrike().run(),
-      claseExtra: "line-through",
     },
     {
-      etiqueta: "H2",
-      titulo: "Título",
+      clave: "titulo",
+      icono: <IconoTitulo nivel={2} />,
+      titulo: t("titulo"),
       activo: editor.isActive("heading", { level: 2 }),
       accion: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
     },
     {
-      etiqueta: "H3",
-      titulo: "Subtítulo",
+      clave: "subtitulo",
+      icono: <IconoTitulo nivel={3} />,
+      titulo: t("subtitulo"),
       activo: editor.isActive("heading", { level: 3 }),
       accion: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
     },
     {
-      etiqueta: "•",
-      titulo: "Lista",
+      clave: "lista",
+      icono: <IconoLista />,
+      titulo: t("lista"),
       activo: editor.isActive("bulletList"),
       accion: () => editor.chain().focus().toggleBulletList().run(),
     },
     {
-      etiqueta: "1.",
-      titulo: "Lista numerada",
+      clave: "listaNumerada",
+      icono: <IconoListaNumerada />,
+      titulo: t("listaNumerada"),
       activo: editor.isActive("orderedList"),
       accion: () => editor.chain().focus().toggleOrderedList().run(),
     },
     {
-      etiqueta: "❝",
-      titulo: "Cita",
+      clave: "cita",
+      icono: <IconoCita />,
+      titulo: t("cita"),
       activo: editor.isActive("blockquote"),
       accion: () => editor.chain().focus().toggleBlockquote().run(),
     },
@@ -119,9 +146,10 @@ function Barra({ editor }: { editor: Editor | null }) {
     <div className="flex flex-wrap items-center gap-1">
       {botones.map((boton) => (
         <button
-          key={boton.etiqueta}
+          key={boton.clave}
           type="button"
           title={boton.titulo}
+          aria-label={boton.titulo}
           onMouseDown={(evento) => {
             // preventDefault evita que el botón le quite el foco al editor
             // antes de aplicar el formato — sin esto, encadenar dos formatos
@@ -132,46 +160,45 @@ function Barra({ editor }: { editor: Editor | null }) {
             boton.accion();
           }}
           aria-pressed={boton.activo}
-          className={`rounded-theme border-2 border-ink px-2 py-1 font-pixel text-xs transition-colors ${boton.claseExtra ?? ""} ${
+          className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink px-2 transition-colors ${
             boton.activo
               ? "bg-secondary-purple text-background"
               : "bg-card text-ink hover:bg-secondary-turquoise/25"
           }`}
         >
-          {boton.etiqueta}
+          {boton.icono}
         </button>
       ))}
       <button
         type="button"
-        title="Enlace"
+        title={t("enlace")}
+        aria-label={t("enlace")}
         onMouseDown={(evento) => {
           evento.preventDefault();
-          const url = window.prompt("URL del enlace");
-          if (url) {
-            editor.chain().focus().setLink({ href: url }).run();
-          } else {
-            editor.chain().focus().unsetLink().run();
-          }
+          setEnlaceAbierto(true);
         }}
         aria-pressed={editor.isActive("link")}
-        className={`rounded-theme border-2 border-ink px-2 py-1 font-pixel text-xs underline transition-colors ${
+        className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink px-2 transition-colors ${
           editor.isActive("link")
             ? "bg-secondary-purple text-background"
             : "bg-card text-ink hover:bg-secondary-turquoise/25"
         }`}
       >
-        Enlace
+        <IconoEnlace />
       </button>
 
       <span className="mx-1 h-5 w-0.5 bg-ink/25" aria-hidden="true" />
 
       <label
-        title="Color de texto"
-        className="flex cursor-pointer items-center gap-1 rounded-theme border-2 border-ink bg-card px-2 py-1 font-pixel text-xs text-ink hover:bg-secondary-turquoise/25"
+        title={t("colorTexto")}
+        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-2 border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
       >
-        A
+        <span aria-hidden="true" style={{ color: colorTexto }}>
+          A
+        </span>
         <input
           type="color"
+          aria-label={t("colorTexto")}
           value={colorTexto}
           onChange={(evento) => editor.chain().focus().setColor(evento.target.value).run()}
           className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
@@ -179,28 +206,27 @@ function Barra({ editor }: { editor: Editor | null }) {
       </label>
       <button
         type="button"
-        title="Quitar color de texto"
+        title={t("quitarColorTexto")}
+        aria-label={t("quitarColorTexto")}
         onMouseDown={(evento) => {
           evento.preventDefault();
           editor.chain().focus().unsetColor().run();
         }}
-        className="rounded-theme border-2 border-ink bg-card px-2 py-1 font-pixel text-xs text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
       >
-        ×
+        <IconoQuitar />
       </button>
 
       <label
-        title="Resaltar texto"
-        className="flex cursor-pointer items-center gap-1 rounded-theme border-2 border-ink bg-card px-2 py-1 font-pixel text-xs text-ink hover:bg-secondary-turquoise/25"
+        title={t("resaltar")}
+        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-2 border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
       >
-        <span
-          className="rounded px-1"
-          style={{ backgroundColor: editor.isActive("highlight") ? colorResaltado : "transparent" }}
-        >
-          H
+        <span aria-hidden="true" className="rounded px-1" style={{ backgroundColor: colorResaltado }}>
+          A
         </span>
         <input
           type="color"
+          aria-label={t("resaltar")}
           value={colorResaltado}
           onChange={(evento) =>
             editor.chain().focus().setHighlight({ color: evento.target.value }).run()
@@ -210,15 +236,30 @@ function Barra({ editor }: { editor: Editor | null }) {
       </label>
       <button
         type="button"
-        title="Quitar resaltado"
+        title={t("quitarResaltado")}
+        aria-label={t("quitarResaltado")}
         onMouseDown={(evento) => {
           evento.preventDefault();
           editor.chain().focus().unsetHighlight().run();
         }}
-        className="rounded-theme border-2 border-ink bg-card px-2 py-1 font-pixel text-xs text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
       >
-        ×
+        <IconoQuitar />
       </button>
+
+      <DialogoEnlace
+        abierto={enlaceAbierto}
+        urlActual={(editor.getAttributes("link").href as string | undefined) ?? ""}
+        onCerrar={() => setEnlaceAbierto(false)}
+        onGuardar={(url) => {
+          setEnlaceAbierto(false);
+          editor.chain().focus().setLink({ href: url }).run();
+        }}
+        onQuitar={() => {
+          setEnlaceAbierto(false);
+          editor.chain().focus().unsetLink().run();
+        }}
+      />
     </div>
   );
 }

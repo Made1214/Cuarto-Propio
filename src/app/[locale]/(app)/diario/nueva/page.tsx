@@ -41,7 +41,7 @@ export default async function NuevaEntradaPage({
         </div>
 
         <div className="p-5">
-          <EntradaForm formId={formId} action={crear} categorias={categorias} />
+          <EntradaForm formId={formId} claveBorrador="nueva" action={crear} categorias={categorias} />
         </div>
       </div>
     </div>

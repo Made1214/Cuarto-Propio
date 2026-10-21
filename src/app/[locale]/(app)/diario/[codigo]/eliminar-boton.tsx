@@ -1,25 +1,25 @@
 "use client";
 
+import { useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { BotonConfirmar } from "@/components/boton-confirmar";
 
 export function EliminarEntradaBoton({ action }: { action: () => void | Promise<void> }) {
   const t = useTranslations("diario");
+  const [pendiente, startTransition] = useTransition();
 
   return (
-    <form
-      action={action}
-      onSubmit={(evento) => {
-        if (!window.confirm(t("eliminarConfirmar"))) {
-          evento.preventDefault();
-        }
-      }}
+    <BotonConfirmar
+      titulo={t("eliminar")}
+      mensaje={t("eliminarConfirmar")}
+      textoConfirmar={t("eliminar")}
+      etiqueta={t("eliminar")}
+      onConfirmar={() => startTransition(() => void action())}
+      className={`border-2 border-ink bg-primary-pink px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
+        pendiente ? "opacity-60" : ""
+      }`}
     >
-      <button
-        type="submit"
-        className="border-2 border-ink bg-primary-pink px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5"
-      >
-        {t("eliminar").toUpperCase()}
-      </button>
-    </form>
+      {t("eliminar").toUpperCase()}
+    </BotonConfirmar>
   );
 }

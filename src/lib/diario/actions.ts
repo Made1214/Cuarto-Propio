@@ -8,6 +8,18 @@ import { resolverCategoriaId } from "@/lib/categorias/resolver";
 import type { EntradaActionState } from "@/lib/diario/types";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
+const TITULO_MAXIMO = 100;
+
+/** Valida el título del lado del servidor: el `maxLength` del campo es
+ * comodidad, no una garantía — se puede saltear. */
+async function validarTitulo(locale: string, titulo: string): Promise<string | null> {
+  if (!titulo || titulo.length > TITULO_MAXIMO) {
+    const t = await getTranslations({ locale, namespace: "diario" });
+    return titulo ? t("tituloDemasiadoLargo", { maximo: TITULO_MAXIMO }) : t("tituloRequerido");
+  }
+  return null;
+}
+
 function parseContenido(formData: FormData): JSONContent {
   const crudo = String(formData.get("contenido") ?? "");
   try {
@@ -33,10 +45,8 @@ export async function crearEntrada(
   }
 
   const titulo = String(formData.get("titulo") ?? "").trim();
-  if (!titulo) {
-    const t = await getTranslations({ locale, namespace: "diario" });
-    return { error: t("tituloRequerido") };
-  }
+  const errorTitulo = await validarTitulo(locale, titulo);
+  if (errorTitulo) return { error: errorTitulo };
 
   const contenido = parseContenido(formData);
   const contenidoTexto = generateText(contenido, tiptapExtensions);
@@ -79,10 +89,8 @@ export async function actualizarEntrada(
   }
 
   const titulo = String(formData.get("titulo") ?? "").trim();
-  if (!titulo) {
-    const t = await getTranslations({ locale, namespace: "diario" });
-    return { error: t("tituloRequerido") };
-  }
+  const errorTitulo = await validarTitulo(locale, titulo);
+  if (errorTitulo) return { error: errorTitulo };
 
   const contenido = parseContenido(formData);
   const contenidoTexto = generateText(contenido, tiptapExtensions);
