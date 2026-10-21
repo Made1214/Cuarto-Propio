@@ -1,6 +1,6 @@
 # Cuarto Propio
 
-Espacio personal para escribir, coleccionar y archivar la vida cotidiana: diario/blog con categorías, listas personalizables, galería de fotografía propia y notas de audio.
+Espacio personal para escribir, coleccionar y archivar la vida cotidiana: diario/blog con categorías, listas personalizables, vitrina de fotografía y arte propio, y notas de audio.
 
 El contexto completo del producto (decisiones ya tomadas, modelo de datos, roadmap) vive en [`CLAUDE.md`](./CLAUDE.md).
 
@@ -48,11 +48,19 @@ src/
   app/
     [locale]/
       (auth)/login/     # Login (Supabase Auth)
-      (app)/             # Área protegida: diario, listas, galería, audio, ajustes
-      layout.tsx          # Layout raíz: fuentes, NextIntlClientProvider
+      (app)/             # Área protegida: diario, listas, vitrina, audio
+      layout.tsx          # Layout raíz: fuentes, NextIntlClientProvider, modo claro/oscuro
       page.tsx             # Redirige a /diario o /login según sesión
+    api/imagenes/        # Subida de fotos (fuera de [locale]: no tiene idioma)
+    api/audio/           # Subida de notas de voz (ídem: códigos de error, no frases)
+    api/perfil/foto/     # Foto de perfil, por el mismo pipeline que la Vitrina
+  components/perfil/     # El panel de perfil: avatar, foto, modo, idioma
   i18n/                  # Config de next-intl (routing, navegación, mensajes por request)
+  lib/audio/             # Notas de voz: validación de formato real, Storage, consultas
+  lib/imagenes/          # Pipeline de imágenes: procesado con sharp, Storage, consultas
+  lib/perfil/            # Perfil: nombre y foto de quien está adentro
   lib/supabase/          # Clientes de Supabase (browser y server)
+  lib/temas/             # Sistema de temas: contrato, presets y modo claro/oscuro
   messages/              # Textos es.json / en.json
   proxy.ts                # Enrutamiento por idioma + refresco de sesión de Supabase
 supabase/
@@ -63,4 +71,4 @@ Cada tabla del esquema lleva `usuario_id` y las políticas de RLS filtran por es
 
 ## Estado
 
-Base del proyecto: routing con idiomas, login/logout con Supabase Auth, layout protegido y esquema de base de datos. Los módulos (diario, listas, galería, audio, personalización) están como placeholders — se construyen uno por uno a partir de aquí.
+Construidos: login/logout, **Diario** (editor Tiptap, categorías, búsqueda), **Listas** (tablero en una sola página), **Vitrina** (cuadrícula masonry de fotos propias, subida por lotes, hashtags y categorías), **Audio** (grabación en el navegador con tope de 10 minutos, título y categoría editables en el momento) y **Perfil** (panel lateral desde el avatar del navbar: foto, nombre, modo claro/oscuro/auto, idioma y cierre de sesión). La **Personalización** profunda (temas, colores, cursor, iconos, tipografía) está listada ahí como próxima, todavía sin construir.

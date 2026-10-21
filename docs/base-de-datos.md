@@ -28,7 +28,7 @@ flowchart LR
   entradas["entradas (diario)"]
   listas["listas"]
   items["items_lista"]
-  imagenes["imagenes (galería)"]
+  imagenes["imagenes (Vitrina)"]
   audios["audios"]
   temas["temas"]
 
@@ -58,14 +58,19 @@ Extiende la tabla de usuarios de Supabase Auth con datos propios del producto. T
 | --- | --- |
 | `id` | Tu id de usuario (el mismo de Supabase Auth) |
 | `nombre` | Tu nombre |
-| `foto_perfil_path` | Ruta del archivo de tu foto de perfil en Storage |
+| `foto_perfil_path` | Miniatura de tu foto de perfil en Storage (la que se ve en el avatar) |
+| `foto_perfil_completa_path` | Versión completa de esa misma foto |
 | `tema_activo_id` | Qué fila de `temas` está activa ahora |
 
 Se crea sola la primera vez que te registrás (ver "Lo que la base hace sola" más abajo).
 
+La foto pasa por el mismo pipeline que la Vitrina —miniatura + versión completa con `sharp`—, por eso son dos rutas y no una: guardar solo la miniatura dejaría la otra suelta en Storage, sin nadie que la mencione para poder borrarla después. Los archivos viven en el bucket `imagenes`, en `usuario_id/perfil/`.
+
+El modo claro/oscuro **no** está acá: es una preferencia de cada dispositivo y vive en el `localStorage` del navegador (`src/lib/temas/modo.ts`). Lo que sí va a vivir en la base es el tema de diseño elegido (`temas`), que es otra cosa.
+
 ### `categorias`
 
-Tus propias categorías —no hay categorías globales compartidas entre usuarios—, usadas por el Diario, la Galería y el Audio.
+Tus propias categorías —no hay categorías globales compartidas entre usuarios—, usadas por el Diario, las Listas, la Vitrina y el Audio.
 
 | Columna | Qué guarda |
 | --- | --- |
@@ -101,7 +106,7 @@ Las listas son checklists simples: un nombre, y adentro, ítems con texto + marc
 
 Los ítems no tienen `usuario_id` propio —se sabe de quién son a través de su lista—, y por eso se explican distinto en la sección de seguridad.
 
-### `imagenes` — la Galería
+### `imagenes` — la Vitrina
 
 | Columna | Qué guarda |
 | --- | --- |
@@ -110,13 +115,15 @@ Los ítems no tienen `usuario_id` propio —se sabe de quién son a través de s
 | `miniatura_path`, `completa_path` | Las dos versiones que genera `sharp` al subir: una liviana para la cuadrícula, una grande para el detalle |
 | `ancho`, `alto` | Dimensiones de la imagen |
 | `categoria_id` | Categoría opcional |
+| `codigo` | Código corto y opaco para la URL (`/vitrina/x7k2m9pl`), para no exponer la UUID |
 
 ### `audios`
 
 | Columna | Qué guarda |
 | --- | --- |
 | `archivo_path` | Ruta del archivo de audio en Storage |
-| `duracion_segundos` | Duración de la nota |
+| `titulo` | Opcional: vacío se guarda como `NULL` y la app muestra un título por defecto con la fecha y la hora, armado al mostrarlo para que salga en el idioma de la interfaz |
+| `duracion_segundos` | Duración de la nota, medida por el navegador al grabar |
 | `transcripcion` | Texto transcripto (no se usa en Fase 1, queda listo para Fase 2) |
 | `categoria_id` | Categoría opcional |
 
@@ -207,8 +214,18 @@ Cuando buscás "calma" en el Diario, la consulta compara contra `busqueda`, no c
 
 El esquema no se edita a mano en el dashboard de Supabase —vive como archivos `.sql` en `supabase/migrations/`, que se aplican en orden y nunca se modifican una vez creados (un cambio nuevo es siempre un archivo nuevo).
 
-Hoy es un solo archivo: `0001_esquema_completo.sql`, que crea las 8 tablas (con `categoria_id` en listas y `titulo` en audios ya incluidos, no como parche aparte), sus relaciones e índices, la búsqueda por palabra clave (`contenido_texto` + `busqueda`), RLS con sus políticas, el trigger que crea el perfil al registrarte, `updated_at` automático, y los buckets de Storage (`imagenes`, `audios`) con sus políticas de acceso por carpeta. El proyecto todavía no corrió contra una base de datos real, así que no hacía falta mantener el historial de pasos intermedios en el que se fue armando.
+El primero, `0001_esquema_completo.sql`, crea las 8 tablas (con `categoria_id` en listas y `titulo` en audios ya incluidos, no como parche aparte), sus relaciones e índices, la búsqueda por palabra clave (`contenido_texto` + `busqueda`), RLS con sus políticas, el trigger que crea el perfil al registrarte, `updated_at` automático, y los buckets de Storage (`imagenes`, `audios`) con sus políticas de acceso por carpeta. Los que siguen son los cambios que fue pidiendo cada módulo al construirse:
 
-De acá en adelante, cualquier cambio de esquema (por ejemplo al construir Galería o Personalización) se agrega como un archivo nuevo (`0002_...`, `0003_...`), nunca editando este.
+| Archivo | Qué agrega |
+| --- | --- |
+| `0002_temas_preset.sql` | `temas.preset`: de qué tema con nombre parte una fila (`NULL` = tema hecho a mano) |
+| `0003_codigo_entradas.sql` | `entradas.codigo`, el código corto de las URLs del Diario |
+| `0004_codigo_listas.sql` | Lo mismo para `listas` |
+| `0005_items_casilla_opcional.sql` | La casilla de un ítem pasa a ser opcional (`items_lista.con_casilla`) |
+| `0006_listas_con_casillas.sql` | La casilla deja de ser por ítem: ahora la lista entera es de notas o de casillas (`listas.con_casillas`) |
+| `0007_codigo_imagenes.sql` | `imagenes.codigo`, el código corto de las URLs de la Vitrina |
+| `0008_perfil_foto.sql` | `perfiles.foto_perfil_completa_path`: la segunda versión de la foto de perfil, la que faltaba para no dejar archivos sueltos |
+
+Cada cambio de esquema nuevo (por ejemplo al construir Audio o Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
 
 Para aplicarlo en un proyecto de Supabase nuevo: con la Supabase CLI, `supabase db push`; o pegando el archivo en el SQL Editor del dashboard. El detalle de setup completo está en el `README.md` del repositorio.
