@@ -14,7 +14,7 @@ import type { Categoria } from "./types";
  * lista, el color de las que quedan después puede correrse. Se acepta ese
  * costo a cambio de que, en el uso normal, nunca se repita un color.
  *
- * Compartido entre módulos (diario, listas, galería, audio): todos usan
+ * Compartido entre módulos (diario, listas, vitrina, audio): todos usan
  * las mismas categorías del usuario, así que el mismo nombre de categoría
  * siempre se ve del mismo color sin importar desde qué módulo se mire.
  */

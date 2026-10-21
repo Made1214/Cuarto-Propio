@@ -7,6 +7,7 @@
  * sólida desplazada sin blur, tipografía pixelada en la interfaz.
  */
 :root {
+  color-scheme: light;
   --background: #fcf6f3;
   --foreground: #3d2c4f;
   --card: #ffffff;
@@ -17,6 +18,10 @@
      ENCIMA de un fondo pastel siempre necesita tinta oscura para contraste,
      nunca la tinta "de página" (que sí se invierte). */
   --ink-strong: #3d2c4f;
+  /* Velo detrás de las ventanas modales. Token propio y no `--ink` con alfa:
+     la tinta se invierte en modo oscuro y el velo terminaba siendo casi
+     blanco, aclarando la página en vez de apagarla. Un velo siempre oscurece. */
+  --velo: rgba(61, 44, 79, 0.5);
   --primary-green: #9bcfae;
   --primary-pink: #f0aec4;
   --secondary-turquoise: #74c7c3;
@@ -30,6 +35,7 @@
   --color-muted: var(--muted);
   --color-ink: var(--ink);
   --color-ink-strong: var(--ink-strong);
+  --color-velo: var(--velo);
   --color-primary-green: var(--primary-green);
   --color-primary-pink: var(--primary-pink);
   --color-secondary-turquoise: var(--secondary-turquoise);
@@ -40,13 +46,24 @@
   --radius-theme: 6px;
 }
 
+/*
+ * Modo oscuro. Van dos reglas y no una porque hay dos maneras de llegar a
+ * él: siguiendo al sistema (modo "automático", que es no haber elegido nada)
+ * o porque la usuaria lo fijó a mano desde su perfil — ver
+ * src/lib/temas/modo.ts. La regla del atributo va DESPUÉS para ganarle a la
+ * media query cuando el sistema dice una cosa y la usuaria pidió la otra.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-modo="claro"]) {
+    color-scheme: dark;
     --background: #2b2033;
     --foreground: #fbf4f2;
     --card: #43334f;
     --muted: #fbf4f2;
     --ink: #fbf4f2;
+    /* Más oscuro y más opaco que en modo claro: el velo tiene que apagar un
+       fondo que ya es oscuro, no apenas teñirlo. */
+    --velo: rgba(13, 8, 17, 0.66);
     --primary-green: #b8e0c6;
     --primary-pink: #f5c4d3;
     --secondary-turquoise: #8ed9d4;
@@ -54,10 +71,72 @@
   }
 }
 
+:root[data-modo="oscuro"] {
+  color-scheme: dark;
+  --background: #2b2033;
+  --foreground: #fbf4f2;
+  --card: #43334f;
+  --muted: #fbf4f2;
+  --ink: #fbf4f2;
+  --velo: rgba(13, 8, 17, 0.66);
+  --primary-green: #b8e0c6;
+  --primary-pink: #f5c4d3;
+  --secondary-turquoise: #8ed9d4;
+  --secondary-purple: #c9a8e0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* La ventanita entra con un salto corto, como una ventana que se abre de
+   golpe en un escritorio viejo — sin desvanecidos largos. */
+.ventana-dialogo[open] {
+  animation: ventana-abre 140ms ease-out;
+}
+
+.ventana-dialogo[open]::backdrop {
+  animation: ventana-velo 140ms ease-out;
+}
+
+@keyframes ventana-abre {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+@keyframes ventana-velo {
+  from {
+    opacity: 0;
+  }
+}
+
+/* El panel de perfil entra deslizándose desde el borde derecho, como un
+   cajón que se saca — no salta al centro como las ventanitas modales. */
+.panel-lateral[open] {
+  animation: panel-entra 180ms ease-out;
+}
+
+.panel-lateral[open]::backdrop {
+  animation: ventana-velo 180ms ease-out;
+}
+
+@keyframes panel-entra {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ventana-dialogo[open],
+  .ventana-dialogo[open]::backdrop,
+  .panel-lateral[open],
+  .panel-lateral[open]::backdrop {
+    animation: none;
+  }
 }
 
 /* Cuerpo enriquecido del diario (Tiptap): usa la paleta del tema en vez de

@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { Inter, Lora, Silkscreen } from "next/font/google";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { SCRIPT_MODO } from "@/lib/temas/modo";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,7 +24,7 @@ const silkscreen = Silkscreen({
 
 export const metadata: Metadata = {
   title: "Cuarto Propio",
-  description: "Diario, listas, galería y audio — tu espacio personal.",
+  description: "Diario, listas, vitrina y audio — tu espacio personal.",
 };
 
 export default async function LocaleLayout({
@@ -43,7 +44,16 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       className={`${inter.variable} ${lora.variable} ${silkscreen.variable} h-full antialiased`}
+      // El script de abajo le escribe `data-modo` a este mismo elemento antes
+      // de que React hidrate: sin esto React lo tomaría por un desajuste.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Corre mientras el navegador todavía está parseando el HTML, así el
+            modo oscuro elegido a mano ya está puesto en el primer pintado y
+            la página no aparece clara por un instante. */}
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_MODO }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
