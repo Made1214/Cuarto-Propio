@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { colorCategoria } from "@/lib/categorias/color";
-import { listarCategorias } from "@/lib/categorias/queries";
+import { FiltroCategoria } from "@/components/filtro-categoria";
+import { listarConFiltroCategoria } from "@/lib/categorias/filtro";
 import { listarListas } from "@/lib/listas/queries";
 import { ListaColumna } from "./lista-columna";
 import { NuevaListaInline } from "./nueva-lista-inline";
@@ -14,15 +13,17 @@ export default async function ListasPage({
   searchParams: Promise<{ categoria?: string }>;
 }) {
   const { locale } = await params;
-  const { categoria } = await searchParams;
+  const { categoria: categoriaUrl } = await searchParams;
   const t = await getTranslations({ locale, namespace: "listas" });
 
-  const [categorias, listas] = await Promise.all([
-    listarCategorias(),
-    listarListas({ categoriaId: categoria }),
-  ]);
-
-  const categoriaActual = categorias.find((cat) => cat.id === categoria) ?? null;
+  const {
+    categorias,
+    categoriaActual,
+    resultado: listas,
+  } = await listarConFiltroCategoria(categoriaUrl, (categoriaId) => listarListas({ categoriaId }));
+  // Solo la categoría que de verdad existe: un id roto en la URL se trata
+  // como si no hubiera filtro (ver `listarConFiltroCategoria`).
+  const categoria = categoriaActual?.id;
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -34,58 +35,13 @@ export default async function ListasPage({
 
         <div className="flex flex-wrap items-end justify-end gap-3">
           {categorias.length > 0 ? (
-            <details className="group relative">
-              <summary className="marker:content-none flex w-64 cursor-pointer list-none items-center justify-between gap-2 border-2 border-ink bg-card px-4 py-2.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10 [&::-webkit-details-marker]:hidden">
-                <span className="flex min-w-0 items-center gap-2">
-                  {categoriaActual ? (
-                    <span
-                      aria-hidden="true"
-                      className="h-3 w-3 shrink-0 border-2 border-ink-strong"
-                      style={{ background: colorCategoria(categorias, categoriaActual.id) }}
-                    />
-                  ) : null}
-                  <span className="truncate">
-                    {(categoriaActual?.nombre ?? t("todasLasCategorias")).toUpperCase()}
-                  </span>
-                </span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  className="shrink-0 transition-transform group-open:rotate-180"
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </summary>
-              <div className="absolute right-0 z-20 mt-2 flex w-64 flex-col border-2 border-ink bg-card p-1 shadow-[4px_4px_0_var(--ink)]">
-                <Link
-                  href="/listas"
-                  className="flex items-center gap-2 px-3 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
-                >
-                  {t("todasLasCategorias").toUpperCase()}
-                </Link>
-                {categorias.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    href={{ pathname: "/listas", query: { categoria: cat.id } }}
-                    className="flex items-center gap-2 px-3 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="h-3 w-3 shrink-0 border-2 border-ink-strong"
-                      style={{ background: colorCategoria(categorias, cat.id) }}
-                    />
-                    <span className="truncate">{cat.nombre.toUpperCase()}</span>
-                  </Link>
-                ))}
-              </div>
-            </details>
+            <FiltroCategoria
+              pathname="/listas"
+              categorias={categorias}
+              categoriaActualId={categoria ?? null}
+              etiquetaTodas={t("todasLasCategorias")}
+              alinearDerecha
+            />
           ) : null}
 
           <NuevaListaInline />

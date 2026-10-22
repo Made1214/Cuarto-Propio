@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
 import type { ImagenEnVitrina } from "@/lib/imagenes/types";
 import { BotonesVentana } from "./iconos";
 
@@ -16,9 +17,20 @@ import { BotonesVentana } from "./iconos";
 export async function VentanaImagen({
   locale,
   imagen,
+  carga = "diferida",
 }: {
   locale: string;
   imagen: ImagenEnVitrina;
+  /**
+   * Cuándo pedir la foto:
+   * - `prioritaria`: de las primeras que se ven sin scrollear; se pide ya y
+   *   antes que todo lo demás.
+   * - `inmediata`: puede verse sin scrollear según el ancho de pantalla; se
+   *   pide apenas llega el HTML, sin esperar a que se dibuje la página, y el
+   *   navegador le sube la prioridad si de verdad quedó a la vista.
+   * - `diferida`: todas las demás, que esperan a acercarse a la pantalla.
+   */
+  carga?: "prioritaria" | "inmediata" | "diferida";
 }) {
   const t = await getTranslations({ locale, namespace: "vitrina" });
   const titulo = imagen.titulo?.trim() ?? "";
@@ -42,11 +54,21 @@ export async function VentanaImagen({
             width={imagen.ancho ?? 800}
             height={imagen.alto ?? 800}
             // Sin el optimizador de Next a propósito: `sharp` ya dejó esta
-            // miniatura en WebP al ancho de la cuadrícula, así que volver a
+            // miniatura en WebP al ancho de la cuadrícula (600 px; las piezas
+            // de antes, 800 — ver `MINIATURAS` en procesar.ts), así que volver a
             // procesarla no la mejora y sí gasta cuota de transformaciones.
-            // Además la URL viene firmada (cambia en cada carga), así que
-            // ninguna versión optimizada se reutilizaría nunca.
+            // Además la URL viene firmada y se renueva cada pocas horas
+            // (ver `src/lib/storage/firmas.ts`), así que el optimizador
+            // guardaría versiones que dejan de servir enseguida.
             unoptimized
+            // `priority` está deprecado desde Next 16 y `preload` metería un
+            // <link> en el <head> por pieza; la doc recomienda esto. Sin
+            // `sizes`: con `unoptimized` no hay `srcset` entre el que elegir,
+            // y Next lo descarta.
+            loading={carga === "diferida" ? "lazy" : "eager"}
+            fetchPriority={carga === "prioritaria" ? "high" : undefined}
+            // El degradé suave mientras baja (y se va solo al terminar).
+            placeholder={FONDO_MIENTRAS_CARGA}
             className="h-auto w-full"
           />
         ) : (

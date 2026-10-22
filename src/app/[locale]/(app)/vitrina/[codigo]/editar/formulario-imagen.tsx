@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { colorCategoria } from "@/lib/categorias/color";
 import type { Categoria } from "@/lib/categorias/types";
 import { actualizarImagen } from "@/lib/imagenes/actions";
+import { useValidacionNativa } from "@/lib/formularios/validacion-nativa";
 import { formatearHashtags, normalizarHashtags } from "@/lib/imagenes/hashtags";
 import { DESCRIPCION_MAXIMA, TITULO_MAXIMO } from "@/lib/imagenes/limites";
 import type { ImagenConVersionCompleta } from "@/lib/imagenes/types";
@@ -37,6 +38,13 @@ export function FormularioImagen({
     actualizarImagen.bind(null, locale, imagen.id),
     undefined,
   );
+  // Con `maxLength` el navegador casi nunca deja pasarse, pero si un texto ya
+  // venía más largo y se edita sin recortarlo, levanta su globo: que diga lo
+  // mismo que la Server Action, y en el idioma de la interfaz.
+  const validacion = useValidacionNativa({
+    titulo: { tooLong: t("tituloDemasiadoLargo", { maximo: TITULO_MAXIMO }) },
+    descripcion: { tooLong: t("descripcionDemasiadoLarga", { maximo: DESCRIPCION_MAXIMA }) },
+  });
 
   const [titulo, setTitulo] = useState(imagen.titulo ?? "");
   const [descripcion, setDescripcion] = useState(imagen.descripcion ?? "");
@@ -51,7 +59,7 @@ export function FormularioImagen({
   const categoriaElegida = categorias.find((cat) => cat.nombre === categoriaTexto) ?? null;
 
   return (
-    <form action={enviarAction} className="flex flex-col gap-4 p-4">
+    <form action={enviarAction} {...validacion} className="flex flex-col gap-4 p-4">
       {estado?.error ? (
         <p className="border-2 border-ink-strong bg-primary-pink px-3 py-2 font-pixel text-[0.625rem] tracking-wide text-ink-strong">
           {estado.error}

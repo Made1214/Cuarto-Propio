@@ -1,15 +1,12 @@
 import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { CACHE_CONTROL_INMUTABLE, firmarConCache, olvidarFirmas } from "@/lib/storage/firmas";
 import type { FormatoAudio } from "./formato";
 
 /** El bucket es privado (ver 0001_esquema_completo.sql): nada se sirve por
- * URL pública, todo pasa por URLs firmadas que vencen solas. */
+ * URL pública, todo pasa por URLs firmadas que vencen solas (cuánto duran y
+ * por qué se reutilizan, igual que en la Vitrina: `src/lib/storage/firmas.ts`). */
 const BUCKET = "audios";
-
-/** Una hora, igual que en la Vitrina: alcanza de sobra para escuchar las
- * notas de la página y corto para que una URL copiada por accidente no
- * quede viva para siempre. */
-const SEGUNDOS_FIRMA = 60 * 60;
 
 /** Primer nivel de la ruta = `usuario_id`, que es lo que miran las políticas
  * de Storage. El segundo dice de qué módulo vino el archivo, para poder
@@ -27,7 +24,10 @@ export async function guardarAudio(
 
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, contenido, { contentType: formato.mime });
+    .upload(path, contenido, {
+      contentType: formato.mime,
+      cacheControl: CACHE_CONTROL_INMUTABLE,
+    });
   if (error) throw error;
 
   return path;
@@ -35,28 +35,22 @@ export async function guardarAudio(
 
 /** Firma varias rutas de una sola llamada y devuelve un mapa ruta → URL. Una
  * ruta que falle queda fuera del mapa en vez de tumbar la página entera: esa
- * nota muestra su aviso y el resto se sigue pudiendo escuchar. */
-export async function firmarPaths(
+ * nota muestra su aviso y el resto se sigue pudiendo escuchar.
+ *
+ * La misma ruta devuelve la misma URL durante horas, para que el navegador
+ * no vuelva a bajar cada audio en cada visita. Por eso solo puede recibir
+ * rutas salidas de una consulta con RLS, nunca rutas que mande el cliente
+ * (ver `src/lib/storage/firmas.ts`). */
+export function firmarPaths(
   supabase: SupabaseClient,
   paths: string[],
 ): Promise<Map<string, string>> {
-  const unicos = [...new Set(paths)];
-  if (unicos.length === 0) return new Map();
-
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .createSignedUrls(unicos, SEGUNDOS_FIRMA);
-  if (error) throw error;
-
-  const firmadas = new Map<string, string>();
-  for (const fila of data ?? []) {
-    if (fila.signedUrl && fila.path) firmadas.set(fila.path, fila.signedUrl);
-  }
-  return firmadas;
+  return firmarConCache(supabase, BUCKET, paths);
 }
 
 export async function borrarPath(supabase: SupabaseClient, path: string): Promise<void> {
   if (!path) return;
   const { error } = await supabase.storage.from(BUCKET).remove([path]);
   if (error) throw error;
+  olvidarFirmas(BUCKET, [path]);
 }

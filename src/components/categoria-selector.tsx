@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { useOptimistic, useState, useTransition } from "react";
 import { colorCategoria } from "@/lib/categorias/color";
 import type { Categoria } from "@/lib/categorias/types";
+
+/** Id provisorio de una categoría recién escrita que el servidor todavía no
+ * creó: no choca con ningún uuid real. */
+const ID_PROVISORIO = "provisoria";
 
 /**
  * Elegir (o crear al vuelo) la categoría de algo, desde la tarjeta misma.
@@ -16,38 +19,73 @@ import type { Categoria } from "@/lib/categorias/types";
  * Es compartido entre módulos a propósito: las categorías son el eje
  * transversal de la app (CLAUDE.md), así que asignarlas se ve y se siente
  * igual en Listas y en Audio. Cada módulo pone su Server Action en
- * `onElegir` y sus propios textos traducidos; el refresco de la página lo
- * hace el componente.
+ * `onElegir` (que refresca la página desde el servidor) y sus propios textos
+ * traducidos; si la action falla, el componente vuelve a la categoría real y
+ * avisa por `onError`, para que el error se muestre donde la tarjeta muestra
+ * los suyos.
  */
 export function CategoriaSelector({
   categoriaId,
   categoriaNombre,
   categorias,
   onElegir,
+  onError,
   textos,
 }: {
   categoriaId: string | null;
   categoriaNombre: string | null;
   categorias: Categoria[];
   onElegir: (nombre: string) => Promise<void>;
+  /** Recibe el error tal cual: la tarjeta decide qué aviso mostrar. */
+  onError?: (fallo: unknown) => void;
   textos: { cambiar: string; placeholder: string; quitar: string; nueva: string };
 }) {
-  const router = useRouter();
   const [abierto, setAbierto] = useState(false);
   const [nueva, setNueva] = useState("");
-  const [pendiente, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
+
+  // La categoría elegida se muestra en el momento; la real (props) vuelve a
+  // mandar cuando termina la action, con la página ya refrescada o, si
+  // falló, tal como estaba.
+  const [actual, setActual] = useOptimistic<{ id: string | null; nombre: string | null }>({
+    id: categoriaId,
+    nombre: categoriaNombre,
+  });
+
+  // Una categoría nueva todavía no está en la lista: se suma ordenada por
+  // nombre (como la devuelve `listarCategorias`) para que su color ya sea
+  // el que va a tener cuando llegue la real, en vez de cambiar al refrescar.
+  const categoriasVisibles =
+    actual.id === ID_PROVISORIO && actual.nombre
+      ? [...categorias, { id: ID_PROVISORIO, nombre: actual.nombre }].sort((a, b) =>
+          a.nombre.localeCompare(b.nombre),
+        )
+      : categorias;
 
   function elegir(nombre: string) {
     const nombreLimpio = nombre.trim();
-    if (nombreLimpio === (categoriaNombre ?? "")) {
-      setAbierto(false);
-      return;
-    }
+    // Se cierra fuera de la transición: dentro, el cierre esperaría a que
+    // responda el servidor, y la gracia es que el panel se vaya ya.
+    setNueva("");
+    setAbierto(false);
+    // Se compara con lo que se VE (el optimista), no con las props: elegir
+    // dos veces lo mismo mientras viaja la primera no manda nada.
+    if (nombreLimpio === (actual.nombre ?? "")) return;
+
+    const existente = categorias.find((cat) => cat.nombre === nombreLimpio);
     startTransition(async () => {
-      await onElegir(nombreLimpio);
-      setNueva("");
-      setAbierto(false);
-      router.refresh();
+      setActual(
+        nombreLimpio
+          ? { id: existente?.id ?? ID_PROVISORIO, nombre: nombreLimpio }
+          : { id: null, nombre: null },
+      );
+      try {
+        await onElegir(nombreLimpio);
+      } catch (fallo) {
+        // Al terminar la transición sin página nueva, `actual` vuelve solo a
+        // la categoría real; acá solo queda avisar.
+        startTransition(() => onError?.(fallo));
+      }
     });
   }
 
@@ -58,19 +96,18 @@ export function CategoriaSelector({
         onClick={() => setAbierto((valor) => !valor)}
         aria-expanded={abierto}
         aria-label={textos.cambiar}
-        disabled={pendiente}
         className="flex w-full items-center justify-between gap-2 border-2 px-2 py-1 text-left font-pixel text-xs tracking-wide"
         style={
-          categoriaId
+          actual.id
             ? {
                 borderColor: "var(--ink-strong)",
-                background: colorCategoria(categorias, categoriaId),
+                background: colorCategoria(categoriasVisibles, actual.id),
                 color: "var(--ink-strong)",
               }
             : { borderColor: "var(--ink)", borderStyle: "dashed", opacity: 0.7 }
         }
       >
-        <span className="truncate">{(categoriaNombre ?? textos.placeholder).toUpperCase()}</span>
+        <span className="truncate">{(actual.nombre ?? textos.placeholder).toUpperCase()}</span>
         <svg
           width="10"
           height="10"
@@ -90,29 +127,27 @@ export function CategoriaSelector({
       {abierto ? (
         <div className="flex flex-col gap-2 border-2 border-ink bg-background p-2">
           <div className="flex flex-wrap gap-1.5">
-            {categoriaId ? (
+            {actual.id ? (
               <button
                 type="button"
                 onClick={() => elegir("")}
-                disabled={pendiente}
                 className="border-2 border-dashed border-ink px-2 py-0.5 font-pixel text-xs tracking-wide text-ink hover:bg-secondary-purple/10"
               >
                 {textos.quitar.toUpperCase()}
               </button>
             ) : null}
-            {categorias.map((cat) => (
+            {categoriasVisibles.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
                 onClick={() => elegir(cat.nombre)}
-                disabled={pendiente}
-                aria-pressed={cat.id === categoriaId}
+                aria-pressed={cat.id === actual.id}
                 className={`border-2 px-2 py-0.5 font-pixel text-xs tracking-wide text-ink-strong ${
-                  cat.id === categoriaId ? "border-ink-strong" : "border-transparent hover:border-ink-strong"
+                  cat.id === actual.id ? "border-ink-strong" : "border-transparent hover:border-ink-strong"
                 }`}
-                style={{ background: colorCategoria(categorias, cat.id) }}
+                style={{ background: colorCategoria(categoriasVisibles, cat.id) }}
               >
-                {cat.id === categoriaId ? "✓ " : ""}
+                {cat.id === actual.id ? "✓ " : ""}
                 {cat.nombre.toUpperCase()}
               </button>
             ))}
@@ -128,7 +163,6 @@ export function CategoriaSelector({
               }
               if (evento.key === "Escape") setAbierto(false);
             }}
-            disabled={pendiente}
             placeholder={textos.nueva}
             className="border-2 border-ink bg-card px-2 py-1 text-sm outline-none"
           />

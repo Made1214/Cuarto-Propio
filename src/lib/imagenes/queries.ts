@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { normalizarCategoria } from "@/lib/categorias/queries";
+import { paginar, type Pagina } from "@/lib/paginacion";
 import { firmarPaths } from "./almacenamiento";
 import type {
   HashtagConteo,
@@ -31,34 +32,65 @@ function mapear(fila: FilaImagen): Imagen {
   };
 }
 
-export async function listarImagenes(
-  filtros: { hashtag?: string; categoriaId?: string } = {},
-): Promise<ImagenEnVitrina[]> {
+/** Piezas por página: cuatro filas de una pared de escritorio ancha (y
+ * múltiplo de 2, 3 y 4 columnas, para que cada tanda llene parejo). */
+export const TAMANO_PAGINA_VITRINA = 24;
+
+/**
+ * Piezas para la cuadrícula, de a una página (qué es `hasta` y por qué vive
+ * en la URL: `src/lib/paginacion.ts`). Solo se firman las miniaturas de lo
+ * que se va a mostrar, y las ya vistas salen del caché de firmas.
+ *
+ * `contar` agrega el total que cumple los filtros, para el "N piezas" que se
+ * muestra solo al filtrar.
+ */
+export async function listarImagenes({
+  hashtag,
+  categoriaId,
+  hasta,
+  contar = false,
+}: {
+  hashtag?: string;
+  categoriaId?: string;
+  hasta?: string;
+  contar?: boolean;
+} = {}): Promise<Pagina<ImagenEnVitrina>> {
   const supabase = await createClient();
-  let query = supabase.from("imagenes").select(CAMPOS).order("fecha", { ascending: false });
+  const etiqueta = hashtag?.trim().toLowerCase();
 
-  if (filtros.categoriaId) {
-    query = query.eq("categoria_id", filtros.categoriaId);
-  }
-  if (filtros.hashtag?.trim()) {
-    // `contains` sobre el array: la fila tiene que incluir ese hashtag.
-    query = query.contains("hashtags", [filtros.hashtag.trim().toLowerCase()]);
-  }
+  const consulta = () => {
+    let query = supabase
+      .from("imagenes")
+      .select(CAMPOS, contar ? { count: "exact" } : undefined)
+      .order("fecha", { ascending: false })
+      .order("id", { ascending: false });
 
-  const { data, error } = await query;
-  if (error) throw error;
+    if (categoriaId) {
+      query = query.eq("categoria_id", categoriaId);
+    }
+    if (etiqueta) {
+      // `contains` sobre el array: la fila tiene que incluir ese hashtag.
+      query = query.contains("hashtags", [etiqueta]);
+    }
+    return query;
+  };
 
-  const imagenes = (data ?? []).map(mapear);
+  const pagina = await paginar({ hasta, tamano: TAMANO_PAGINA_VITRINA, consulta });
+
+  const imagenes = pagina.filas.map(mapear);
   // Una sola llamada a Storage para toda la cuadrícula, no una por tarjeta.
   const firmadas = await firmarPaths(
     supabase,
     imagenes.map((imagen) => imagen.miniaturaPath),
   );
 
-  return imagenes.map((imagen) => ({
-    ...imagen,
-    miniaturaUrl: firmadas.get(imagen.miniaturaPath) ?? null,
-  }));
+  return {
+    ...pagina,
+    filas: imagenes.map((imagen) => ({
+      ...imagen,
+      miniaturaUrl: firmadas.get(imagen.miniaturaPath) ?? null,
+    })),
+  };
 }
 
 export async function obtenerImagenPorCodigo(
@@ -124,23 +156,22 @@ export async function listarRelacionadas(
       .order("fecha", { ascending: false })
       .limit(limite);
 
+  // Las tres consultas son independientes: van en paralelo y no una detrás
+  // de otra (eran tres idas y vueltas a la base en fila antes de poder
+  // dibujar la ficha). El orden de prioridad lo pone el armado de abajo, no
+  // el orden en que llegan.
+  const respuestas = await Promise.all([
+    imagen.hashtags.length > 0 ? base().overlaps("hashtags", imagen.hashtags) : null,
+    imagen.categoriaId ? base().eq("categoria_id", imagen.categoriaId) : null,
+    base(),
+  ]);
+
   const tandas: FilaImagen[][] = [];
-
-  if (imagen.hashtags.length > 0) {
-    const { data, error } = await base().overlaps("hashtags", imagen.hashtags);
-    if (error) throw error;
-    tandas.push(data ?? []);
+  for (const respuesta of respuestas) {
+    if (!respuesta) continue;
+    if (respuesta.error) throw respuesta.error;
+    tandas.push(respuesta.data ?? []);
   }
-
-  if (imagen.categoriaId) {
-    const { data, error } = await base().eq("categoria_id", imagen.categoriaId);
-    if (error) throw error;
-    tandas.push(data ?? []);
-  }
-
-  const { data: recientes, error: errorRecientes } = await base();
-  if (errorRecientes) throw errorRecientes;
-  tandas.push(recientes ?? []);
 
   const elegidas: Imagen[] = [];
   const vistas = new Set<string>();

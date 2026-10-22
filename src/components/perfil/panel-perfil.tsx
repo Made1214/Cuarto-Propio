@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { AvisoErrorAccion } from "@/components/aviso-error-accion";
 import { useRouter } from "@/i18n/navigation";
+import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import { renombrarPerfil } from "@/lib/perfil/actions";
 import { NOMBRE_MAXIMO } from "@/lib/perfil/limites";
 import type { PerfilVisible } from "@/lib/perfil/types";
@@ -42,6 +44,7 @@ export function PanelPerfil({
   const ref = useRef<HTMLDialogElement>(null);
   const [abierto, setAbierto] = useState(false);
   const [, startTransition] = useTransition();
+  const [errorNombre, setErrorNombre] = useState<ErrorAccion | null>(null);
 
   useEffect(() => {
     const panel = ref.current;
@@ -121,8 +124,16 @@ export function PanelPerfil({
                 onBlur={(evento) => {
                   const valor = evento.target.value.trim();
                   if (valor === (perfil.nombre ?? "")) return;
+                  setErrorNombre(null);
                   startTransition(async () => {
-                    await renombrarPerfil(valor);
+                    try {
+                      await renombrarPerfil(valor);
+                    } catch (fallo) {
+                      // Avisar dentro del panel en vez de caer en la pantalla
+                      // de error, igual que Listas y Audio.
+                      startTransition(() => setErrorNombre(clasificarErrorAccion(fallo)));
+                      return;
+                    }
                     router.refresh();
                   });
                 }}
@@ -131,6 +142,7 @@ export function PanelPerfil({
                 }}
                 className="border-2 border-ink bg-background px-3 py-2 font-diario text-base outline-none placeholder:text-muted/50"
               />
+              <AvisoErrorAccion error={errorNombre} mensajeFallo={t("errorNombre")} />
               {perfil.email ? (
                 <p className="truncate pt-0.5 text-xs text-muted/70">{perfil.email}</p>
               ) : null}

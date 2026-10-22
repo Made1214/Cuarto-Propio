@@ -11,6 +11,7 @@
     "cerrar": "Close",
     "nombre": "Your name",
     "nombrePlaceholder": "What should we call you?",
+    "errorNombre": "Couldn’t save your name. Please try again.",
     "cambiarFoto": "Change photo",
     "subiendoFoto": "Uploading…",
     "quitarFoto": "Remove photo",
@@ -77,6 +78,15 @@
     "cancelar": "Cancel",
     "guardar": "Save"
   },
+  "validacion": {
+    "requerido": "This field can't be left empty.",
+    "demasiadoLargo": "This can't be longer than {maximo} characters.",
+    "demasiadoCorto": "Write at least {minimo} characters.",
+    "email": "Enter a valid email, like name@example.com.",
+    "url": "Enter a full link, starting with https://",
+    "formato": "Check the format of this field.",
+    "valorInvalido": "Check this value."
+  },
   "editor": {
     "negrita": "Bold",
     "cursiva": "Italic",
@@ -101,6 +111,7 @@
     "sinResultados": "No lists match that category.",
     "nuevaLista": "New list",
     "nombrePlaceholder": "Give this list a name",
+    "nombreRequerido": "Give your list a name before saving it.",
     "categoriaPlaceholder": "No category",
     "cambiarCategoria": "Change category",
     "quitarCategoria": "No category",
@@ -119,7 +130,8 @@
     "guardar": "Save",
     "cancelar": "Cancel",
     "eliminar": "Delete",
-    "eliminarConfirmar": "Delete this list? This cannot be undone."
+    "eliminarConfirmar": "Delete this list? This cannot be undone.",
+    "errorGuardar": "Couldn’t save that change. Please try again."
   },
   "vitrina": {
     "titulo": "Showcase",
@@ -197,6 +209,30 @@
     "quitarCategoria": "No category",
     "nuevaCategoriaPlaceholder": "New category…",
     "eliminar": "Delete",
-    "eliminarConfirmar": "Delete this audio note? This cannot be undone."
+    "eliminarConfirmar": "Delete this audio note? This cannot be undone.",
+    "errorGuardar": "Couldn’t save that change. Please try again."
+  },
+  "paginacion": {
+    "cargarMas": "Load more",
+    "cargando": "Loading…",
+    "fin": "That’s all: you’ve reached the beginning."
+  },
+  "estados": {
+    "cargando": "Loading…",
+    "errorBarra": "A little hiccup",
+    "errorTitulo": "Something got stuck",
+    "errorMensaje": "We couldn't bring in this part of your room. Everything you saved is safe — it's almost always the connection. Try again in a moment.",
+    "reintentar": "Try again",
+    "codigoError": "Code: {codigo}",
+    "noEncontradoBarra": "Not here",
+    "noEncontradoTitulo": "This isn't here anymore",
+    "noEncontradaEntrada": "We couldn't find this entry. Maybe you deleted it, or the link is incomplete.",
+    "noEncontradaPieza": "We couldn't find this piece in your showcase. Maybe you deleted it, or the link is incomplete.",
+    "volverAlDiario": "Back to journal",
+    "volverALaVitrina": "Back to showcase",
+    "appActualizada": "The app was updated while you had it open. Reload the page to keep going.",
+    "appActualizadaBarra": "Something new",
+    "appActualizadaTitulo": "Your room got a refresh",
+    "recargar": "Reload"
   }
 }

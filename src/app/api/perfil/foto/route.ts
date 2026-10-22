@@ -9,7 +9,9 @@ import { FormatoNoSoportadoError, procesarImagen } from "@/lib/imagenes/procesar
  * Foto de perfil: el mismo pipeline de la Vitrina (miniatura + versión
  * completa con sharp), solo que guardado en la carpeta `perfil` y apuntado
  * desde `perfiles` en vez de una fila propia (CLAUDE.md → un solo componente
- * de subida de imágenes, no una implementación por módulo).
+ * de subida de imágenes, no una implementación por módulo). La miniatura se
+ * pide con forma de avatar (`procesarImagen(…, "avatar")`): lo demás del
+ * pipeline es idéntico.
  *
  * Es ruta de API y no Server Action por lo mismo que la Vitrina: el cuerpo
  * de una Server Action tiene un tope de 1MB y una foto de celular lo revienta.
@@ -38,8 +40,10 @@ export async function POST(request: Request) {
 
   try {
     // El tipo real lo decide sharp al abrir el archivo, no la extensión ni el
-    // Content-Type que manda el navegador (ambos se falsifican solos).
-    const versiones = await procesarImagen(await archivo.arrayBuffer());
+    // Content-Type que manda el navegador (ambos se falsifican solos). La
+    // miniatura sale con forma de avatar (cuadrada y chiquita): es lo único
+    // que la muestra, y la versión completa queda para todo lo demás.
+    const versiones = await procesarImagen(await archivo.arrayBuffer(), "avatar");
     const anteriores = await pathsActuales(supabase, user.id);
 
     const { miniaturaPath, completaPath } = await guardarVersiones(

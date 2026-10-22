@@ -172,7 +172,7 @@ Las fotos y los audios no se guardan en la base de datos —ahí solo vive la ru
 | `imagenes` | Miniatura + versión completa de cada foto |
 | `audios` | Las notas de voz |
 
-Privados quiere decir que no tienen una URL pública fija: para mostrarlos hay que pedirle a Supabase una URL firmada, que expira sola. La regla de quién puede leer/subir/borrar cada archivo es la misma idea que RLS, pero aplicada a la carpeta:
+Privados quiere decir que no tienen una URL pública fija: para mostrarlos hay que pedirle a Supabase una URL firmada, que expira sola. Cada firma dura 24 horas y la app reutiliza la misma URL mientras le queden 12 horas o más, para que el navegador cachee el archivo en vez de bajarlo en cada visita (ver `src/lib/storage/firmas.ts`). La regla de quién puede leer/subir/borrar cada archivo es la misma idea que RLS, pero aplicada a la carpeta:
 
 ```sql
 using (bucket_id = 'imagenes' and (storage.foldername(name))[1] = auth.uid()::text)

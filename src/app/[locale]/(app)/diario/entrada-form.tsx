@@ -5,6 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { TiptapEditor } from "@/components/tiptap-editor";
 import { colorCategoria } from "@/lib/categorias/color";
+import { useValidacionNativa } from "@/lib/formularios/validacion-nativa";
 import { borrarBorrador, guardarBorrador, leerBorrador, type Borrador } from "@/lib/diario/borrador";
 import type { Categoria, EntradaActionState } from "@/lib/diario/types";
 
@@ -39,6 +40,14 @@ export function EntradaForm({
   const t = useTranslations("diario");
   const format = useFormatter();
   const [estado, enviarAction] = useActionState(action, undefined);
+  // El globo del título vacío dice lo mismo que el aviso de la Server
+  // Action (que es la que atrapa el título hecho solo de espacios).
+  const validacion = useValidacionNativa({
+    titulo: {
+      valueMissing: t("tituloRequerido"),
+      tooLong: t("tituloDemasiadoLargo", { maximo: TITULO_MAXIMO }),
+    },
+  });
 
   const tituloInicial = valoresIniciales?.titulo ?? "";
   const categoriaInicial = valoresIniciales?.categoriaNombre ?? "";
@@ -112,6 +121,7 @@ export function EntradaForm({
     <form
       id={formId}
       action={enviarAction}
+      {...validacion}
       onSubmit={() => {
         enviando.current = true;
         borrarBorrador(claveBorrador);

@@ -1,16 +1,13 @@
 "use client";
 
-import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { BotonConfirmar } from "@/components/boton-confirmar";
-import { useRouter } from "@/i18n/navigation";
-import { eliminarItem } from "@/lib/listas/actions";
 import { IconoEliminar } from "./iconos";
 
-export function EliminarItemBoton({ itemId }: { itemId: string }) {
+/** La confirmación se queda acá; el borrado en sí lo hace la columna, que es
+ * la que saca la fila de la vista en el momento (y la devuelve si falla). */
+export function EliminarItemBoton({ onEliminar }: { onEliminar: () => void }) {
   const t = useTranslations("listas");
-  const router = useRouter();
-  const [pendiente, startTransition] = useTransition();
 
   return (
     <BotonConfirmar
@@ -18,15 +15,8 @@ export function EliminarItemBoton({ itemId }: { itemId: string }) {
       mensaje={t("eliminarItemConfirmar")}
       textoConfirmar={t("eliminar")}
       etiqueta={t("eliminarItem")}
-      onConfirmar={() => {
-        startTransition(async () => {
-          await eliminarItem(itemId);
-          router.refresh();
-        });
-      }}
-      className={`flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink focus-visible:bg-primary-pink/30 focus-visible:text-ink ${
-        pendiente ? "opacity-50" : ""
-      }`}
+      onConfirmar={onEliminar}
+      className="flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink focus-visible:bg-primary-pink/30 focus-visible:text-ink"
     >
       <IconoEliminar />
     </BotonConfirmar>

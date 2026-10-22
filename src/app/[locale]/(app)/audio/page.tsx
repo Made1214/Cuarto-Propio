@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
+import { CargarMas, FinDeLista } from "@/components/cargar-mas";
+import { FiltroCategoria } from "@/components/filtro-categoria";
 import { Link } from "@/i18n/navigation";
 import { listarAudios } from "@/lib/audio/queries";
-import { colorCategoria } from "@/lib/categorias/color";
-import { listarCategorias } from "@/lib/categorias/queries";
+import { listarConFiltroCategoria } from "@/lib/categorias/filtro";
 import { Grabador } from "./grabador";
 import { IconoAudio } from "./iconos";
 import { NotaAudio } from "./nota-audio";
@@ -12,18 +13,25 @@ export default async function AudioPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ categoria?: string }>;
+  searchParams: Promise<{ categoria?: string; hasta?: string }>;
 }) {
   const { locale } = await params;
-  const { categoria } = await searchParams;
+  const { categoria: categoriaUrl, hasta } = await searchParams;
   const t = await getTranslations({ locale, namespace: "audio" });
 
-  const [categorias, notas] = await Promise.all([
-    listarCategorias(),
-    listarAudios({ categoriaId: categoria }),
-  ]);
+  const {
+    categorias,
+    categoriaActual,
+    resultado: pagina,
+  } = await listarConFiltroCategoria(categoriaUrl, (categoriaId) =>
+    // El total solo se cuenta si se va a mostrar, o sea, al filtrar.
+    listarAudios({ categoriaId, hasta, contar: Boolean(categoriaId) }),
+  );
 
-  const categoriaActual = categorias.find((cat) => cat.id === categoria) ?? null;
+  // Solo la categoría que de verdad existe: un id roto en la URL se trata
+  // como si no hubiera filtro (ver `listarConFiltroCategoria`).
+  const categoria = categoriaActual?.id;
+  const notas = pagina.filas;
   // Con el archivo vacío, la invitación del centro ya es el botón de grabar:
   // repetirlo arriba no solo se ve redundante, son dos grabadoras con estado
   // propio (empezar en una no apagaría la otra). Se muestra una sola.
@@ -46,64 +54,18 @@ export default async function AudioPage({
       </div>
 
       {categorias.length > 0 ? (
-        <details className="group relative w-64">
-          <summary className="marker:content-none flex cursor-pointer list-none items-center justify-between gap-2 border-2 border-ink bg-card px-4 py-2.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10 [&::-webkit-details-marker]:hidden">
-            <span className="flex min-w-0 items-center gap-2">
-              {categoriaActual ? (
-                <span
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0 border-2 border-ink-strong"
-                  style={{ background: colorCategoria(categorias, categoriaActual.id) }}
-                />
-              ) : null}
-              <span className="truncate">
-                {(categoriaActual?.nombre ?? t("todasLasCategorias")).toUpperCase()}
-              </span>
-            </span>
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              className="shrink-0 transition-transform group-open:rotate-180"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </summary>
-          <div className="absolute z-20 mt-2 flex w-64 flex-col border-2 border-ink bg-card p-1 shadow-[4px_4px_0_var(--ink)]">
-            <Link
-              href="/audio"
-              className="flex items-center gap-2 px-3 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
-            >
-              {t("todasLasCategorias").toUpperCase()}
-            </Link>
-            {categorias.map((cat) => (
-              <Link
-                key={cat.id}
-                href={{ pathname: "/audio", query: { categoria: cat.id } }}
-                className="flex items-center gap-2 px-3 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
-              >
-                <span
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0 border-2 border-ink-strong"
-                  style={{ background: colorCategoria(categorias, cat.id) }}
-                />
-                <span className="truncate">{cat.nombre.toUpperCase()}</span>
-              </Link>
-            ))}
-          </div>
-        </details>
+        <FiltroCategoria
+          pathname="/audio"
+          categorias={categorias}
+          categoriaActualId={categoria ?? null}
+          etiquetaTodas={t("todasLasCategorias")}
+        />
       ) : null}
 
       {categoria ? (
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-pixel text-xs text-muted/70 tabular-nums">
-            {t("resultados", { cantidad: notas.length })}
+            {t("resultados", { cantidad: pagina.total ?? notas.length })}
           </span>
           <Link
             href="/audio"
@@ -139,6 +101,18 @@ export default async function AudioPage({
           {notas.map((nota) => (
             <NotaAudio key={nota.id} nota={nota} categorias={categorias} />
           ))}
+
+          {/* El filtro viaja con el "cargar más"; los links de filtro no
+              llevan `hasta`, así que cambiar de categoría vuelve a la
+              primera tanda. */}
+          {pagina.siguiente ? (
+            <CargarMas
+              pathname="/audio"
+              query={{ ...(categoria ? { categoria } : {}), hasta: pagina.siguiente }}
+            />
+          ) : pagina.conCursor ? (
+            <FinDeLista />
+          ) : null}
         </div>
       )}
     </div>

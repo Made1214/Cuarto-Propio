@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useId, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { AvisoErrorAccion } from "@/components/aviso-error-accion";
+import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import { crearLista } from "@/lib/listas/actions";
 import { IconoEliminar } from "./iconos";
 
@@ -12,15 +13,19 @@ import { IconoEliminar } from "./iconos";
  * que ser el siguiente paso obvio. */
 export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | "panel" }) {
   const t = useTranslations("listas");
-  const router = useRouter();
   const [activo, setActivo] = useState(false);
   const [nombre, setNombre] = useState("");
   const [conCasillas, setConCasillas] = useState(false);
   const [pendiente, startTransition] = useTransition();
+  // Lo que haya que decirle: que falta el nombre, o que no se pudo guardar.
+  const [aviso, setAviso] = useState<"nombreVacio" | ErrorAccion | null>(null);
+  const campoRef = useRef<HTMLInputElement>(null);
+  const avisoId = useId();
 
   function cerrar() {
     setNombre("");
     setConCasillas(false);
+    setAviso(null);
     setActivo(false);
   }
 
@@ -45,24 +50,45 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
 
   function enviar() {
     const nombreLimpio = nombre.trim();
+    // Sin nombre no se guarda, pero tampoco se cierra en silencio: antes el
+    // formulario desaparecía y no quedaba claro si la lista se había creado.
+    // Se queda abierto, con el aviso y el cursor de vuelta en el campo.
     if (!nombreLimpio) {
-      cerrar();
+      setAviso("nombreVacio");
+      campoRef.current?.focus();
       return;
     }
+    setAviso(null);
     startTransition(async () => {
-      await crearLista(nombreLimpio, "", conCasillas);
-      cerrar();
-      router.refresh();
+      try {
+        await crearLista(nombreLimpio, "", conCasillas);
+      } catch (fallo) {
+        // El formulario sigue abierto con lo escrito, listo para reintentar.
+        startTransition(() => setAviso(clasificarErrorAccion(fallo)));
+        return;
+      }
+      // La action ya trae la página con la lista nueva; cerrar dentro de la
+      // transición hace que el formulario se vaya en el mismo cuadro en que
+      // aparece la tarjeta (un set después del await queda fuera si no).
+      startTransition(() => cerrar());
     });
   }
 
   return (
     <div className="flex flex-wrap items-center gap-2 border-2 border-ink bg-card p-2 shadow-[4px_4px_0_var(--ink)]">
       <input
+        ref={campoRef}
         type="text"
         autoFocus
+        required
+        aria-label={t("nombrePlaceholder")}
+        aria-invalid={aviso === "nombreVacio"}
+        aria-describedby={aviso === "nombreVacio" ? avisoId : undefined}
         value={nombre}
-        onChange={(evento) => setNombre(evento.target.value)}
+        onChange={(evento) => {
+          setNombre(evento.target.value);
+          if (aviso === "nombreVacio") setAviso(null);
+        }}
         onKeyDown={(evento) => {
           if (evento.key === "Enter") {
             evento.preventDefault();
@@ -103,6 +129,20 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
       >
         <IconoEliminar />
       </button>
+
+      {aviso === "nombreVacio" ? (
+        <p
+          id={avisoId}
+          role="alert"
+          className="basis-full border-2 border-ink bg-primary-pink px-3 py-2 text-xs text-ink-strong"
+        >
+          {t("nombreRequerido")}
+        </p>
+      ) : aviso ? (
+        <div className="basis-full">
+          <AvisoErrorAccion error={aviso} mensajeFallo={t("errorGuardar")} />
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useLayoutEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
 import { editarItem } from "@/lib/listas/actions";
 import type { ItemLista } from "@/lib/listas/types";
 import { EliminarItemBoton } from "./eliminar-item-boton";
@@ -11,6 +10,10 @@ import { ItemCheckbox } from "./item-checkbox";
 
 type ItemFilaProps = {
   item: ItemLista;
+  /** Recién agregado y todavía viajando al servidor: se ve tenue y sin
+   * controles, porque mover, marcar o borrar algo que aún no existe en la
+   * base fallaría. */
+  pendiente?: boolean;
   conCasillas: boolean;
   primero: boolean;
   ultimo: boolean;
@@ -19,12 +22,18 @@ type ItemFilaProps = {
   onArrastrarSobre: () => void;
   onArrastrarFin: () => void;
   arrastrando: boolean;
+  onAlternar: (marcado: boolean) => void;
+  onEliminar: () => void;
+  /** Recibe el error tal cual, para que la tarjeta distinga un fallo común
+   * de una pestaña con código viejo (ver `clasificarErrorAccion`). */
+  onError: (fallo: unknown) => void;
 };
 
 /** Una línea de texto libre editable, como en una app de notas. Si la lista
  * es de casillas la línea la lleva; si no, solo el agarre para moverla. */
 export function ItemFila({
   item,
+  pendiente = false,
   conCasillas,
   primero,
   ultimo,
@@ -33,10 +42,12 @@ export function ItemFila({
   onArrastrarSobre,
   onArrastrarFin,
   arrastrando,
+  onAlternar,
+  onEliminar,
+  onError,
 }: ItemFilaProps) {
   const t = useTranslations("listas");
-  const router = useRouter();
-  const [pendiente, startTransition] = useTransition();
+  const [guardando, startTransition] = useTransition();
   const [moviendo, setMoviendo] = useState(false);
   const [arrastrable, setArrastrable] = useState(false);
   const areaRef = useRef<HTMLTextAreaElement>(null);
@@ -70,7 +81,7 @@ export function ItemFila({
 
   return (
     <div
-      draggable={arrastrable}
+      draggable={arrastrable && !pendiente}
       onDragStart={(evento) => {
         evento.dataTransfer.effectAllowed = "move";
         onArrastrarInicio();
@@ -84,39 +95,44 @@ export function ItemFila({
         onArrastrarFin();
       }}
       onDrop={(evento) => evento.preventDefault()}
-      className={`flex items-start gap-1.5 py-1 transition-opacity ${arrastrando ? "opacity-40" : ""}`}
+      aria-busy={pendiente || undefined}
+      className={`flex items-start gap-1.5 py-1 transition-opacity ${arrastrando ? "opacity-40" : pendiente ? "opacity-60" : ""}`}
     >
       {/* El agarre se arrastra en escritorio, mueve con ↑/↓ desde el teclado
           y, al tocarlo, despliega las flechas — que en un celular es la
           única forma real de reordenar (el arrastre HTML no existe ahí). */}
-      <button
-        type="button"
-        onMouseDown={() => setArrastrable(true)}
-        onMouseUp={() => setArrastrable(false)}
-        onClick={() => setMoviendo((valor) => !valor)}
-        onBlur={(evento) => {
-          if (!evento.currentTarget.parentElement?.contains(evento.relatedTarget as Node)) {
-            setMoviendo(false);
-          }
-        }}
-        onKeyDown={(evento) => {
-          if (evento.key === "ArrowUp") {
-            evento.preventDefault();
-            onMover(-1);
-          }
-          if (evento.key === "ArrowDown") {
-            evento.preventDefault();
-            onMover(1);
-          }
-        }}
-        aria-label={t("moverItem")}
-        title={t("moverItem")}
-        className={`flex h-7 w-5 shrink-0 cursor-grab items-center justify-center transition-colors active:cursor-grabbing ${
-          moviendo ? "text-ink" : "text-ink/30 hover:text-ink"
-        }`}
-      >
-        <IconoAgarre />
-      </button>
+      {pendiente ? (
+        <span aria-hidden="true" className="h-7 w-5 shrink-0" />
+      ) : (
+        <button
+          type="button"
+          onMouseDown={() => setArrastrable(true)}
+          onMouseUp={() => setArrastrable(false)}
+          onClick={() => setMoviendo((valor) => !valor)}
+          onBlur={(evento) => {
+            if (!evento.currentTarget.parentElement?.contains(evento.relatedTarget as Node)) {
+              setMoviendo(false);
+            }
+          }}
+          onKeyDown={(evento) => {
+            if (evento.key === "ArrowUp") {
+              evento.preventDefault();
+              onMover(-1);
+            }
+            if (evento.key === "ArrowDown") {
+              evento.preventDefault();
+              onMover(1);
+            }
+          }}
+          aria-label={t("moverItem")}
+          title={t("moverItem")}
+          className={`flex h-7 w-5 shrink-0 cursor-grab items-center justify-center transition-colors active:cursor-grabbing ${
+            moviendo ? "text-ink" : "text-ink/30 hover:text-ink"
+          }`}
+        >
+          <IconoAgarre />
+        </button>
+      )}
 
       {moviendo ? (
         <div className="flex h-7 shrink-0 items-center gap-0.5">
@@ -145,7 +161,7 @@ export function ItemFila({
 
       {conCasillas ? (
         <div className="flex h-7 shrink-0 items-center">
-          <ItemCheckbox itemId={item.id} marcado={item.marcado} />
+          <ItemCheckbox marcado={item.marcado} onCambiar={onAlternar} disabled={pendiente} />
         </div>
       ) : null}
 
@@ -153,7 +169,8 @@ export function ItemFila({
         ref={areaRef}
         rows={1}
         defaultValue={item.contenido}
-        disabled={pendiente}
+        readOnly={pendiente}
+        disabled={guardando}
         onInput={(evento) => reajustarAltura(evento.currentTarget)}
         onBlur={(evento) => {
           const valor = evento.target.value.trim();
@@ -163,9 +180,17 @@ export function ItemFila({
             return;
           }
           if (valor === item.contenido) return;
+          const area = evento.target;
           startTransition(async () => {
-            await editarItem(item.id, valor);
-            router.refresh();
+            try {
+              await editarItem(item.id, valor);
+            } catch (fallo) {
+              // El texto nuevo ya estaba en pantalla (lo escribió ella):
+              // si no se guardó, vuelve al guardado para no mentir.
+              area.value = item.contenido;
+              reajustarAltura(area);
+              startTransition(() => onError(fallo));
+            }
           });
         }}
         onKeyDown={(evento) => {
@@ -181,7 +206,11 @@ export function ItemFila({
         }`}
       />
 
-      <EliminarItemBoton itemId={item.id} />
+      {pendiente ? (
+        <span aria-hidden="true" className="h-7 w-7 shrink-0" />
+      ) : (
+        <EliminarItemBoton onEliminar={onEliminar} />
+      )}
     </div>
   );
 }

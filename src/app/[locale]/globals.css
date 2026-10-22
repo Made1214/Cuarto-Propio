@@ -130,12 +130,41 @@ body {
   }
 }
 
+/* Cursor de terminal que parpadea mientras algo carga (el link de la barra
+   recién tocado, el buscador del diario). Siempre está en el DOM y solo se
+   prende con `data-pendiente="true"`, así no mueve nada al aparecer. Arranca
+   invisible y recién se ve a los 120 ms: si la respuesta llega antes, no hay
+   destello. El parpadeo es a saltos (`steps`), como un cursor de verdad, no
+   un desvanecido. */
+.cursor-pendiente {
+  opacity: 0;
+}
+
+.cursor-pendiente[data-pendiente="true"] {
+  animation: cursor-parpadea 0.9s steps(1, end) 120ms infinite;
+}
+
+@keyframes cursor-parpadea {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ventana-dialogo[open],
   .ventana-dialogo[open]::backdrop,
   .panel-lateral[open],
   .panel-lateral[open]::backdrop {
     animation: none;
+  }
+
+  /* Sin parpadeo: el cursor queda fijo mientras carga. */
+  .cursor-pendiente[data-pendiente="true"] {
+    animation: none;
+    opacity: 1;
   }
 }
 

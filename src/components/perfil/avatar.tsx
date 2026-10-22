@@ -35,9 +35,16 @@ export function Avatar({
           width={px}
           height={px}
           className="h-full w-full object-cover"
-          // La foto de perfil no es contenido de la página: mostrarla enseguida
-          // importa más que ahorrar bytes, y ya viene comprimida del pipeline.
+          // Sin el optimizador de Next: el pipeline ya la dejó como un
+          // cuadrado WebP de 160 px pensado para estos dos tamaños (ver
+          // `MINIATURAS` en `src/lib/imagenes/procesar.ts`), y la URL firmada
+          // se renueva cada pocas horas, así que una versión optimizada
+          // dejaría de servir enseguida.
           unoptimized
+          // La de la barra se ve siempre, arriba de todo: se pide ya, sin
+          // esperar al primer dibujado. La del panel vive dentro de un
+          // <dialog> cerrado y es el mismo archivo, así que puede esperar.
+          loading={tamano === "nav" ? "eager" : "lazy"}
         />
       ) : (
         <span className={`font-pixel ${texto} leading-none text-ink-strong`}>{inicial}</span>

@@ -1,4 +1,4 @@
-import type { SupabaseClient, User } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { firmarPaths } from "@/lib/imagenes/almacenamiento";
 import type { PerfilVisible } from "./types";
 
@@ -9,10 +9,13 @@ import type { PerfilVisible } from "./types";
  * layout de la app, que acaba de hacer ambas cosas para decidir si redirige
  * al login — pedirlos de nuevo acá sería repetir el trabajo en cada
  * navegación.
+ *
+ * Del usuario alcanza con `id` y `email`: así sirve tanto el `User` de
+ * `getUser()` como los claims verificados de `obtenerUsuario()`.
  */
 export async function obtenerPerfil(
   supabase: SupabaseClient,
-  usuario: User,
+  usuario: { id: string; email?: string | null },
 ): Promise<PerfilVisible> {
   const { data, error } = await supabase
     .from("perfiles")
@@ -25,6 +28,11 @@ export async function obtenerPerfil(
   // de Supabase puede no tenerla. Sin foto ni nombre la app funciona igual.
   if (error) throw error;
 
+  // Desde que el pipeline arma miniaturas con forma de avatar, esta ruta
+  // apunta a un cuadrado de 160 px (`…-avatar.webp`). Las fotos subidas
+  // antes siguen apuntando a su miniatura de 800 px (`…-mini.webp`) hasta
+  // que se suban de nuevo o se corra `scripts/regenerar-miniaturas.ts`: se
+  // ven igual, solo pesan más. Por eso no hace falta saber cuál es cuál.
   const miniatura = (data?.foto_perfil_path as string | null) ?? null;
   let fotoUrl: string | null = null;
   if (miniatura) {

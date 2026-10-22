@@ -1,10 +1,11 @@
 "use client";
 
-import { useTransition } from "react";
+import { useOptimistic, useRef, useState, useTransition } from "react";
 import { useFormatter, useTranslations } from "next-intl";
+import { AvisoErrorAccion } from "@/components/aviso-error-accion";
 import { BotonConfirmar } from "@/components/boton-confirmar";
 import { CategoriaSelector } from "@/components/categoria-selector";
-import { useRouter } from "@/i18n/navigation";
+import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import { asignarCategoriaAudio, eliminarAudio, renombrarAudio } from "@/lib/audio/actions";
 import { formatearDuracion } from "@/lib/audio/duracion";
 import { TITULO_MAXIMO } from "@/lib/audio/limites";
@@ -27,8 +28,18 @@ export function NotaAudio({
 }) {
   const t = useTranslations("audio");
   const format = useFormatter();
-  const router = useRouter();
   const [, startTransition] = useTransition();
+  const [error, setError] = useState<ErrorAccion | null>(null);
+  const tituloRef = useRef<HTMLInputElement>(null);
+  // El título que se VE mientras viaja el cambio. El campo no es
+  // controlado (lo escrito ya está en pantalla); esto sirve para no mandar
+  // dos veces el mismo título si se vuelve a salir del campo antes de que
+  // responda el servidor. Al terminar, vuelve a mandar el real.
+  const [titulo, setTituloOptimista] = useOptimistic(nota.titulo ?? "");
+
+  function avisarError(fallo: unknown) {
+    setError(clasificarErrorAccion(fallo));
+  }
 
   const fecha = new Date(nota.fecha);
   // El título por defecto se arma al mostrar, no se guarda en la base: así
@@ -47,6 +58,7 @@ export function NotaAudio({
     <div className="flex flex-col gap-3 border-2 border-ink bg-card p-4 shadow-[5px_5px_0_var(--ink)]">
       <div className="flex items-center gap-1">
         <input
+          ref={tituloRef}
           type="text"
           defaultValue={nota.titulo ?? ""}
           maxLength={TITULO_MAXIMO}
@@ -56,10 +68,20 @@ export function NotaAudio({
           aria-label={t("campoTitulo")}
           onBlur={(evento) => {
             const valor = evento.target.value.trim();
-            if (valor === (nota.titulo ?? "")) return;
+            if (valor === titulo) return;
+            const tituloReal = nota.titulo ?? "";
+            setError(null);
             startTransition(async () => {
-              await renombrarAudio(nota.id, valor);
-              router.refresh();
+              setTituloOptimista(valor);
+              try {
+                await renombrarAudio(nota.id, valor);
+              } catch (fallo) {
+                // Lo escrito sigue en el campo aunque no se haya guardado:
+                // se devuelve al título real para no mentir. El aviso va en
+                // su propia transición para salir junto con esa vuelta.
+                if (tituloRef.current) tituloRef.current.value = tituloReal;
+                startTransition(() => avisarError(fallo));
+              }
             });
           }}
           onKeyDown={(evento) => {
@@ -80,9 +102,13 @@ export function NotaAudio({
           textoConfirmar={t("eliminar")}
           etiqueta={t("eliminar")}
           onConfirmar={() => {
+            setError(null);
             startTransition(async () => {
-              await eliminarAudio(nota.id);
-              router.refresh();
+              try {
+                await eliminarAudio(nota.id);
+              } catch (fallo) {
+                startTransition(() => avisarError(fallo));
+              }
             });
           }}
           className="flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink"
@@ -90,6 +116,8 @@ export function NotaAudio({
           <IconoEliminar />
         </BotonConfirmar>
       </div>
+
+      <AvisoErrorAccion error={error} mensajeFallo={t("errorGuardar")} />
 
       {nota.url ? (
         // Reproductor nativo a propósito: trae por sí solo teclado, lectores
@@ -116,6 +144,7 @@ export function NotaAudio({
             categoriaNombre={nota.categoriaNombre}
             categorias={categorias}
             onElegir={(nombre) => asignarCategoriaAudio(nota.id, nombre)}
+            onError={avisarError}
             textos={{
               cambiar: t("cambiarCategoria"),
               placeholder: t("categoriaPlaceholder"),

@@ -6,20 +6,53 @@ import { routing } from "@/i18n/routing";
 import { SCRIPT_MODO } from "@/lib/temas/modo";
 import "./globals.css";
 
+/*
+ * Las tres fuentes aparecen arriba del pliegue en casi todas las pantallas,
+ * por eso las tres se precargan: Silkscreen en la barra de navegación y los
+ * botones, Lora en el título grande de cada sección (el texto más grande de
+ * la pantalla, el que el navegador mide como LCP) e Inter en todo lo demás.
+ * `display: "swap"` en las tres: la página se pinta enseguida con un respaldo
+ * de medidas ajustadas (`adjustFontFallback`, activo por defecto) y la fuente
+ * real entra sin mover el layout; "optional" dejaría la primera visita en un
+ * celular lento con la fuente de respaldo — y eso sí cambia el look.
+ *
+ * Solo `latin`: cubre U+0000-00FF, o sea tildes, ñ, ü, ¿ y ¡, más la raya
+ * (—) y las comillas tipográficas del rango U+2000-206F.
+ */
+
+// Variable a propósito (sin `weight`): Google sirve el mismo archivo variable
+// de ~48 KB aunque se pidan pesos sueltos, así que recortar pesos no ahorra
+// nada y la interfaz usa 400, 500 y 600.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+  fallback: ["system-ui", "sans-serif"],
 });
 
+// Variable (400–700, un solo archivo de ~38 KB): los títulos usan 600 y 700 y
+// el cuerpo del diario 400. Solo estilo normal: la cursiva de citas y énfasis
+// la sintetiza el navegador, como hasta ahora; pedir la real sumaría ~40 KB.
 const lora = Lora({
   variable: "--font-lora",
   subsets: ["latin"],
+  display: "swap",
+  // Android no trae Times New Roman (base del respaldo ajustado), así que sin
+  // esto caía en la fuente por defecto del navegador mientras carga.
+  fallback: ["Georgia", "serif"],
 });
 
+// Solo 400: ningún texto pixelado va en negrita (ni `font-bold` ni <strong>
+// dentro de `font-pixel`), así que el 700 era un archivo precargado de más.
 const silkscreen = Silkscreen({
   variable: "--font-silkscreen",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: "400",
+  display: "swap",
+  // Mismo respaldo que declara el tema Retro (src/lib/temas/presets.ts): el
+  // ancho de una monoespaciada se parece al de los glifos pixelados, así el
+  // salto al cargar es mínimo donde no existe el Arial del respaldo ajustado.
+  fallback: ["monospace"],
 });
 
 export const metadata: Metadata = {

@@ -1,12 +1,18 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { getFormatter, getTranslations } from "next-intl/server";
+import { ArribaAlRecargar } from "@/components/cargar-mas";
+import { Hueso } from "@/components/esqueleto";
 import { Link } from "@/i18n/navigation";
 import { colorCategoria } from "@/lib/categorias/color";
 import { listarCategorias } from "@/lib/categorias/queries";
+import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
 import { listarRelacionadas, obtenerImagenPorCodigo } from "@/lib/imagenes/queries";
+import type { ImagenEnVitrina } from "@/lib/imagenes/types";
 import { BotonesVentana, IconoLapiz, IconoVolver } from "../iconos";
 import { VentanaImagen } from "../ventana-imagen";
+import { FotoFicha } from "./foto-ficha";
 
 /**
  * Alto máximo de la foto. En `svh` (no `vh`) para que en el celular no la
@@ -47,9 +53,17 @@ export default async function ImagenPage({
   // columna de al lado (para saltar de pieza en pieza sin bajar) y el resto
   // debajo, que es donde termina la mirada cuando la ventana ya se miró —y
   // donde antes quedaba un vacío del alto de la columna.
-  const relacionadas = await listarRelacionadas(imagen, 16);
-  const alCostado = relacionadas.slice(0, 6);
-  const masAbajo = relacionadas.slice(6);
+  //
+  // Sin `await`: la promesa se comparte entre los dos lugares, cada uno
+  // dentro de su `Suspense`. Antes la ficha entera esperaba a las
+  // relacionadas (tres consultas más su firma) para mandar la foto, que es
+  // lo que se vino a ver; ahora la foto sale primero y las relacionadas
+  // llegan por streaming. Si fallan, la ficha se queda sin ellas en vez de
+  // caerse entera.
+  const relacionadas = listarRelacionadas(imagen, 16).catch((fallo: unknown) => {
+    console.error("No se pudieron traer las piezas relacionadas", fallo);
+    return [] as ImagenEnVitrina[];
+  });
   // La columna de la foto no puede ser más ancha que la foto misma cuando
   // llega a su alto máximo. Con este tope, la caja mide siempre exactamente
   // lo que mide la imagen —sea vertical, cuadrada o apaisada— y nunca queda
@@ -59,6 +73,11 @@ export default async function ImagenPage({
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
+      {/* Recargar la ficha la muestra desde arriba, no donde había quedado.
+          Abrirla desde la cuadrícula ya empieza arriba: eso lo hace Next al
+          navegar, porque la ficha no está a la vista desde la posición de
+          scroll de la cuadrícula. */}
+      <ArribaAlRecargar />
       <Link
         href="/vitrina"
         className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
@@ -74,36 +93,9 @@ export default async function ImagenPage({
           un vacío enorme a su derecha. En el celular vuelve a ser una fila
           común, debajo de la ventana. */}
       <div className="flex flex-col gap-5 lg:relative lg:block">
-        {alCostado.length > 0 ? (
-          <aside className="order-2 flex shrink-0 flex-col gap-2 lg:absolute lg:inset-y-0 lg:left-0 lg:w-48 lg:overflow-y-auto lg:pr-1 xl:w-56">
-            <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
-              {t("relacionadas").toUpperCase()}
-            </h2>
-            <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
-              {alCostado.map((otra) => (
-                <Link
-                  key={otra.id}
-                  href={`/vitrina/${otra.codigo}`}
-                  title={otra.titulo ?? undefined}
-                  className="block border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
-                >
-                  {otra.miniaturaUrl ? (
-                    <Image
-                      src={otra.miniaturaUrl}
-                      alt={otra.titulo ?? t("sinTitulo")}
-                      width={otra.ancho ?? 400}
-                      height={otra.alto ?? 400}
-                      unoptimized
-                      className="aspect-square h-auto w-full object-cover"
-                    />
-                  ) : (
-                    <span className="block aspect-square" />
-                  )}
-                </Link>
-              ))}
-            </div>
-          </aside>
-        ) : null}
+        <Suspense fallback={<RelacionadasAlCostadoCargando />}>
+          <RelacionadasAlCostado locale={locale} relacionadas={relacionadas} />
+        </Suspense>
 
         <div className="order-1 min-w-0 border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)] lg:ml-52 xl:ml-60">
           <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
@@ -131,18 +123,15 @@ export default async function ImagenPage({
               style={proporcion ? { maxWidth: `calc(${ALTO_FOTO} * ${proporcion})` } : undefined}
             >
               {imagen.completaUrl ? (
-                <Image
-                  src={imagen.completaUrl}
+                <FotoFicha
+                  completaUrl={imagen.completaUrl}
+                  // La miniatura de fondo solo calza si se conoce la
+                  // proporción real (estirada a la caja de la foto).
+                  miniaturaUrl={proporcion ? imagen.miniaturaUrl : null}
                   alt={titulo}
-                  width={imagen.ancho ?? 1200}
-                  height={imagen.alto ?? 1200}
-                  // Igual que en la cuadrícula: la versión que sirve Storage
-                  // ya salió del pipeline de `sharp`, y la URL firmada cambia
-                  // en cada carga, así que el optimizador no aportaría nada.
-                  unoptimized
-                  priority
-                  style={{ maxHeight: ALTO_FOTO }}
-                  className="h-auto w-auto max-w-full object-contain"
+                  ancho={imagen.ancho ?? 1200}
+                  alto={imagen.alto ?? 1200}
+                  altoMaximo={ALTO_FOTO}
                 />
               ) : (
                 <p className="py-16 text-center font-pixel text-xs text-muted/60">
@@ -204,20 +193,114 @@ export default async function ImagenPage({
         </div>
       </div>
 
-      {masAbajo.length > 0 ? (
-        <section className="flex flex-col gap-3">
-          <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
-            {t("masComoEsta").toUpperCase()}
-          </h2>
-          <div className="columns-[15rem] gap-5 lg:columns-[17rem]">
-            {masAbajo.map((otra) => (
-              <div key={otra.id} className="mb-5 break-inside-avoid">
-                <VentanaImagen locale={locale} imagen={otra} />
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      {/* Sin esqueleto propio: está debajo de la ventana, fuera de la
+          primera pantalla casi siempre, y aparecer sola ahí no mueve nada
+          de lo que se está mirando. */}
+      <Suspense fallback={null}>
+        <RelacionadasMasAbajo locale={locale} relacionadas={relacionadas} />
+      </Suspense>
     </div>
+  );
+}
+
+/** Cuántas relacionadas van en la columna de al lado; el resto, debajo. */
+const AL_COSTADO = 6;
+
+/** Las clases de la columna de al lado, compartidas con su esqueleto para
+ * que al llegar las de verdad no se mueva nada. */
+const CLASES_COSTADO =
+  "order-2 flex shrink-0 flex-col gap-2 lg:absolute lg:inset-y-0 lg:left-0 lg:w-48 lg:overflow-y-auto lg:pr-1 xl:w-56";
+
+async function RelacionadasAlCostado({
+  locale,
+  relacionadas,
+}: {
+  locale: string;
+  relacionadas: Promise<ImagenEnVitrina[]>;
+}) {
+  const [t, todas] = await Promise.all([
+    getTranslations({ locale, namespace: "vitrina" }),
+    relacionadas,
+  ]);
+  const alCostado = todas.slice(0, AL_COSTADO);
+  if (alCostado.length === 0) return null;
+
+  return (
+    <aside className={CLASES_COSTADO}>
+      <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+        {t("relacionadas").toUpperCase()}
+      </h2>
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
+        {alCostado.map((otra) => (
+          <Link
+            key={otra.id}
+            href={`/vitrina/${otra.codigo}`}
+            title={otra.titulo ?? undefined}
+            className="block border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
+          >
+            {otra.miniaturaUrl ? (
+              <Image
+                src={otra.miniaturaUrl}
+                alt={otra.titulo ?? t("sinTitulo")}
+                width={otra.ancho ?? 400}
+                height={otra.alto ?? 400}
+                unoptimized
+                placeholder={FONDO_MIENTRAS_CARGA}
+                className="aspect-square h-auto w-full object-cover"
+              />
+            ) : (
+              <span className="block aspect-square" />
+            )}
+          </Link>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
+/** Mientras llegan las relacionadas, la columna de al lado se esboza igual
+ * que en el `loading.tsx` de la ficha. */
+function RelacionadasAlCostadoCargando() {
+  return (
+    <div aria-hidden="true" className={CLASES_COSTADO}>
+      <Hueso className="h-2.5 w-24" />
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
+        {Array.from({ length: AL_COSTADO }, (_, indice) => (
+          <div key={indice} className="border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)]">
+            <Hueso className="aspect-square w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+async function RelacionadasMasAbajo({
+  locale,
+  relacionadas,
+}: {
+  locale: string;
+  relacionadas: Promise<ImagenEnVitrina[]>;
+}) {
+  const [t, todas] = await Promise.all([
+    getTranslations({ locale, namespace: "vitrina" }),
+    relacionadas,
+  ]);
+  const masAbajo = todas.slice(AL_COSTADO);
+  if (masAbajo.length === 0) return null;
+
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+        {t("masComoEsta").toUpperCase()}
+      </h2>
+      <div className="columns-[15rem] gap-5 lg:columns-[17rem]">
+        {masAbajo.map((otra) => (
+          <div key={otra.id} className="mb-5 break-inside-avoid">
+            <VentanaImagen locale={locale} imagen={otra} />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
