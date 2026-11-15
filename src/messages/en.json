@@ -179,7 +179,17 @@
     "colorTexto": "Text colour",
     "quitarColorTexto": "Remove text colour",
     "resaltar": "Highlight text",
-    "quitarResaltado": "Remove highlight"
+    "quitarResaltado": "Remove highlight",
+    "imagen": "Image",
+    "subiendoImagen": "Uploading…",
+    "reintentar": "Retry",
+    "descartar": "Dismiss",
+    "errorImagen": {
+      "formato": "That file isn't a JPG, PNG or WebP image.",
+      "tamano": "The image is larger than 25 MB.",
+      "sesion": "Your session expired. Sign in again and retry; what you wrote is kept as a draft.",
+      "fallo": "Couldn't upload the image. What you wrote is still here: try again."
+    }
   },
   "listas": {
     "titulo": "Lists",

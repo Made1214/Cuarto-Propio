@@ -213,6 +213,32 @@ body {
   border-left-width: 4px;
 }
 
+/* Fotos dentro de una entrada: del ancho del texto como máximo, con el
+   marco de la app. `width`/`height` del HTML reservan el lugar antes de que
+   carguen; `height: auto` mantiene la proporción al achicarse. */
+.diario-prose img.imagen-diario {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25em 0;
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  background: var(--card);
+}
+
+.diario-prose .enlace-imagen-diario {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  cursor: zoom-in;
+}
+
+/* En el editor: marcada al seleccionarla (para borrarla con la tecla). */
+.diario-prose img.imagen-diario.ProseMirror-selectednode {
+  outline: 3px solid var(--secondary-turquoise);
+  outline-offset: 2px;
+}
+
 .diario-prose mark {
   border-radius: 2px;
   padding: 0 2px;

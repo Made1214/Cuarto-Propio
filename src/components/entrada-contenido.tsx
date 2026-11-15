@@ -1,6 +1,7 @@
 import { createElement, type CSSProperties, type ReactNode } from "react";
 import { getSchema, type JSONContent } from "@tiptap/core";
 import { DOMSerializer, Node as NodoPM } from "@tiptap/pm/model";
+import { esUrlImagenDiario } from "@/lib/diario/imagenes";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
 /**
@@ -69,6 +70,8 @@ function prepararJSON(nodo: JSONContent): JSONContent[] {
   const hijos = nodo.content?.flatMap(prepararJSON);
   const tipo = nodo.type ? esquema.nodes[nodo.type] : undefined;
   if (!tipo) return hijos ?? [];
+  // Una imagen que no es de la app no se muestra (ni como hueco vacío).
+  if (nodo.type === "image" && !esUrlImagenDiario(nodo.attrs?.src)) return [];
 
   const preparado: JSONContent = {
     ...nodo,
@@ -139,7 +142,20 @@ function aReact(nodo: NodoEnMemoria | string, indice: number): ReactNode {
     else props[ATRIBUTO_A_PROP[nombre] ?? nombre] = valor;
   }
   const hijos = nodo.hijos.map(aReact);
-  return createElement(nodo.etiqueta ?? "span", props, ...hijos);
+  const elemento = createElement(nodo.etiqueta ?? "span", props, ...hijos);
+
+  // Una foto del diario se lee en miniatura y se toca para verla completa.
+  // Solo URLs de la app (las filtra la extensión de imagen al guardar y acá
+  // de nuevo, por si el JSON viniera de otro lado).
+  const completa = nodo.atributos["data-completa"];
+  if (nodo.etiqueta === "img" && esUrlImagenDiario(completa)) {
+    return createElement(
+      "a",
+      { key: indice, href: completa, target: "_blank", rel: "noopener", className: "enlace-imagen-diario" },
+      createElement(nodo.etiqueta, { ...props, key: undefined }),
+    );
+  }
+  return elemento;
 }
 
 /** `"color: #f00; background-color: #ff0"` → `{ color, backgroundColor }`

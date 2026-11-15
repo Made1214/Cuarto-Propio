@@ -11,7 +11,7 @@
 
 - 13 commits por delante de `main`, sin commits propios en `main` (fusión sin conflictos).
 - `tsc --noEmit`, `eslint` y `next build`: sin errores. Pruebas con base real: **no verificadas** (el entorno de desarrollo no tiene las claves de Supabase).
-- Construido: acceso completo (entrar, crear cuenta, recuperar y restablecer contraseña, bloqueo tras 5 fallos), Diario, Listas, Vitrina, Audio, Perfil, términos y privacidad, bienvenida, medidor y aviso de espacio, PWA instalable, rediseño de navegación (barra única, barra inferior en el celular, botón Crear, filtros en chips). Migraciones 0001–0010.
+- Construido: acceso completo (entrar, crear cuenta, recuperar y restablecer contraseña, bloqueo tras 5 fallos), Diario, Listas, Vitrina, Audio, Perfil, términos y privacidad, bienvenida, medidor y aviso de espacio, PWA instalable, rediseño de navegación (barra única, barra inferior en el celular, botón Crear, filtros en chips). Migraciones 0001–0011, todas aplicadas en Supabase.
 
 ## 1. Autenticación
 
@@ -48,7 +48,8 @@ Hecho: modo claro/oscuro/automático, presets de tema como datos, foto de perfil
 
 ## 5. Galería / imágenes
 
-- [ ] Imágenes incrustadas en el Diario conectadas al pipeline único de `sharp` (el editor todavía no tiene botón de imagen).
+- [x] ~~Imágenes incrustadas en el Diario conectadas al pipeline único de `sharp`.~~ (botón «Imagen», pegar o soltar; se limpian de Storage al quitarlas o borrar la entrada)
+- [ ] Probar subir, ver, ampliar y quitar una imagen del Diario con base real.
 - [ ] Probar filtro por hashtag y normalización (minúsculas; solo letras, números y `_`) con base real.
 
 ## 6. Categorías
@@ -67,12 +68,17 @@ Prototipo: https://claude.ai/artifact/JE2kJ9N9H9LaSSLo4s3k4a
 ## 8. Operativo (lo hace la usuaria, no Claude)
 
 - [ ] Crear `.env.local` con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-- [ ] Aplicar migraciones 0002–0010 en el proyecto de Supabase.
+- [x] ~~Aplicar migraciones en el proyecto de Supabase.~~ 0001–0011 aplicadas (0009–0011 con el conector, 2026-11-15).
 - [ ] Redirect URLs de Auth (ver sección 1).
 - [ ] Activar backups automáticos en Supabase.
 - [ ] Desplegar en Vercel con las variables de entorno.
 
-## 9. Calidad
+## 9. Seguridad (revisor de Supabase)
+
+- [x] ~~Funciones `security definer` abiertas de más y `search_path` sin fijar.~~ (migración 0011)
+- [ ] Activar "Leaked password protection" (Supabase → Authentication → Passwords): rechaza contraseñas filtradas en HaveIBeenPwned. Es un interruptor del dashboard; en el plan gratuito puede no estar disponible.
+
+## 10. Calidad
 
 - [x] ~~`next build` sin errores.~~
 - [ ] Prueba de punta a punta con base real: crear cuenta, confirmar correo, entrar, bloqueo tras 5 fallos, recuperar contraseña, subir foto, grabar audio, listas, diario.
@@ -80,9 +86,8 @@ Prototipo: https://claude.ai/artifact/JE2kJ9N9H9LaSSLo4s3k4a
 
 ## Orden sugerido
 
-1. Operativo (sección 8) y prueba de punta a punta con base real (sección 9).
+1. Operativo (sección 8) y prueba de punta a punta con base real (sección 10).
 2. Completar el correo de contacto de los textos legales.
 3. Fusionar `dev` en `main` y desplegar.
-4. Imágenes incrustadas en el Diario (sección 5).
-5. Personalización restante (sección 4).
-6. Tests automatizados.
+4. Personalización restante (sección 4).
+5. Tests automatizados.

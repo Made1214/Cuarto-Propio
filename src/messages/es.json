@@ -179,7 +179,17 @@
     "colorTexto": "Color de texto",
     "quitarColorTexto": "Quitar color de texto",
     "resaltar": "Resaltar texto",
-    "quitarResaltado": "Quitar resaltado"
+    "quitarResaltado": "Quitar resaltado",
+    "imagen": "Imagen",
+    "subiendoImagen": "Subiendo…",
+    "reintentar": "Reintentar",
+    "descartar": "Descartar",
+    "errorImagen": {
+      "formato": "Ese archivo no es una imagen JPG, PNG o WebP.",
+      "tamano": "La imagen pesa más de 25 MB.",
+      "sesion": "Se venció la sesión. Vuelve a entrar y reintenta; lo que escribiste queda guardado como borrador.",
+      "fallo": "No se pudo subir la imagen. Lo que escribiste sigue acá: prueba de nuevo."
+    }
   },
   "listas": {
     "titulo": "Listas",
