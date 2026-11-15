@@ -49,7 +49,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 2. **Operativo pendiente** (sección 2): Redirect URLs de Auth, backups y el correo de contacto de los textos legales.
 3. **Fusionar `dev` en `main` y desplegar en Vercel.**
 4. ~~Revisar las alertas de `npm audit`~~ (hecho; quedan 10 moderadas de herramientas, sección 4).
-5. **Tests automatizados** (sección 5).
+5. ~~Tests automatizados~~ (unitarios hechos; falta la prueba de punta a punta, sección 5).
 6. **Diseño pendiente** (sección 3): Fairy, la columna de filtros del Diario en escritorio y otros detalles.
 
 ## 1. Probar con la base real
@@ -92,12 +92,8 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## 5. Calidad
 
-- [ ] **Tests automatizados:** hoy no hay ninguno. Empezar por lo que más duele si se rompe:
-  - validación del título del Diario;
-  - requisitos de contraseña (`src/lib/auth/contrasena.ts`);
-  - validación de la configuración del tema (`src/lib/temas/config.ts`: solo deja pasar colores y archivos seguros);
-  - cálculo de contraste (`src/lib/temas/contraste.ts`);
-  - normalización de hashtags.
+- [x] ~~**Tests unitarios:**~~ con Vitest (`npm test`, 22 tests): título del Diario (`src/lib/diario/titulo.ts`, función pura sacada de las Server Actions), contraseña, configuración del tema, contraste y hashtags. Archivos `*.test.ts` junto al código. Vitest 3 porque la 4 y la 5 chocan con `@types/node` 20.
+- [ ] **Más tests:** categorías (`src/lib/categorias/`), límites de audio y nombres de archivo de imágenes.
 - [ ] **Prueba de punta a punta:** con Playwright (ya está instalado en el entorno de Claude Code) y una cuenta de prueba.
 
 ## Ya resuelto (para no volver a preguntarlo)

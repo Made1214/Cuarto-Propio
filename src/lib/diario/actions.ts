@@ -9,18 +9,17 @@ import { createClient, obtenerUsuario } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolverCategoriaId } from "@/lib/categorias/resolver";
 import type { EntradaActionState } from "@/lib/diario/types";
+import { errorTitulo, TITULO_MAXIMO } from "@/lib/diario/titulo";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
-const TITULO_MAXIMO = 100;
 
 /** Valida el título del lado del servidor: el `maxLength` del campo es
  * comodidad, no una garantía — se puede saltear. */
 async function validarTitulo(locale: string, titulo: string): Promise<string | null> {
-  if (!titulo || titulo.length > TITULO_MAXIMO) {
-    const t = await getTranslations({ locale, namespace: "diario" });
-    return titulo ? t("tituloDemasiadoLargo", { maximo: TITULO_MAXIMO }) : t("tituloRequerido");
-  }
-  return null;
+  const error = errorTitulo(titulo);
+  if (!error) return null;
+  const t = await getTranslations({ locale, namespace: "diario" });
+  return error === "demasiadoLargo" ? t("tituloDemasiadoLargo", { maximo: TITULO_MAXIMO }) : t("tituloRequerido");
 }
 
 function parseContenido(formData: FormData): JSONContent {
