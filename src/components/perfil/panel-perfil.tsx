@@ -15,8 +15,8 @@ import { SelectorIdioma } from "./selector-idioma";
 import { SelectorModo } from "./selector-modo";
 
 /** Lo que va a vivir acá cuando se retome Personalización (CLAUDE.md →
- * Temas de diseño). Se listan en gris a propósito, en vez de esconderlas:
- * dicen a dónde va la app sin prometer que ya funciona. */
+ * Temas de diseño). Se nombran en una sola fila "próximamente" en vez de
+ * esconderlas: dicen a dónde va la app sin prometer que ya funciona. */
 const PERSONALIZACION = ["temas", "colores", "cursor", "iconos", "tipografia"] as const;
 
 /**
@@ -61,7 +61,7 @@ export function PanelPerfil({
         aria-label={t("abrir")}
         title={t("abrir")}
         aria-expanded={abierto}
-        className="flex items-center gap-2 transition-transform active:translate-x-0.5 active:translate-y-0.5"
+        className="flex items-center gap-2 p-1.5 transition-transform active:translate-x-0.5 active:translate-y-0.5"
       >
         <Avatar perfil={perfil} />
       </button>
@@ -85,15 +85,15 @@ export function PanelPerfil({
               onClick={() => setAbierto(false)}
               aria-label={t("cerrar")}
               title={t("cerrar")}
-              className="flex h-3.5 w-3.5 items-center justify-center border-2 border-ink bg-primary-pink transition-[filter] hover:brightness-90"
+              className="flex h-9 w-9 items-center justify-center border-2 border-ink bg-primary-pink transition-[filter] hover:brightness-90"
             >
               <svg
-                width="8"
-                height="8"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="var(--ink-strong)"
-                strokeWidth="5"
+                strokeWidth="3"
                 strokeLinecap="round"
                 aria-hidden="true"
               >
@@ -108,9 +108,9 @@ export function PanelPerfil({
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="perfil-nombre"
-                className="font-pixel text-[0.625rem] tracking-wide text-muted/70"
+                className="text-xs font-semibold"
               >
-                {t("nombre").toUpperCase()}
+                {t("nombre")}
               </label>
               <input
                 id="perfil-nombre"
@@ -156,24 +156,21 @@ export function PanelPerfil({
               <SelectorIdioma />
             </Seccion>
 
-            <Seccion titulo={t("personalizacion")} ayuda={t("personalizacionAyuda")}>
-              <ul className="flex flex-col gap-1.5">
-                {PERSONALIZACION.map((clave) => (
-                  <li
-                    key={clave}
-                    className="flex items-center justify-between gap-2 border-2 border-dashed border-ink px-3 py-2 opacity-60"
-                  >
-                    <span className="flex items-center gap-2 font-pixel text-[0.625rem] tracking-wide">
-                      <IconoCandado />
-                      {t(clave).toUpperCase()}
-                    </span>
-                    <span className="shrink-0 font-pixel text-[0.5625rem] tracking-wide text-muted/70">
-                      {t("proximamente").toUpperCase()}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </Seccion>
+            {/* Una sola fila y no cinco con candado: dice a dónde va la app
+                sin llenar el panel de cosas que todavía no se pueden tocar. */}
+            <section className="flex items-center gap-3 border-2 border-dashed border-ink/50 p-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-ink bg-background">
+                <IconoCandado />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold">
+                  {t("personalizacion")} · {t("proximamente")}
+                </h3>
+                <p className="mt-0.5 text-xs text-muted/75">
+                  {PERSONALIZACION.map((clave) => t(clave)).join(", ")}
+                </p>
+              </div>
+            </section>
           </div>
 
           <form
@@ -182,10 +179,10 @@ export function PanelPerfil({
           >
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 border-2 border-ink bg-card px-3 py-2.5 font-pixel text-[0.625rem] tracking-wide text-ink transition-[transform,filter] hover:bg-primary-pink hover:text-ink-strong active:translate-x-0.5 active:translate-y-0.5"
+              className="flex w-full items-center justify-center gap-2 border-2 border-ink bg-card h-11 px-3 text-sm font-semibold text-ink transition-[transform,filter] hover:bg-primary-pink hover:text-ink-strong active:translate-x-0.5 active:translate-y-0.5"
             >
               <IconoSalir />
-              {t("cerrarSesion").toUpperCase()}
+              {t("cerrarSesion")}
             </button>
           </form>
         </div>
@@ -205,7 +202,7 @@ function Seccion({
 }) {
   return (
     <section className="flex flex-col gap-2 border-t-2 border-ink/15 pt-5">
-      <h3 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+      <h3 className="font-pixel text-xs tracking-wide text-secondary-purple">
         {titulo.toUpperCase()}
       </h3>
       {children}

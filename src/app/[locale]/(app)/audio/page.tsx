@@ -53,27 +53,18 @@ export default async function AudioPage({
         {vacioSinFiltro ? null : <Grabador />}
       </div>
 
-      {categorias.length > 0 ? (
-        <FiltroCategoria
-          pathname="/audio"
-          categorias={categorias}
-          categoriaActualId={categoria ?? null}
-          etiquetaTodas={t("todasLasCategorias")}
-        />
-      ) : null}
+      <FiltroCategoria pathname="/audio" categorias={categorias} categoriaActualId={categoria ?? null} />
 
       {categoria ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-pixel text-xs text-muted/70 tabular-nums">
+        <p className="-mt-2 text-sm text-muted/80">
+          <span className="font-semibold tabular-nums">
             {t("resultados", { cantidad: pagina.total ?? notas.length })}
           </span>
-          <Link
-            href="/audio"
-            className="border-2 border-ink bg-card px-2.5 py-1 font-pixel text-[10px] tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
-          >
-            {t("limpiarFiltros").toUpperCase()}
+          {" · "}
+          <Link href="/audio" className="font-semibold text-secondary-purple underline-offset-2 hover:underline">
+            {t("limpiarFiltros")}
           </Link>
-        </div>
+        </p>
       ) : null}
 
       {notas.length === 0 ? (

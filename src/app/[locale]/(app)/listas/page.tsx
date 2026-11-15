@@ -33,20 +33,10 @@ export default async function ListasPage({
           <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
         </div>
 
-        <div className="flex flex-wrap items-end justify-end gap-3">
-          {categorias.length > 0 ? (
-            <FiltroCategoria
-              pathname="/listas"
-              categorias={categorias}
-              categoriaActualId={categoria ?? null}
-              etiquetaTodas={t("todasLasCategorias")}
-              alinearDerecha
-            />
-          ) : null}
-
-          <NuevaListaInline />
-        </div>
+        <NuevaListaInline />
       </div>
+
+      <FiltroCategoria pathname="/listas" categorias={categorias} categoriaActualId={categoria ?? null} />
 
       {listas.length === 0 ? (
         <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">

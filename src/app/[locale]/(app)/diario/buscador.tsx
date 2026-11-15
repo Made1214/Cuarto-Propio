@@ -63,10 +63,10 @@ export function Buscador({ valorInicial, categoria }: { valorInicial: string; ca
   const buscando = isPending || termino !== enviado;
 
   return (
-    <div className="relative">
+    <div className="relative w-full sm:max-w-md">
       <svg
-        width="15"
-        height="15"
+        width="18"
+        height="18"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -85,7 +85,7 @@ export function Buscador({ valorInicial, categoria }: { valorInicial: string; ca
         onChange={(evento) => setTexto(evento.target.value)}
         aria-label={t("buscar")}
         placeholder={t("buscarPlaceholder")}
-        className="w-65 max-w-full rounded-theme border-2 border-ink bg-card py-2.5 pr-8 pl-9 text-sm leading-none outline-none"
+        className="h-11 w-full rounded-theme border-2 border-ink bg-card pr-8 pl-10 text-[15px] leading-none outline-none"
       />
       {/* El mismo cursor parpadeante de la barra de navegación, a la derecha
           del campo: "estoy buscando". Siempre en el DOM y con su lugar

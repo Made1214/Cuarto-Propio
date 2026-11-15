@@ -47,13 +47,13 @@ export function SelectorIdioma() {
             aria-checked={esActivo}
             disabled={pendiente}
             onClick={() => cambiar(locale)}
-            className={`border-2 border-ink px-3 py-2 font-pixel text-[0.625rem] tracking-wide transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60 ${
+            className={`border-2 border-ink px-3 py-2.5 text-[13px] font-semibold transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60 ${
               esActivo
                 ? "bg-secondary-turquoise text-ink-strong shadow-[3px_3px_0_var(--ink)]"
                 : "bg-card text-ink"
             }`}
           >
-            {(NOMBRES[locale] ?? locale).toUpperCase()}
+            {NOMBRES[locale] ?? locale}
           </button>
         );
       })}

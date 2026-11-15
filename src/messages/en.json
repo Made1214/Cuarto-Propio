@@ -3,7 +3,23 @@
     "diario": "Journal",
     "listas": "Lists",
     "vitrina": "Showcase",
-    "audio": "Audio"
+    "audio": "Audio",
+    "secciones": "Sections",
+    "crear": "Create",
+    "crearTitulo": "What do you want to keep today?",
+    "crearAyuda": "Pick one and start right away.",
+    "crearAyudaTeclas": "You can also use keys 1 to 4.",
+    "escribir": "Write",
+    "escribirAyuda": "An entry in your journal",
+    "exhibir": "Display",
+    "exhibirAyuda": "Photos or art in your showcase",
+    "grabar": "Record",
+    "grabarAyuda": "A voice note, up to 10 min",
+    "nuevaLista": "New list",
+    "nuevaListaAyuda": "Books, ideas, to-dos…",
+    "cerrar": "Close",
+    "filtrarCategoria": "Filter by category",
+    "todas": "All"
   },
   "perfil": {
     "titulo": "Profile",
@@ -71,7 +87,9 @@
     "editar": "Edit",
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this entry? This cannot be undone.",
-    "volver": "Back to journal"
+    "volver": "Back to journal",
+    "nueva": "New",
+    "conLaPalabra": "with “{palabra}”"
   },
   "dialogos": {
     "cerrar": "Close",
@@ -176,7 +194,8 @@
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this piece? This cannot be undone.",
     "volver": "Back to showcase",
-    "volverPieza": "Back to the piece"
+    "volverPieza": "Back to the piece",
+    "filtrarHashtag": "Filter by hashtag"
   },
   "audio": {
     "titulo": "Audio",

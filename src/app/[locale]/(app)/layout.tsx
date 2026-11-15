@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { createClient, obtenerUsuario, type UsuarioSesion } from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
+import { MenuCrear } from "@/components/menu-crear";
 import { NavSecciones } from "@/components/nav-secciones";
 import { PanelPerfil } from "@/components/perfil/panel-perfil";
 import { obtenerPerfil } from "@/lib/perfil/queries";
@@ -48,38 +49,29 @@ export default async function AppLayout({
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-background text-foreground">
-      {/* Las dos barras viajan juntas y quedan fijas arriba: son el marco de
-          la ventana, no contenido. z-30 para pasarle por encima a los
-          desplegables de las pantallas, que usan z-20. Los <dialog> (panel de
-          perfil, ventanitas) no compiten: el navegador los pinta en su capa
-          superior, por encima de cualquier z-index. */}
-      <div className="sticky top-0 z-30 flex flex-col">
-        {/* Barra de título tipo ventana retro */}
-        <div className="flex h-12 items-center justify-between border-b-[3px] border-ink bg-secondary-purple px-5">
-          <div className="flex items-center gap-2.5">
-            <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
-              <rect x="2" y="0" width="4" height="2" fill="var(--primary-pink)" />
-              <rect x="8" y="0" width="4" height="2" fill="var(--primary-pink)" />
-              <rect x="0" y="2" width="14" height="2" fill="var(--primary-pink)" />
-              <rect x="0" y="4" width="14" height="2" fill="var(--primary-pink)" />
-              <rect x="2" y="6" width="10" height="2" fill="var(--primary-pink)" />
-              <rect x="4" y="8" width="6" height="2" fill="var(--primary-pink)" />
-              <rect x="6" y="10" width="2" height="2" fill="var(--primary-pink)" />
-            </svg>
-            <span className="font-pixel text-xs tracking-wide text-background">
-              CUARTO_PROPIO
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 border-2 border-ink bg-primary-green" />
-            <span className="h-3 w-3 border-2 border-ink bg-secondary-turquoise" />
-            <span className="h-3 w-3 border-2 border-ink bg-primary-pink" />
-          </div>
+      {/* Una sola barra fija arriba: marca, secciones (desde tablet), Crear y
+          el avatar. Antes eran dos barras apiladas (título decorativo + menú)
+          que ocupaban 96 px fijos en el celular. z-30 para pasarle por encima
+          a los desplegables de las pantallas, que usan z-20. Los <dialog>
+          (perfil, Crear, ventanitas) no compiten: el navegador los pinta en
+          su capa superior, por encima de cualquier z-index. */}
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-[3px] border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
+        <div className="flex items-center gap-2.5">
+          <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
+            <path
+              d="M2 0h4v2H2zM8 0h4v2H8zM0 2h14v4H0zM2 6h10v2H2zM4 8h6v2H4zM6 10h2v2H6z"
+              fill="var(--primary-pink)"
+            />
+          </svg>
+          <span className="font-pixel text-sm tracking-wide text-background">CUARTO PROPIO</span>
         </div>
 
-        {/* Barra de menú / navegación */}
-        <header className="flex h-12 items-center justify-between border-b-[3px] border-ink bg-card px-5">
-          <NavSecciones secciones={links} />
+        <NavSecciones secciones={links} variante="barra" />
+
+        <div className="flex items-center gap-3">
+          <div className="hidden md:block">
+            <MenuCrear variante="barra" />
+          </div>
           {/* El perfil (una consulta a la base, más la firma de la foto) llega
               por streaming: sin este `Suspense`, la barra entera y el
               esqueleto de la sección esperaban a que respondiera la base
@@ -87,10 +79,16 @@ export default async function AppLayout({
           <Suspense fallback={<AvatarCargando />}>
             <AvatarPerfil usuario={usuario} cerrarSesion={logoutWithLocale} />
           </Suspense>
-        </header>
-      </div>
+        </div>
+      </header>
 
-      <main className="flex flex-1 flex-col px-6 py-10">{children}</main>
+      {/* En el celular, abajo queda espacio para la barra de secciones fija
+          (más la zona segura del iPhone). */}
+      <main className="flex flex-1 flex-col px-5 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:px-6 md:py-10">
+        {children}
+      </main>
+
+      <NavSecciones secciones={links} variante="inferior" />
     </div>
   );
 }
@@ -112,7 +110,7 @@ function AvatarCargando() {
   return (
     <span
       aria-hidden="true"
-      className="h-8 w-8 shrink-0 border-2 border-ink bg-primary-pink/40 motion-safe:animate-pulse"
+      className="m-1.5 h-8 w-8 shrink-0 border-2 border-ink bg-primary-pink/40 motion-safe:animate-pulse"
     />
   );
 }

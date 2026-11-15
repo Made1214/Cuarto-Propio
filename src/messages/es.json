@@ -3,7 +3,23 @@
     "diario": "Diario",
     "listas": "Listas",
     "vitrina": "Vitrina",
-    "audio": "Audio"
+    "audio": "Audio",
+    "secciones": "Secciones",
+    "crear": "Crear",
+    "crearTitulo": "¿Qué quieres guardar hoy?",
+    "crearAyuda": "Elige y empiezas enseguida.",
+    "crearAyudaTeclas": "También puedes usar las teclas 1 a 4.",
+    "escribir": "Escribir",
+    "escribirAyuda": "Una entrada en tu diario",
+    "exhibir": "Exhibir",
+    "exhibirAyuda": "Fotos o arte en tu vitrina",
+    "grabar": "Grabar",
+    "grabarAyuda": "Una nota de voz, hasta 10 min",
+    "nuevaLista": "Nueva lista",
+    "nuevaListaAyuda": "Libros, ideas, pendientes…",
+    "cerrar": "Cerrar",
+    "filtrarCategoria": "Filtrar por categoría",
+    "todas": "Todas"
   },
   "perfil": {
     "titulo": "Perfil",
@@ -71,7 +87,9 @@
     "editar": "Editar",
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta entrada? No se puede deshacer.",
-    "volver": "Volver al diario"
+    "volver": "Volver al diario",
+    "nueva": "Nueva",
+    "conLaPalabra": "con «{palabra}»"
   },
   "dialogos": {
     "cerrar": "Cerrar",
@@ -176,7 +194,8 @@
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta pieza? No se puede deshacer.",
     "volver": "Volver a la vitrina",
-    "volverPieza": "Volver a la pieza"
+    "volverPieza": "Volver a la pieza",
+    "filtrarHashtag": "Filtrar por hashtag"
   },
   "audio": {
     "titulo": "Audio",

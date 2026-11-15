@@ -130,6 +130,29 @@ body {
   }
 }
 
+/* La ventanita de "Crear": en el celular sube desde abajo como una hoja (el
+   pulgar ya está ahí); desde tablet se abre al centro con el mismo salto
+   corto que las otras ventanitas. */
+.hoja-crear[open] {
+  animation: hoja-sube 180ms ease-out;
+}
+
+.hoja-crear[open]::backdrop {
+  animation: ventana-velo 180ms ease-out;
+}
+
+@media (min-width: 48rem) {
+  .hoja-crear[open] {
+    animation: ventana-abre 140ms ease-out;
+  }
+}
+
+@keyframes hoja-sube {
+  from {
+    transform: translateY(100%);
+  }
+}
+
 /* Cursor de terminal que parpadea mientras algo carga (el link de la barra
    recién tocado, el buscador del diario). Siempre está en el DOM y solo se
    prende con `data-pendiente="true"`, así no mueve nada al aparecer. Arranca
@@ -157,7 +180,9 @@ body {
   .ventana-dialogo[open],
   .ventana-dialogo[open]::backdrop,
   .panel-lateral[open],
-  .panel-lateral[open]::backdrop {
+  .panel-lateral[open]::backdrop,
+  .hoja-crear[open],
+  .hoja-crear[open]::backdrop {
     animation: none;
   }
 
