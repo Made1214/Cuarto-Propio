@@ -63,6 +63,9 @@ export function EntradaForm({
   const [remonte, setRemonte] = useState(0);
 
   const [borrador, setBorrador] = useState<Borrador | null>(null);
+  /** Cuándo se guardó por última vez el borrador local: se muestra para que
+   * se vea que lo escrito no se pierde aunque se cierre el navegador. */
+  const [guardadoEn, setGuardadoEn] = useState<Date | null>(null);
   const enviando = useRef(false);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
@@ -81,10 +84,10 @@ export function EntradaForm({
 
   useEffect(() => {
     if (!sucio) return;
-    const id = window.setTimeout(
-      () => guardarBorrador(claveBorrador, { titulo, categoria: categoriaTexto, contenido }),
-      600,
-    );
+    const id = window.setTimeout(() => {
+      guardarBorrador(claveBorrador, { titulo, categoria: categoriaTexto, contenido });
+      setGuardadoEn(new Date());
+    }, 600);
     return () => window.clearTimeout(id);
   }, [sucio, claveBorrador, titulo, categoriaTexto, contenido]);
 
@@ -152,22 +155,37 @@ export function EntradaForm({
           <button
             type="button"
             onClick={restaurar}
-            className="border-2 border-ink bg-primary-green px-3 py-1.5 font-pixel text-xs tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+            className="flex h-10 items-center border-2 border-ink bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
           >
-            {t("restaurarBorrador").toUpperCase()}
+            {t("restaurarBorrador")}
           </button>
           <button
             type="button"
             onClick={descartar}
-            className="border-2 border-ink bg-card px-3 py-1.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
+            className="flex h-10 items-center border-2 border-ink bg-card px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-primary-pink/30"
           >
-            {t("descartarBorrador").toUpperCase()}
+            {t("descartarBorrador")}
           </button>
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-1">
+      {guardadoEn && sucio ? (
+        <p aria-live="polite" className="-mb-1 flex items-center gap-1.5 text-xs text-muted/75">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 12l5 5L20 6" />
+          </svg>
+          {t("borradorGuardado", {
+            hora: format.dateTime(guardadoEn, { hour: "numeric", minute: "2-digit" }),
+          })}
+        </p>
+      ) : null}
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor={`${formId}-titulo`} className="text-xs font-semibold">
+          {t("campoTitulo")} <span aria-hidden="true" className="text-secondary-purple">*</span>
+        </label>
         <input
+          id={`${formId}-titulo`}
           type="text"
           name="titulo"
           required

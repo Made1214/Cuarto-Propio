@@ -211,12 +211,6 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
           className="min-w-0 flex-1 border-b-2 border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none focus:border-ink"
         />
 
-        {conCasillas && filas.length > 0 ? (
-          <span className="shrink-0 px-1 font-pixel text-xs text-muted/70 tabular-nums">
-            {hechos}/{filas.length}
-          </span>
-        ) : null}
-
         <button
           type="button"
           onClick={() => {
@@ -229,7 +223,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
           aria-pressed={conCasillas}
           aria-label={t("listaConCasillas")}
           title={t("listaConCasillas")}
-          className={`flex h-7 w-7 shrink-0 items-center justify-center transition-colors ${
+          className={`flex h-9 w-9 shrink-0 items-center justify-center transition-colors ${
             conCasillas ? "bg-secondary-purple/25 text-ink" : "text-ink/35 hover:bg-secondary-purple/15 hover:text-ink"
           }`}
         >
@@ -242,7 +236,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
           textoConfirmar={t("eliminar")}
           etiqueta={t("eliminar")}
           onConfirmar={() => guardar(() => {}, () => eliminarLista(lista.id))}
-          className="flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink"
+          className="flex h-9 w-9 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink"
         >
           <IconoEliminar />
         </BotonConfirmar>
@@ -250,19 +244,26 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
 
       <AvisoErrorAccion error={error} mensajeFallo={t("errorGuardar")} />
 
+      {/* Progreso en palabras y en barra: "3 de 5" se entiende sin tener que
+          contar casillas. */}
       {conCasillas && filas.length > 0 ? (
-        <div
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={filas.length}
-          aria-valuenow={hechos}
-          aria-label={t("progreso")}
-          className="h-1.5 w-full border-2 border-ink/30"
-        >
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-semibold tabular-nums">
+            {t("progresoTexto", { hechos, total: filas.length })}
+          </span>
           <div
-            className="h-full bg-primary-green transition-[width]"
-            style={{ width: `${(hechos / filas.length) * 100}%` }}
-          />
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={filas.length}
+            aria-valuenow={hechos}
+            aria-label={t("progreso")}
+            className="h-2.5 w-full border-2 border-ink bg-background"
+          >
+            <div
+              className="h-full bg-primary-green transition-[width]"
+              style={{ width: `${(hechos / filas.length) * 100}%` }}
+            />
+          </div>
         </div>
       ) : null}
 
@@ -281,7 +282,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
       />
 
       {filas.length === 0 ? (
-        <p className="text-xs text-muted/70">{t("sinItemsAun")}</p>
+        <p className="text-sm text-muted/75">{t("sinItemsAun")}</p>
       ) : (
         <div className="flex flex-col">
           {filas.map(({ item, pendiente }, indice) => (

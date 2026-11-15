@@ -80,10 +80,10 @@ export default async function ImagenPage({
       <ArribaAlRecargar />
       <Link
         href="/vitrina"
-        className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+        className="flex w-fit items-center gap-2 text-sm font-semibold text-muted/70 transition-colors hover:text-secondary-purple"
       >
         <IconoVolver />
-        {t("volver").toUpperCase()}
+        {t("volver")}
       </Link>
 
       {/* En pantalla ancha la columna de relacionadas va POSICIONADA sobre
@@ -99,7 +99,7 @@ export default async function ImagenPage({
 
         <div className="order-1 min-w-0 border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)] lg:ml-52 xl:ml-60">
           <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
-            <span className="min-w-0 flex-1 truncate font-pixel text-xs tracking-wide">
+            <span className="min-w-0 flex-1 truncate text-sm font-semibold">
               {titulo}
             </span>
             <Link
@@ -135,7 +135,7 @@ export default async function ImagenPage({
                 />
               ) : (
                 <p className="py-16 text-center font-pixel text-xs text-muted/60">
-                  {t("noSePudoCargar").toUpperCase()}
+                  {t("noSePudoCargar")}
                 </p>
               )}
             </div>
@@ -155,7 +155,7 @@ export default async function ImagenPage({
                     <Link
                       key={hashtag}
                       href={{ pathname: "/vitrina", query: { hashtag } }}
-                      className="border-2 border-ink-strong bg-secondary-turquoise px-1.5 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+                      className="border-2 border-ink-strong bg-secondary-turquoise px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
                     >
                       #{hashtag}
                     </Link>
@@ -166,25 +166,25 @@ export default async function ImagenPage({
               {imagen.categoriaId && imagen.categoriaNombre ? (
                 <Link
                   href={{ pathname: "/vitrina", query: { categoria: imagen.categoriaId } }}
-                  className="w-fit border-2 border-ink-strong px-2 py-1 font-pixel text-[0.625rem] tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+                  className="w-fit border-2 border-ink-strong px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
                   style={{ background: colorCategoria(categorias, imagen.categoriaId) }}
                 >
-                  {imagen.categoriaNombre.toUpperCase()}
+                  {imagen.categoriaNombre}
                 </Link>
               ) : null}
 
               <div className="mt-auto flex flex-wrap items-center gap-2 border-t-2 border-ink/20 pt-3">
-                <span className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
-                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long" }).toUpperCase()}
+                <span className="text-[13px] font-semibold text-muted/70">
+                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long" })}
                 </span>
                 {imagen.completaUrl ? (
                   <a
                     href={imagen.completaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-2 border-ink bg-card px-2 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+                    className="border-2 border-ink bg-card px-2.5 py-1 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
                   >
-                    {t("verCompleta").toUpperCase()}
+                    {t("verCompleta")}
                   </a>
                 ) : null}
               </div>
@@ -227,7 +227,7 @@ async function RelacionadasAlCostado({
 
   return (
     <aside className={CLASES_COSTADO}>
-      <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+      <h2 className="text-sm font-semibold text-secondary-purple">
         {t("relacionadas").toUpperCase()}
       </h2>
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
@@ -291,7 +291,7 @@ async function RelacionadasMasAbajo({
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+      <h2 className="text-sm font-semibold text-secondary-purple">
         {t("masComoEsta").toUpperCase()}
       </h2>
       <div className="columns-[15rem] gap-5 lg:columns-[17rem]">

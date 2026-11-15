@@ -35,15 +35,15 @@ export default async function EditarImagenPage({
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <Link
         href={`/vitrina/${imagen.codigo}`}
-        className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+        className="flex w-fit items-center gap-2 text-sm font-semibold text-muted/70 transition-colors hover:text-secondary-purple"
       >
         <IconoVolver />
-        {t("volverPieza").toUpperCase()}
+        {t("volverPieza")}
       </Link>
 
       <div className="border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
         <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
-          <span className="min-w-0 flex-1 truncate font-pixel text-xs tracking-wide">
+          <span className="min-w-0 flex-1 truncate text-sm font-semibold">
             {t("editandoPieza", { titulo })}
           </span>
           <BotonesVentana />

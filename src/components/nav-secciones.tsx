@@ -42,6 +42,11 @@ export function NavSecciones({
     );
   }
 
+  // Modo enfocado: mientras se escribe o se edita algo, la barra de abajo se
+  // esconde para dejarle toda la pantalla (y el teclado) al contenido. Para
+  // salir está el "volver" de cada pantalla.
+  if (pathname.endsWith("/nueva") || pathname.endsWith("/editar")) return null;
+
   // En el celular: dos secciones, Crear, dos secciones.
   const mitad = Math.ceil(secciones.length / 2);
   return (

@@ -32,11 +32,6 @@ export default async function AudioPage({
   // como si no hubiera filtro (ver `listarConFiltroCategoria`).
   const categoria = categoriaActual?.id;
   const notas = pagina.filas;
-  // Con el archivo vacío, la invitación del centro ya es el botón de grabar:
-  // repetirlo arriba no solo se ve redundante, son dos grabadoras con estado
-  // propio (empezar en una no apagaría la otra). Se muestra una sola.
-  const vacioSinFiltro = notas.length === 0 && !categoria;
-
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -49,9 +44,11 @@ export default async function AudioPage({
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
         </div>
-
-        {vacioSinFiltro ? null : <Grabador />}
       </div>
+
+      {/* Una sola grabadora, siempre arriba y a la vista: grabar es lo
+          principal de esta pantalla, también con el archivo vacío. */}
+      <Grabador />
 
       <FiltroCategoria pathname="/audio" categorias={categorias} categoriaActualId={categoria ?? null} />
 
@@ -76,13 +73,11 @@ export default async function AudioPage({
           {categoria ? (
             <Link
               href="/audio"
-              className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="flex h-11 items-center border-2 border-ink bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
             >
-              {t("limpiarFiltros").toUpperCase()}
+              {t("limpiarFiltros")}
             </Link>
-          ) : (
-            <Grabador variante="panel" />
-          )}
+          ) : null}
         </div>
       ) : (
         /* Una nota por fila y no en columnas como Listas o Vitrina: acá lo
