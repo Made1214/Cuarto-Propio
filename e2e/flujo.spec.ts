@@ -88,7 +88,7 @@ test.describe("con sesión", () => {
     await page.getByPlaceholder("Ponle nombre a esta lista").fill(`E2E lista ${sufijo}`);
     await page.keyboard.press("Enter");
     // El nombre de cada lista es un campo editable, no texto suelto.
-    await expect(page.getByDisplayValue(`E2E lista ${sufijo}`)).toBeVisible();
+    await expect(page.locator(`input[value="E2E lista ${sufijo}"]`)).toBeVisible();
 
     // Las listas más nuevas van primero: la primera columna es la recién creada.
     await page.getByPlaceholder("Agregar ítem y Enter").first().fill("primer ítem");
