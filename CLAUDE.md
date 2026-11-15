@@ -333,6 +333,10 @@ Cada tabla lleva `usuario_id` y las consultas siempre filtran por ese campo — 
 
 Recomendación original: construir la Fase 1 completa como uso personal real durante unas semanas antes de decidir si vale la pena invertir en la Fase 2.
 
+## Commits
+
+Todos los commits van a nombre de **Made1214** (`116743110+Made1214@users.noreply.github.com`), y **sin** líneas de coautoría ni de sesión de Claude (`Co-Authored-By: Claude…`, `Claude-Session: …`) en el mensaje.
+
 ## Nombre del proyecto
 
 **Cuarto Propio** (inspirado en "Un cuarto propio" de Virginia Woolf) — nombre ya decidido, usar en toda la interfaz, metadata y repositorio.
