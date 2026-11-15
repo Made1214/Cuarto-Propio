@@ -142,7 +142,7 @@ export function ItemFila({
             onClick={() => onMover(-1)}
             aria-label={t("subirItem")}
             title={t("subirItem")}
-            className="flex h-6 w-6 items-center justify-center border-2 border-ink text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
+            className="flex h-6 w-6 items-center justify-center border-(length:--borde) border-ink rounded-theme text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
           >
             <IconoFlecha hacia="arriba" />
           </button>
@@ -152,7 +152,7 @@ export function ItemFila({
             onClick={() => onMover(1)}
             aria-label={t("bajarItem")}
             title={t("bajarItem")}
-            className="flex h-6 w-6 items-center justify-center border-2 border-ink text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
+            className="flex h-6 w-6 items-center justify-center border-(length:--borde) border-ink rounded-theme text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
           >
             <IconoFlecha hacia="abajo" />
           </button>
@@ -201,7 +201,7 @@ export function ItemFila({
         }}
         // overflow-hidden: si no, el textarea muestra su barra de scroll
         // (el alto se fija a scrollHeight, que no incluye los bordes).
-        className={`min-w-0 flex-1 resize-none overflow-hidden border-b-2 border-transparent bg-transparent py-0.5 text-sm leading-normal outline-none focus:border-ink ${
+        className={`min-w-0 flex-1 resize-none overflow-hidden border-b-(length:--borde) border-transparent bg-transparent py-0.5 text-sm leading-normal outline-none focus:border-ink ${
           conCasillas && item.marcado ? "text-muted/60 line-through" : ""
         }`}
       />

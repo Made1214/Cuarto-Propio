@@ -85,7 +85,7 @@ export function Buscador({ valorInicial, categoria }: { valorInicial: string; ca
         onChange={(evento) => setTexto(evento.target.value)}
         aria-label={t("buscar")}
         placeholder={t("buscarPlaceholder")}
-        className="h-11 w-full rounded-theme border-2 border-ink bg-card pr-8 pl-10 text-[15px] leading-none outline-none"
+        className="h-11 w-full rounded-theme border-(length:--borde) border-ink bg-card pr-8 pl-10 text-[15px] leading-none outline-none"
       />
       {/* El mismo cursor parpadeante de la barra de navegación, a la derecha
           del campo: "estoy buscando". Siempre en el DOM y con su lugar

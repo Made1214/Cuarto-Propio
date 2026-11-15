@@ -7,7 +7,7 @@ import type { Categoria } from "@/lib/categorias/types";
  * acá, hashtags en la Vitrina): misma altura, mismo texto, mismo estado
  * activo, para que filtrar se lea igual en todos los módulos. */
 export const CLASE_CHIP =
-  "flex h-9 shrink-0 items-center gap-2 border-2 border-ink px-3 text-[13px] whitespace-nowrap transition-colors";
+  "flex h-9 shrink-0 items-center gap-2 border-(length:--borde) border-ink rounded-theme px-3 text-[13px] whitespace-nowrap transition-colors";
 export const CLASE_CHIP_ACTIVO = "bg-secondary-purple font-semibold text-background";
 export const CLASE_CHIP_INACTIVO = "bg-card font-medium text-ink hover:bg-primary-pink/30";
 

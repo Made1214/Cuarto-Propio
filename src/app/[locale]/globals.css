@@ -26,6 +26,20 @@
   --primary-pink: #f0aec4;
   --secondary-turquoise: #74c7c3;
   --secondary-purple: #5b3f73;
+
+  /* Lenguaje de forma y tipografía del tema. Estos son los valores del tema
+     por defecto (Retro); el tema elegido en Personalización los pisa con un
+     <style> que inyecta el layout de la app (src/lib/temas/css.ts). Los
+     componentes nunca usan valores sueltos: `border-(length:--borde)`,
+     `rounded-theme`, `shadow-marco`, `font-sans`, `font-diario`. */
+  --borde: 2px;
+  --borde-grueso: 3px;
+  --radio: 0px;
+  --sombra-sm: 3px 3px 0 var(--ink);
+  --sombra: 4px 4px 0 var(--ink);
+  --sombra-lg: 8px 8px 0 var(--ink);
+  --fuente-interfaz: var(--font-inter);
+  --fuente-diario: var(--font-lora);
 }
 
 @theme inline {
@@ -40,10 +54,13 @@
   --color-primary-pink: var(--primary-pink);
   --color-secondary-turquoise: var(--secondary-turquoise);
   --color-secondary-purple: var(--secondary-purple);
-  --font-sans: var(--font-inter);
-  --font-diario: var(--font-lora);
+  --font-sans: var(--fuente-interfaz);
+  --font-diario: var(--fuente-diario);
   --font-pixel: var(--font-silkscreen);
-  --radius-theme: 6px;
+  --radius-theme: var(--radio);
+  --shadow-marco-sm: var(--sombra-sm);
+  --shadow-marco: var(--sombra);
+  --shadow-marco-lg: var(--sombra-lg);
 }
 
 /*
@@ -88,7 +105,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--fuente-interfaz), system-ui, sans-serif;
 }
 
 /* La ventanita entra con un salto corto, como una ventana que se abre de
@@ -205,7 +222,7 @@ body {
   --tw-prose-bullets: var(--secondary-turquoise);
   --tw-prose-counters: var(--secondary-turquoise);
   --tw-prose-hr: var(--ink);
-  font-family: var(--font-diario), Georgia, serif;
+  font-family: var(--fuente-diario), Georgia, serif;
 }
 
 .diario-prose blockquote {
@@ -221,8 +238,9 @@ body {
   max-width: 100%;
   height: auto;
   margin: 1.25em 0;
-  border: 2px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--ink);
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
   background: var(--card);
 }
 

@@ -58,7 +58,9 @@
     "privacidad": "Privacy",
     "espacioUsado": "Storage used",
     "espacioDe": "{usado} of {limite}",
-    "espacioAyuda": "Photos and audio. We'll warn you before it fills up."
+    "espacioAyuda": "Photos and audio. We'll warn you before it fills up.",
+    "abrirPersonalizacion": "Personalize",
+    "personalizacionAyudaCorta": "Theme, colors, fonts, cursor and icons"
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -411,5 +413,89 @@
     "audio": "Audio: say it out loud",
     "consejo": "To start anything, tap “Create”. Your photo, name and light or dark mode are in your profile, top right.",
     "empezar": "Get started"
+  },
+  "personalizacion": {
+    "titulo": "Personalization",
+    "subtitulo": "Make your room look like you. Every change saves itself and shows right away.",
+    "activo": "in use",
+    "error": "Couldn't save the change. Try again.",
+    "subiendo": "Uploading…",
+    "modo": {
+      "claro": "light",
+      "oscuro": "dark"
+    },
+    "tema": {
+      "titulo": "Theme",
+      "ayuda": "The overall look: box shape, borders, shadows and base colors. Switching themes goes back to its colors and fonts.",
+      "retro": "Y2K desktop windows: thick borders, square corners and solid shadow.",
+      "whimsical": "Soft and warm, blogspot style: rounded corners, thin borders and a diffuse shadow.",
+      "proximamente": "Coming soon: {nombres}."
+    },
+    "colores": {
+      "titulo": "Colors",
+      "ayuda": "You're changing the colors of {modo} mode (the one you see now). Changes show live; they're saved when you tap “Save colors”.",
+      "guardar": "Save colors",
+      "restablecer": "Back to the theme's",
+      "secundarioMorado": "Accent",
+      "secundarioMoradoUso": "Top bar, titles and main buttons",
+      "primarioVerde": "Green",
+      "primarioVerdeUso": "Save and create buttons",
+      "primarioRosa": "Pink",
+      "primarioRosaUso": "Write buttons and notices",
+      "secundarioTurquesa": "Turquoise",
+      "secundarioTurquesaUso": "Display, hashtags and images",
+      "fondo": "Background",
+      "fondoUso": "The background of every screen",
+      "texto": "Text",
+      "textoUso": "The color of the letters"
+    },
+    "contraste": {
+      "titulo": "Heads up: some combinations will be hard to read.",
+      "texto": "Text on the background",
+      "acento": "Titles (accent) on the background",
+      "barra": "Top bar letters on the accent",
+      "botonVerde": "Text on green buttons",
+      "botonRosa": "Text on pink buttons",
+      "botonTurquesa": "Text on turquoise buttons",
+      "minimo": "recommended is {minimo}:1",
+      "revisar": "Review colors",
+      "guardarIgual": "Save anyway"
+    },
+    "tipografia": {
+      "titulo": "Typography",
+      "ayuda": "The font for what you write is separate from menus and buttons, so a decorative font never makes a button unreadable.",
+      "diario": "For what you write",
+      "interfaz": "For menus and buttons",
+      "muestraDiario": "It rained today and I wrote slowly.",
+      "muestraInterfaz": "Journal · Lists · Create"
+    },
+    "cursor": {
+      "titulo": "Cursor",
+      "ayuda": "The mouse pointer across the app (not visible on phones). Hover over each option to try it.",
+      "sistema": "System",
+      "flecha": "Arrow",
+      "corazon": "Heart",
+      "estrella": "Star",
+      "lapiz": "Pencil",
+      "propio": "Yours",
+      "subir": "Upload my own cursor",
+      "formatos": "PNG, WebP, JPG, GIF or SVG, up to 2 MB. Reduced to 32 px."
+    },
+    "iconos": {
+      "titulo": "Icons",
+      "ayuda": "The section drawings in the navigation bar and in “Create”.",
+      "trazo": "Line",
+      "pixel": "Pixel",
+      "propios": "Or use your own images, section by section:",
+      "subir": "Upload image",
+      "cambiar": "Change",
+      "quitar": "Remove"
+    },
+    "errorSubida": {
+      "formato": "That file isn't an image we can use (PNG, WebP, JPG, GIF or SVG).",
+      "tamano": "The image is too large (2 MB max).",
+      "sesion": "Your session expired. Sign in again and try once more.",
+      "fallo": "Couldn't upload the image. Try again."
+    }
   }
 }

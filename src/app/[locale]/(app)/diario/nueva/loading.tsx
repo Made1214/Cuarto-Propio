@@ -11,7 +11,7 @@ export default function CargandoNuevaEntrada() {
     <EsqueletoPantalla className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <Hueso className="h-3.5 w-20" />
 
-      <div className="divide-y-2 divide-ink border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
+      <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
         {/* `flex-wrap` por si en 360px la pregunta y el botón no entran en
             un renglón: mejor bajar el botón que desbordar la ventana. */}
         <div className="flex flex-wrap items-center justify-between gap-4 p-5">

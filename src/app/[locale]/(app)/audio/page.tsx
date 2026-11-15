@@ -65,7 +65,7 @@ export default async function AudioPage({
       ) : null}
 
       {notas.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
           <span className="text-secondary-purple">
             <IconoAudio />
           </span>
@@ -73,7 +73,7 @@ export default async function AudioPage({
           {categoria ? (
             <Link
               href="/audio"
-              className="flex h-11 items-center border-2 border-ink bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
+              className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
             >
               {t("limpiarFiltros")}
             </Link>

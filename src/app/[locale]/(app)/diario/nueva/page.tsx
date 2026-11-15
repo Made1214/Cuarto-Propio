@@ -28,13 +28,13 @@ export default async function NuevaEntradaPage({
         {t("volver")}
       </Link>
 
-      <div className="divide-y-2 divide-ink border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
+      <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
         <div className="flex items-center justify-between gap-4 p-5">
           <h1 className="font-diario text-xl font-bold text-secondary-purple">{t("queEstasPensando")}</h1>
           <button
             type="submit"
             form={formId}
-            className="flex h-11 items-center border-2 border-ink bg-primary-green px-5 text-sm font-bold text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
           >
             {t("guardar")}
           </button>

@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 const handleI18nRouting = createMiddleware(routing);
 
 /** Secciones que solo existen con sesión (las del layout de `(app)`). */
-const SECCIONES_PRIVADAS = ["/diario", "/listas", "/vitrina", "/audio"];
+const SECCIONES_PRIVADAS = ["/diario", "/listas", "/vitrina", "/audio", "/personalizacion"];
 
 /** `/es/diario/abc` → `/diario/abc`; `null` si la ruta no trae idioma (de
  * esas se encarga next-intl, que redirige a la versión con idioma). */

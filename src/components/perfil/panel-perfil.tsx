@@ -18,20 +18,9 @@ import {
 import type { PerfilVisible } from "@/lib/perfil/types";
 import { Avatar } from "./avatar";
 import { FotoPerfil } from "./foto-perfil";
-import { IconoCandado, IconoSalir } from "./iconos";
+import { IconoSalir } from "./iconos";
 import { SelectorIdioma } from "./selector-idioma";
 import { SelectorModo } from "./selector-modo";
-
-/** Lo que va a vivir acá cuando se retome Personalización (CLAUDE.md →
- * Temas de diseño). Se nombran en una sola fila "próximamente" en vez de
- * esconderlas: dicen a dónde va la app sin prometer que ya funciona. */
-const PERSONALIZACION = [
-  "temas",
-  "colores",
-  "cursor",
-  "iconos",
-  "tipografia",
-] as const;
 
 /**
  * El perfil: un cajón que sale del borde derecho al tocar el avatar del
@@ -93,9 +82,9 @@ export function PanelPerfil({
         }}
         className="panel-lateral m-0 ml-auto h-dvh max-h-[100dvh] w-[min(22rem,100vw)] max-w-[100vw] border-0 bg-transparent p-0 text-foreground backdrop:bg-velo"
       >
-        <div className="flex h-full flex-col border-l-[3px] border-ink bg-card">
+        <div className="flex h-full flex-col border-l-(length:--borde-grueso) border-ink bg-card">
           {/* Barra de título, igual que la de la ventana principal */}
-          <div className="flex shrink-0 items-center justify-between gap-3 border-b-[3px] border-ink bg-secondary-purple px-4 py-3">
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-3">
             <h2 className="truncate font-pixel text-xs tracking-wide text-background">
               {t("titulo").toUpperCase()}
             </h2>
@@ -104,7 +93,7 @@ export function PanelPerfil({
               onClick={() => setAbierto(false)}
               aria-label={t("cerrar")}
               title={t("cerrar")}
-              className="flex h-9 w-9 items-center justify-center border-2 border-ink bg-primary-pink transition-[filter] hover:brightness-90"
+              className="flex h-9 w-9 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink transition-[filter] hover:brightness-90"
             >
               <svg
                 width="14"
@@ -158,7 +147,7 @@ export function PanelPerfil({
                 onKeyDown={(evento) => {
                   if (evento.key === "Enter") evento.currentTarget.blur();
                 }}
-                className="border-2 border-ink bg-background px-3 py-2 font-diario text-base outline-none placeholder:text-muted/50"
+                className="border-(length:--borde) border-ink rounded-theme bg-background px-3 py-2 font-diario text-base outline-none placeholder:text-muted/50"
               />
               <AvisoErrorAccion
                 error={errorNombre}
@@ -179,21 +168,24 @@ export function PanelPerfil({
               <SelectorIdioma />
             </Seccion>
 
-            {/* Una sola fila y no cinco con candado: dice a dónde va la app
-                sin llenar el panel de cosas que todavía no se pueden tocar. */}
-            <section className="flex items-center gap-3 border-2 border-dashed border-ink/50 p-3.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-ink bg-background">
-                <IconoCandado />
+            {/* Personalización vive en su propia pantalla: necesita lugar
+                para ver cada opción antes de elegirla. */}
+            <Link
+              href="/personalizacion"
+              onClick={() => setAbierto(false)}
+              className="flex items-center gap-3 border-(length:--borde) border-ink rounded-theme bg-background p-3.5 transition-colors hover:bg-primary-pink/25"
+            >
+              <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink text-ink-strong">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z" />
+                </svg>
               </span>
-              <div className="min-w-0">
-                <h3 className="text-sm font-bold">
-                  {t("personalizacion")} · {t("proximamente")}
-                </h3>
-                <p className="mt-0.5 text-xs text-muted/75">
-                  {PERSONALIZACION.map((clave) => t(clave)).join(", ")}
-                </p>
-              </div>
-            </section>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold">{t("abrirPersonalizacion")}</span>
+                <span className="mt-0.5 block text-xs text-muted/75">{t("personalizacionAyudaCorta")}</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </Link>
 
             {usoStorage !== null ? (
               <Seccion titulo={t("espacioUsado")} ayuda={t("espacioAyuda")}>
@@ -211,11 +203,11 @@ export function PanelPerfil({
 
           <form
             action={cerrarSesion}
-            className="flex shrink-0 flex-col gap-3 border-t-[3px] border-ink bg-background px-5 py-4"
+            className="flex shrink-0 flex-col gap-3 border-t-(length:--borde-grueso) border-ink bg-background px-5 py-4"
           >
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 border-2 border-ink bg-card h-11 px-3 text-sm font-semibold text-ink transition-[transform,filter] hover:bg-primary-pink hover:text-ink-strong active:translate-x-0.5 active:translate-y-0.5"
+              className="flex w-full items-center justify-center gap-2 border-(length:--borde) border-ink rounded-theme bg-card h-11 px-3 text-sm font-semibold text-ink transition-[transform,filter] hover:bg-primary-pink hover:text-ink-strong active:translate-x-0.5 active:translate-y-0.5"
             >
               <IconoSalir />
               {t("cerrarSesion")}
@@ -253,7 +245,7 @@ function Seccion({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-2 border-t-2 border-ink/15 pt-5">
+    <section className="flex flex-col gap-2 border-t-(length:--borde) border-ink/15 pt-5">
       <h3 className="font-pixel text-xs tracking-wide text-secondary-purple">
         {titulo.toUpperCase()}
       </h3>
@@ -285,7 +277,7 @@ function MedidorStorage({
         aria-valuemax={LIMITE_STORAGE_BYTES}
         aria-valuenow={usado}
         aria-valuetext={texto}
-        className="h-3 w-full border-2 border-ink bg-background"
+        className="h-3 w-full border-(length:--borde) border-ink rounded-theme bg-background"
       >
         <div
           className={`h-full ${fraccion >= UMBRAL_AVISO_STORAGE ? "bg-primary-pink" : "bg-secondary-turquoise"}`}

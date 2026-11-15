@@ -25,7 +25,7 @@ export function Avatar({
 
   return (
     <span
-      className="relative flex shrink-0 items-center justify-center overflow-hidden border-2 border-ink bg-primary-pink"
+      className="relative flex shrink-0 items-center justify-center overflow-hidden border-(length:--borde) border-ink rounded-theme bg-primary-pink"
       style={{ width: px, height: px }}
     >
       {perfil.fotoUrl ? (

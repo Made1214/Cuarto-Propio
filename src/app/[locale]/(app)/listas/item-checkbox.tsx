@@ -20,7 +20,7 @@ export function ItemCheckbox({
       checked={marcado}
       disabled={disabled}
       onChange={(evento) => onCambiar(evento.target.checked)}
-      className="h-5 w-5 shrink-0 cursor-pointer border-2 border-ink accent-secondary-purple disabled:cursor-default"
+      className="h-5 w-5 shrink-0 cursor-pointer border-(length:--borde) border-ink rounded-theme accent-secondary-purple disabled:cursor-default"
     />
   );
 }

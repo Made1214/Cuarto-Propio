@@ -39,7 +39,7 @@ export default async function ListasPage({
       <FiltroCategoria pathname="/listas" categorias={categorias} categoriaActualId={categoria ?? null} />
 
       {listas.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
           <svg width="28" height="28" viewBox="0 0 10 10" aria-hidden="true" className="text-secondary-purple">
             <rect x="0" y="0" width="3" height="3" fill="currentColor" />
             <rect x="5" y="1" width="5" height="1" fill="currentColor" />

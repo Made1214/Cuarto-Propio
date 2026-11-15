@@ -26,7 +26,7 @@ export default function CargandoAudio() {
         {TITULOS.map((ancho) => (
           <div
             key={ancho}
-            className="flex flex-col gap-3 border-2 border-ink bg-card p-4 shadow-[5px_5px_0_var(--ink)]"
+            className="flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco"
           >
             <div className="flex items-center gap-1">
               <div className="min-w-0 flex-1 py-1">

@@ -55,20 +55,20 @@ export function VentanaDialogo({
           : "w-[min(26rem,calc(100vw-2rem))]"
       }`}
     >
-      <div className="flex flex-col border-2 border-ink bg-card shadow-[6px_6px_0_var(--ink)]">
-        <div className="flex items-center justify-between gap-3 border-b-2 border-ink bg-secondary-purple px-3 py-2">
+      <div className="flex flex-col border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-lg">
+        <div className="flex items-center justify-between gap-3 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2">
           <h2 className="truncate font-pixel text-xs tracking-wide text-background">
             {titulo.toUpperCase()}
           </h2>
           <div className="flex shrink-0 items-center gap-2">
-            <span aria-hidden="true" className="h-3 w-3 border-2 border-ink bg-primary-green" />
-            <span aria-hidden="true" className="h-3 w-3 border-2 border-ink bg-secondary-turquoise" />
+            <span aria-hidden="true" className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-primary-green" />
+            <span aria-hidden="true" className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-secondary-turquoise" />
             <button
               type="button"
               onClick={onCerrar}
               aria-label={etiquetaCerrar}
               title={etiquetaCerrar}
-              className="flex h-3 w-3 items-center justify-center border-2 border-ink bg-primary-pink transition-[filter] hover:brightness-90"
+              className="flex h-3 w-3 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink transition-[filter] hover:brightness-90"
             >
               <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="var(--ink-strong)" strokeWidth="5" strokeLinecap="round" aria-hidden="true">
                 <path d="M6 6l12 12M18 6L6 18" />
@@ -79,7 +79,7 @@ export function VentanaDialogo({
 
         <div className="px-5 py-5">{children}</div>
 
-        <div className="flex flex-wrap items-center justify-end gap-2 border-t-2 border-ink/15 px-5 pt-4 pb-5">
+        <div className="flex flex-wrap items-center justify-end gap-2 border-t-(length:--borde) border-ink/15 px-5 pt-4 pb-5">
           {acciones}
         </div>
       </div>

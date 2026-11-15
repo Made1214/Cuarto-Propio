@@ -180,7 +180,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
   }
 
   return (
-    <div className="flex w-full flex-col gap-3 border-2 border-ink bg-card p-4 shadow-[5px_5px_0_var(--ink)]">
+    <div className="flex w-full flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
       <div className="flex items-center justify-between gap-1">
         <input
           ref={nombreRef}
@@ -208,7 +208,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
           onKeyDown={(evento) => {
             if (evento.key === "Enter") evento.currentTarget.blur();
           }}
-          className="min-w-0 flex-1 border-b-2 border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none focus:border-ink"
+          className="min-w-0 flex-1 border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none focus:border-ink"
         />
 
         <button
@@ -257,7 +257,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
             aria-valuemax={filas.length}
             aria-valuenow={hechos}
             aria-label={t("progreso")}
-            className="h-2.5 w-full border-2 border-ink bg-background"
+            className="h-2.5 w-full border-(length:--borde) border-ink rounded-theme bg-background"
           >
             <div
               className="h-full bg-primary-green transition-[width]"

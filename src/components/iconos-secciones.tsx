@@ -95,6 +95,62 @@ export function IconoCerrar(props: PropsIcono) {
   );
 }
 
+/** Dibujo pixelado: cada fila es un renglón de una grilla de 12×12, `X` =
+ * píxel pintado (con `currentColor`, como los de trazo). */
+function Pixeles({ tamano = 24, className, filas }: PropsIcono & { filas: string[] }) {
+  return (
+    <svg
+      width={tamano}
+      height={tamano}
+      viewBox="0 0 12 12"
+      fill="currentColor"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+      className={className}
+    >
+      {filas.flatMap((fila, y) =>
+        [...fila].map((c, x) => (c === "X" ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" /> : null)),
+      )}
+    </svg>
+  );
+}
+
+export function IconoDiarioPixel(props: PropsIcono) {
+  return (
+    <Pixeles
+      {...props}
+      filas={["", ".XXXX..XXXX.", "X....XX....X", "X.XX.XX.XX.X", "X....XX....X", "X.XX.XX.XX.X", "X....XX....X", "X.XX.XX.XX.X", "X....XX....X", ".XXXXXXXXXX.", "", ""]}
+    />
+  );
+}
+
+export function IconoListasPixel(props: PropsIcono) {
+  return (
+    <Pixeles
+      {...props}
+      filas={["", "XXX.........", "X.X.XXXXXXX.", "XXX.........", "", "XXX.........", "X.X.XXXXXXX.", "XXX.........", "", "XXX.........", "X.X.XXXXX...", "XXX........."]}
+    />
+  );
+}
+
+export function IconoVitrinaPixel(props: PropsIcono) {
+  return (
+    <Pixeles
+      {...props}
+      filas={["XXXXXXXXXXXX", "X..........X", "X.XX.......X", "X.XX.......X", "X..........X", "X......X...X", "X.....XXX..X", "X..X.XXXXX.X", "X.XXXXXXXXXX", "X.XXXXXXXXXX", "X..........X", "XXXXXXXXXXXX"]}
+    />
+  );
+}
+
+export function IconoAudioPixel(props: PropsIcono) {
+  return (
+    <Pixeles
+      {...props}
+      filas={["", "XXXXXXXXXXXX", "X..........X", "X.XXXXXXXX.X", "X.X.X..X.X.X", "X.XXXXXXXX.X", "X..........X", "X..XXXXXX..X", "X.X......X.X", "XXXXXXXXXXXX", "", ""]}
+    />
+  );
+}
+
 /** Los dibujos de cada sección, indexados por su ruta: así la barra de
  * navegación no tiene que saber cuál va con cuál. */
 export const ICONO_SECCION = {
@@ -102,6 +158,13 @@ export const ICONO_SECCION = {
   "/listas": IconoListas,
   "/vitrina": IconoVitrina,
   "/audio": IconoAudio,
+} as const;
+
+export const ICONO_SECCION_PIXEL = {
+  "/diario": IconoDiarioPixel,
+  "/listas": IconoListasPixel,
+  "/vitrina": IconoVitrinaPixel,
+  "/audio": IconoAudioPixel,
 } as const;
 
 export type RutaSeccion = keyof typeof ICONO_SECCION;

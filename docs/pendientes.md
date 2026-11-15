@@ -11,7 +11,7 @@
 
 - 15 commits por delante de `main`, sin commits propios en `main` (fusión sin conflictos).
 - `tsc --noEmit`, `eslint` y `next build`: sin errores. Pruebas con base real: **no verificadas** (el entorno de desarrollo no tiene las claves de Supabase).
-- Construido: acceso completo (entrar, crear cuenta, recuperar y restablecer contraseña, bloqueo tras 5 fallos), Diario, Listas, Vitrina, Audio, Perfil, términos y privacidad, bienvenida, medidor y aviso de espacio, PWA instalable, rediseño de navegación (barra única, barra inferior en el celular, botón Crear, filtros en chips). Migraciones 0001–0011, todas aplicadas en Supabase.
+- Construido: Personalización completa (tema, colores, tipografía, cursor, iconos), imágenes en el Diario, acceso completo (entrar, crear cuenta, recuperar y restablecer contraseña, bloqueo tras 5 fallos), Diario, Listas, Vitrina, Audio, Perfil, términos y privacidad, bienvenida, medidor y aviso de espacio, PWA instalable, rediseño de navegación (barra única, barra inferior en el celular, botón Crear, filtros en chips). Migraciones 0001–0011, todas aplicadas en Supabase.
 
 ## 1. Autenticación
 
@@ -35,16 +35,16 @@
 - [x] ~~Mensaje de bienvenida en el primer inicio de sesión (sin tour obligatorio).~~ (migración 0010)
 - [x] ~~Aviso en la interfaz cuando el storage se acerque al límite del free tier.~~ (desde el 80 %; medidor en el perfil)
 
-## 4. Personalización (parcial)
+## 4. Personalización
 
-Hecho: modo claro/oscuro/automático, presets de tema como datos, foto de perfil.
-
-- [ ] Cursor: set curado + subir imagen propia (validando tipo real).
-- [ ] Iconos de la interfaz: set curado + subir imagen propia.
-- [ ] Tipografía configurable.
-- [ ] Aviso de contraste bajo, permitiendo continuar si se insiste.
-- [ ] Colores personalizados más allá de los presets.
-- [ ] `ThemeProvider` y switcher de temas (Whimsical / Retro) en el perfil.
+- [x] ~~`ThemeProvider` y switcher de temas (Retro / Whimsical).~~ (`/personalizacion`)
+- [x] ~~Colores personalizados más allá de los presets~~, con vista previa en vivo.
+- [x] ~~Aviso de contraste bajo, permitiendo continuar si se insiste.~~
+- [x] ~~Tipografía configurable~~ (diario e interfaz por separado).
+- [x] ~~Cursor: set curado + subir imagen propia (validando tipo real).~~
+- [x] ~~Iconos de la interfaz: set curado + subir imagen propia.~~
+- [ ] Probar con base real: elegir tema, guardar colores, subir cursor e icono propios, y ver que se mantenga al recargar y en otro dispositivo.
+- [ ] Diseñar Fairy y Emo (reservados en `TEMAS_PLANEADOS`).
 
 ## 5. Galería / imágenes
 
@@ -89,5 +89,4 @@ Prototipo: https://claude.ai/artifact/JE2kJ9N9H9LaSSLo4s3k4a
 1. Operativo (sección 8) y prueba de punta a punta con base real (sección 10).
 2. Completar el correo de contacto de los textos legales.
 3. Fusionar `dev` en `main` y desplegar.
-4. Personalización restante (sección 4).
-5. Tests automatizados.
+4. Tests automatizados.

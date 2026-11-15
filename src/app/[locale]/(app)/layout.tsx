@@ -6,7 +6,10 @@ import {
   type UsuarioSesion,
 } from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
+import { IconosProvider } from "@/components/icono-seccion";
 import { MenuCrear } from "@/components/menu-crear";
+import { generarCssTema } from "@/lib/temas/css";
+import { obtenerConfigTema } from "@/lib/temas/queries";
 import { NavSecciones } from "@/components/nav-secciones";
 import { PanelPerfil } from "@/components/perfil/panel-perfil";
 import { Bienvenida } from "@/components/bienvenida";
@@ -31,9 +34,10 @@ export default async function AppLayout({
   // el JWT localmente (sin red, ver src/lib/supabase/server.ts), así que el
   // chequeo de sesión ya no retrasa el primer byte como cuando era una ida al
   // servidor de Auth.
-  const [usuario, t] = await Promise.all([
+  const [usuario, t, tema] = await Promise.all([
     obtenerUsuario(),
     getTranslations({ locale, namespace: "nav" }),
+    obtenerConfigTema(),
   ]);
 
   if (!usuario) {
@@ -59,55 +63,62 @@ export default async function AppLayout({
   ] as const;
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-background text-foreground">
-      {/* Una sola barra fija arriba: marca, secciones (desde tablet), Crear y
+    <IconosProvider valor={tema.iconos}>
+      {/* El tema elegido en Personalización (colores, forma, letras, cursor):
+        pisa las variables por defecto de globals.css. Va antes que todo el
+        contenido, así el primer pintado ya sale con el tema. Solo lleva
+        valores validados (ver `generarCssTema`). */}
+      <style dangerouslySetInnerHTML={{ __html: generarCssTema(tema) }} />
+      <div className="flex min-h-full flex-1 flex-col bg-background text-foreground">
+        {/* Una sola barra fija arriba: marca, secciones (desde tablet), Crear y
           el avatar. Antes eran dos barras apiladas (título decorativo + menú)
           que ocupaban 96 px fijos en el celular. z-30 para pasarle por encima
           a los desplegables de las pantallas, que usan z-20. Los <dialog>
           (perfil, Crear, ventanitas) no compiten: el navegador los pinta en
           su capa superior, por encima de cualquier z-index. */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-[3px] border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
-        <div className="flex items-center gap-2.5">
-          <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
-            <path
-              d="M2 0h4v2H2zM8 0h4v2H8zM0 2h14v4H0zM2 6h10v2H2zM4 8h6v2H4zM6 10h2v2H6z"
-              fill="var(--primary-pink)"
-            />
-          </svg>
-          <span className="font-pixel text-sm tracking-wide text-background">
-            CUARTO PROPIO
-          </span>
-        </div>
-
-        <NavSecciones secciones={links} variante="barra" />
-
-        <div className="flex items-center gap-3">
-          <div className="hidden md:block">
-            <MenuCrear variante="barra" />
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
+          <div className="flex items-center gap-2.5">
+            <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
+              <path
+                d="M2 0h4v2H2zM8 0h4v2H8zM0 2h14v4H0zM2 6h10v2H2zM4 8h6v2H4zM6 10h2v2H6z"
+                fill="var(--primary-pink)"
+              />
+            </svg>
+            <span className="font-pixel text-sm tracking-wide text-background">
+              CUARTO PROPIO
+            </span>
           </div>
-          {/* El perfil (una consulta a la base, más la firma de la foto) llega
+
+          <NavSecciones secciones={links} variante="barra" />
+
+          <div className="flex items-center gap-3">
+            <div className="hidden md:block">
+              <MenuCrear variante="barra" />
+            </div>
+            {/* El perfil (una consulta a la base, más la firma de la foto) llega
               por streaming: sin este `Suspense`, la barra entera y el
               esqueleto de la sección esperaban a que respondiera la base
               antes de mandar el primer byte de la página. */}
-          <Suspense fallback={<AvatarCargando />}>
-            <AvatarPerfil usuario={usuario} cerrarSesion={logoutWithLocale} />
-          </Suspense>
-        </div>
-      </header>
+            <Suspense fallback={<AvatarCargando />}>
+              <AvatarPerfil usuario={usuario} cerrarSesion={logoutWithLocale} />
+            </Suspense>
+          </div>
+        </header>
 
-      {/* En el celular, abajo queda espacio para la barra de secciones fija
+        {/* En el celular, abajo queda espacio para la barra de secciones fija
           (más la zona segura del iPhone). */}
-      <main className="flex flex-1 flex-col px-5 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:px-6 md:py-10">
-        {/* Bienvenida y aviso de espacio: cada uno su consulta, por
+        <main className="flex flex-1 flex-col px-5 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:px-6 md:py-10">
+          {/* Bienvenida y aviso de espacio: cada uno su consulta, por
             streaming, para no demorar la página. */}
-        <Suspense fallback={null}>
-          <AvisosCuenta usuarioId={usuario.id} locale={locale} />
-        </Suspense>
-        {children}
-      </main>
+          <Suspense fallback={null}>
+            <AvisosCuenta usuarioId={usuario.id} locale={locale} />
+          </Suspense>
+          {children}
+        </main>
 
-      <NavSecciones secciones={links} variante="inferior" />
-    </div>
+        <NavSecciones secciones={links} variante="inferior" />
+      </div>
+    </IconosProvider>
   );
 }
 
@@ -141,7 +152,7 @@ async function AvisosCuenta({
       {fraccion >= UMBRAL_AVISO_STORAGE ? (
         <p
           role="status"
-          className="mx-auto mb-6 w-full max-w-3xl border-2 border-ink bg-primary-pink px-4 py-3 text-sm leading-snug text-ink-strong"
+          className="mx-auto mb-6 w-full max-w-3xl border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-3 text-sm leading-snug text-ink-strong"
         >
           {fraccion >= 1
             ? t("avisoStorageLleno", datos)
@@ -178,7 +189,7 @@ function AvatarCargando() {
   return (
     <span
       aria-hidden="true"
-      className="m-1.5 h-8 w-8 shrink-0 border-2 border-ink bg-primary-pink/40 motion-safe:animate-pulse"
+      className="m-1.5 h-8 w-8 shrink-0 border-(length:--borde) border-ink rounded-theme bg-primary-pink/40 motion-safe:animate-pulse"
     />
   );
 }

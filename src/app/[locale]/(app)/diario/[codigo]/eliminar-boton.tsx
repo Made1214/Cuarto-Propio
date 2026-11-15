@@ -15,7 +15,7 @@ export function EliminarEntradaBoton({ action }: { action: () => void | Promise<
       textoConfirmar={t("eliminar")}
       etiqueta={t("eliminar")}
       onConfirmar={() => startTransition(() => void action())}
-      className={`border-2 border-ink bg-primary-pink px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
+      className={`border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
         pendiente ? "opacity-60" : ""
       }`}
     >

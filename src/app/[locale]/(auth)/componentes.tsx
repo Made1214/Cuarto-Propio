@@ -7,10 +7,10 @@ import { REQUISITOS_CONTRASENA } from "@/lib/auth/contrasena";
 
 /** Clases compartidas por los formularios de acceso. */
 export const CLASE_CAMPO =
-  "h-12 w-full border-2 border-ink bg-card px-3 text-[15px] text-ink outline-none transition-colors focus:border-secondary-purple";
+  "h-12 w-full border-(length:--borde) border-ink rounded-theme bg-card px-3 text-[15px] text-ink outline-none transition-colors focus:border-secondary-purple";
 export const CLASE_ETIQUETA = "flex flex-col gap-1.5 text-[13px] font-semibold";
 export const CLASE_BOTON =
-  "flex h-12 w-full items-center justify-center border-2 border-ink text-[15px] font-bold text-ink-strong shadow-[4px_4px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-60";
+  "flex h-12 w-full items-center justify-center border-(length:--borde) border-ink rounded-theme text-[15px] font-bold text-ink-strong shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-60";
 
 /** Las pestañas Entrar / Crear cuenta. Son links a dos rutas y no estado
  * local: cada una se puede compartir o guardar, y "atrás" funciona. */
@@ -24,7 +24,7 @@ export function PestanasAcceso({ activa }: { activa: "entrar" | "crear" }) {
   return (
     <nav
       aria-label={t("acceso")}
-      className="grid grid-cols-2 border-2 border-ink bg-card"
+      className="grid grid-cols-2 border-(length:--borde) border-ink rounded-theme bg-card"
     >
       {pestanas.map(({ clave, href, texto }) => (
         <Link
@@ -69,7 +69,7 @@ export function CampoContrasena({
       <label htmlFor={id} className="text-[13px] font-semibold">
         {etiqueta}
       </label>
-      <div className="flex h-12 border-2 border-ink bg-card transition-colors focus-within:border-secondary-purple">
+      <div className="flex h-12 border-(length:--borde) border-ink rounded-theme bg-card transition-colors focus-within:border-secondary-purple">
         <input
           id={id}
           name="password"
@@ -86,7 +86,7 @@ export function CampoContrasena({
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? t("ocultar") : t("mostrar")}
           aria-pressed={visible}
-          className="flex w-11 shrink-0 items-center justify-center border-l-2 border-ink text-ink hover:bg-primary-pink/30"
+          className="flex w-11 shrink-0 items-center justify-center border-l-(length:--borde) border-ink text-ink hover:bg-primary-pink/30"
         >
           <svg
             width="18"
@@ -121,7 +121,7 @@ export function CampoContrasena({
               >
                 <span
                   aria-hidden="true"
-                  className={`flex h-4 w-4 items-center justify-center border-2 ${
+                  className={`flex h-4 w-4 items-center justify-center border-(length:--borde) ${
                     ok
                       ? "border-ink bg-primary-green text-ink-strong"
                       : "border-ink/40"
@@ -165,7 +165,7 @@ export function AvisoAcceso({
   return (
     <p
       role={tipo === "error" ? "alert" : "status"}
-      className={`border-2 border-ink px-3 py-2.5 text-sm leading-snug text-ink-strong ${
+      className={`border-(length:--borde) border-ink rounded-theme px-3 py-2.5 text-sm leading-snug text-ink-strong ${
         tipo === "error" ? "bg-primary-pink" : "bg-primary-green"
       }`}
     >

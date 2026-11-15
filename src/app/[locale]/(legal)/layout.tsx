@@ -15,7 +15,7 @@ export default async function LegalLayout({
 
   return (
     <div className="flex flex-1 flex-col bg-background text-foreground">
-      <header className="flex h-14 items-center justify-between gap-4 border-b-[3px] border-ink bg-secondary-purple px-5 md:px-8">
+      <header className="flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-5 md:px-8">
         <Link
           href="/"
           className="font-pixel text-sm tracking-wide text-background"

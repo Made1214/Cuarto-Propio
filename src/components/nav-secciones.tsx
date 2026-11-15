@@ -3,7 +3,8 @@
 import { useLinkStatus } from "next/link";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { ICONO_SECCION, type RutaSeccion } from "./iconos-secciones";
+import { IconoSeccion } from "./icono-seccion";
+import type { RutaSeccion } from "./iconos-secciones";
 import { MenuCrear } from "./menu-crear";
 
 type Seccion = { href: RutaSeccion; label: string };
@@ -52,7 +53,7 @@ export function NavSecciones({
   return (
     <nav
       aria-label={t("secciones")}
-      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t-[3px] border-ink bg-card pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t-(length:--borde-grueso) border-ink bg-card pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden"
     >
       {secciones.slice(0, mitad).map((seccion) => (
         <LinkSeccion key={seccion.href} seccion={seccion} activa={esActiva(seccion.href)} variante="inferior" />
@@ -78,7 +79,7 @@ function LinkSeccion({
 }) {
   const clases =
     variante === "barra"
-      ? `relative flex h-10 items-center gap-2 border-2 px-3.5 text-sm transition-colors ${
+      ? `relative flex h-10 items-center gap-2 border-(length:--borde) px-3.5 text-sm transition-colors ${
           activa
             ? "border-ink bg-background font-bold text-foreground"
             : "border-transparent font-medium text-background hover:bg-background/15"
@@ -126,12 +127,11 @@ function ContenidoSeccion({
   variante: "barra" | "inferior";
 }) {
   const { pending } = useLinkStatus();
-  const Icono = ICONO_SECCION[seccion.href];
 
   if (variante === "barra") {
     return (
       <>
-        <Icono tamano={20} />
+        <IconoSeccion ruta={seccion.href} tamano={20} />
         {seccion.label}
         {/* Cursor de terminal que parpadea mientras carga (ver
             `.cursor-pendiente` en globals.css). Siempre en el DOM, así no
@@ -154,7 +154,7 @@ function ContenidoSeccion({
         data-pendiente={pending}
         className={`h-[3px] w-6 ${activa ? "bg-primary-pink" : "cursor-pendiente bg-primary-pink"}`}
       />
-      <Icono tamano={24} />
+      <IconoSeccion ruta={seccion.href} tamano={24} />
       {seccion.label}
     </>
   );

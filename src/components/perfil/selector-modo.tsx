@@ -57,9 +57,9 @@ export function SelectorModo() {
             role="radio"
             aria-checked={activo}
             onClick={() => elegir(opcion)}
-            className={`flex flex-col items-center gap-1.5 border-2 border-ink px-2 py-2.5 text-[13px] font-semibold transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+            className={`flex flex-col items-center gap-1.5 border-(length:--borde) border-ink rounded-theme px-2 py-2.5 text-[13px] font-semibold transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
               activo
-                ? "bg-primary-green text-ink-strong shadow-[3px_3px_0_var(--ink)]"
+                ? "bg-primary-green text-ink-strong shadow-marco-sm"
                 : "bg-card text-ink"
             }`}
           >

@@ -85,7 +85,7 @@ export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorP
   return (
     <div className="flex flex-col gap-2">
       <Barra editor={editor} subirRef={subirRef} />
-      <div className="rounded-theme border-2 border-ink bg-card px-4 py-3">
+      <div className="rounded-theme border-(length:--borde) border-ink bg-card px-4 py-3">
         <EditorContent editor={editor} />
       </div>
       <input type="hidden" name={name} value={JSON.stringify(json)} />
@@ -243,7 +243,7 @@ function Barra({
             boton.accion();
           }}
           aria-pressed={boton.activo}
-          className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink px-2 transition-colors ${
+          className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink px-2 transition-colors ${
             boton.activo
               ? "bg-secondary-purple text-background"
               : "bg-card text-ink hover:bg-secondary-turquoise/25"
@@ -261,7 +261,7 @@ function Barra({
           setEnlaceAbierto(true);
         }}
         aria-pressed={editor.isActive("link")}
-        className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink px-2 transition-colors ${
+        className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink px-2 transition-colors ${
           editor.isActive("link")
             ? "bg-secondary-purple text-background"
             : "bg-card text-ink hover:bg-secondary-turquoise/25"
@@ -276,7 +276,7 @@ function Barra({
         onMouseDown={(evento) => evento.preventDefault()}
         onClick={() => archivoRef.current?.click()}
         disabled={subiendo}
-        className="flex h-8 items-center gap-1.5 rounded-theme border-2 border-ink bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 disabled:opacity-60"
+        className="flex h-8 items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 disabled:opacity-60"
       >
         <IconoImagen />
         {subiendo ? t("subiendoImagen") : t("imagen")}
@@ -297,7 +297,7 @@ function Barra({
 
       <label
         title={t("colorTexto")}
-        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-2 border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
       >
         <span aria-hidden="true" style={{ color: colorTexto }}>
           A
@@ -318,14 +318,14 @@ function Barra({
           evento.preventDefault();
           editor.chain().focus().unsetColor().run();
         }}
-        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
       >
         <IconoQuitar />
       </button>
 
       <label
         title={t("resaltar")}
-        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-2 border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
       >
         <span aria-hidden="true" className="rounded px-1" style={{ backgroundColor: colorResaltado }}>
           A
@@ -348,7 +348,7 @@ function Barra({
           evento.preventDefault();
           editor.chain().focus().unsetHighlight().run();
         }}
-        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
       >
         <IconoQuitar />
       </button>
@@ -356,7 +356,7 @@ function Barra({
       {errorImagen ? (
         <div
           role="alert"
-          className="flex w-full flex-wrap items-center gap-2 border-2 border-ink bg-primary-pink px-3 py-2 text-ink-strong"
+          className="flex w-full flex-wrap items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-3 py-2 text-ink-strong"
         >
           <span className="min-w-0 flex-1 text-sm">{t(`errorImagen.${errorImagen}`)}</span>
           {pendiente ? (
@@ -364,7 +364,7 @@ function Barra({
               type="button"
               onClick={() => void subir(pendiente)}
               disabled={subiendo}
-              className="flex h-9 items-center border-2 border-ink bg-background px-3 text-[13px] font-semibold text-ink disabled:opacity-60"
+              className="flex h-9 items-center border-(length:--borde) border-ink rounded-theme bg-background px-3 text-[13px] font-semibold text-ink disabled:opacity-60"
             >
               {t("reintentar")}
             </button>

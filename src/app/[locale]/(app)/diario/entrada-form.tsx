@@ -136,14 +136,14 @@ export function EntradaForm({
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="border-2 border-ink-strong bg-primary-pink px-3 py-2 font-pixel text-xs tracking-wide text-ink-strong outline-none"
+          className="border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 font-pixel text-xs tracking-wide text-ink-strong outline-none"
         >
           {estado.error}
         </p>
       ) : null}
 
       {borrador ? (
-        <div className="flex flex-wrap items-center gap-3 border-2 border-dashed border-ink bg-secondary-turquoise/15 px-3 py-2">
+        <div className="flex flex-wrap items-center gap-3 border-(length:--borde) border-dashed border-ink rounded-theme bg-secondary-turquoise/15 px-3 py-2">
           <p className="flex-1 text-sm">
             {t("borradorEncontrado", {
               fecha: format.dateTime(new Date(borrador.guardadoEn), {
@@ -155,14 +155,14 @@ export function EntradaForm({
           <button
             type="button"
             onClick={restaurar}
-            className="flex h-10 items-center border-2 border-ink bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
+            className="flex h-10 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
           >
             {t("restaurarBorrador")}
           </button>
           <button
             type="button"
             onClick={descartar}
-            className="flex h-10 items-center border-2 border-ink bg-card px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-primary-pink/30"
+            className="flex h-10 items-center border-(length:--borde) border-ink rounded-theme bg-card px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-primary-pink/30"
           >
             {t("descartarBorrador")}
           </button>
@@ -193,7 +193,7 @@ export function EntradaForm({
           value={titulo}
           onChange={(evento) => setTitulo(evento.target.value)}
           placeholder={t("tituloPlaceholder")}
-          className="rounded-theme border-2 border-ink bg-card px-3 py-2.5 font-diario text-2xl font-semibold outline-none"
+          className="rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2.5 font-diario text-2xl font-semibold outline-none"
         />
         {titulo.length > TITULO_MAXIMO - 20 ? (
           <span className="self-end font-pixel text-xs text-muted/70 tabular-nums">
@@ -209,7 +209,7 @@ export function EntradaForm({
           value={categoriaTexto}
           onChange={(evento) => setCategoriaTexto(evento.target.value)}
           placeholder={t("categoriaPlaceholder")}
-          className="w-64 max-w-full rounded-theme border-2 border-ink bg-card px-3 py-2 text-sm outline-none"
+          className="w-64 max-w-full rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2 text-sm outline-none"
         />
         {categorias.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
@@ -221,7 +221,7 @@ export function EntradaForm({
                   type="button"
                   onClick={() => setCategoriaTexto(seleccionada ? "" : cat.nombre)}
                   aria-pressed={seleccionada}
-                  className={`flex items-center gap-1.5 border-2 px-2.5 py-1 font-pixel text-xs tracking-wide transition-colors ${
+                  className={`flex items-center gap-1.5 border-(length:--borde) px-2.5 py-1 font-pixel text-xs tracking-wide transition-colors ${
                     seleccionada ? "border-ink-strong bg-secondary-purple/10" : "border-ink/30 hover:border-ink-strong"
                   }`}
                 >

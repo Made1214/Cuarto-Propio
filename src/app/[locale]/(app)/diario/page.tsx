@@ -80,7 +80,7 @@ export default async function DiarioPage({
           </div>
           <Link
             href="/diario/nueva"
-            className="flex h-11 shrink-0 items-center gap-2 border-2 border-ink bg-primary-pink px-4 text-sm font-bold text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
+            className="flex h-11 shrink-0 items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M12 5v14M5 12h14" />
@@ -120,7 +120,7 @@ export default async function DiarioPage({
           ) : null}
 
           {entradas.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+            <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
               <svg width="28" height="28" viewBox="0 0 10 10" aria-hidden="true" className="text-secondary-purple">
                 <rect x="4" y="0" width="2" height="2" fill="currentColor" />
                 <rect x="2" y="2" width="6" height="2" fill="currentColor" />
@@ -132,14 +132,14 @@ export default async function DiarioPage({
               {hayFiltro ? (
                 <Link
                   href="/diario"
-                  className="flex h-11 items-center border-2 border-ink bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
+                  className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
                 >
                   {t("limpiarFiltros")}
                 </Link>
               ) : (
                 <Link
                   href="/diario/nueva"
-                  className="flex h-11 items-center border-2 border-ink bg-primary-pink px-5 text-sm font-bold text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[filter] hover:brightness-95"
+                  className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-pink px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-[filter] hover:brightness-95"
                 >
                   {t("nuevaEntrada")}
                 </Link>
@@ -168,7 +168,7 @@ export default async function DiarioPage({
                             en la letra del diario. */}
                         <Link
                           href={`/diario/${entrada.codigo}`}
-                          className="flex gap-4 border-2 border-ink bg-card p-4 shadow-[4px_4px_0_var(--ink)] transition-transform hover:-translate-y-0.5 sm:gap-5 sm:p-5"
+                          className="flex gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco transition-transform hover:-translate-y-0.5 sm:gap-5 sm:p-5"
                         >
                           <time
                             dateTime={entrada.fecha}

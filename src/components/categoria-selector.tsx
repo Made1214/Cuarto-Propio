@@ -96,7 +96,7 @@ export function CategoriaSelector({
         onClick={() => setAbierto((valor) => !valor)}
         aria-expanded={abierto}
         aria-label={textos.cambiar}
-        className="flex w-full items-center justify-between gap-2 border-2 px-2 py-1 text-left font-pixel text-xs tracking-wide"
+        className="flex w-full items-center justify-between gap-2 border-(length:--borde) px-2 py-1 text-left font-pixel text-xs tracking-wide"
         style={
           actual.id
             ? {
@@ -125,13 +125,13 @@ export function CategoriaSelector({
       </button>
 
       {abierto ? (
-        <div className="flex flex-col gap-2 border-2 border-ink bg-background p-2">
+        <div className="flex flex-col gap-2 border-(length:--borde) border-ink rounded-theme bg-background p-2">
           <div className="flex flex-wrap gap-1.5">
             {actual.id ? (
               <button
                 type="button"
                 onClick={() => elegir("")}
-                className="border-2 border-dashed border-ink px-2 py-0.5 font-pixel text-xs tracking-wide text-ink hover:bg-secondary-purple/10"
+                className="border-(length:--borde) border-dashed border-ink rounded-theme px-2 py-0.5 font-pixel text-xs tracking-wide text-ink hover:bg-secondary-purple/10"
               >
                 {textos.quitar.toUpperCase()}
               </button>
@@ -142,7 +142,7 @@ export function CategoriaSelector({
                 type="button"
                 onClick={() => elegir(cat.nombre)}
                 aria-pressed={cat.id === actual.id}
-                className={`border-2 px-2 py-0.5 font-pixel text-xs tracking-wide text-ink-strong ${
+                className={`border-(length:--borde) px-2 py-0.5 font-pixel text-xs tracking-wide text-ink-strong ${
                   cat.id === actual.id ? "border-ink-strong" : "border-transparent hover:border-ink-strong"
                 }`}
                 style={{ background: colorCategoria(categoriasVisibles, cat.id) }}
@@ -164,7 +164,7 @@ export function CategoriaSelector({
               if (evento.key === "Escape") setAbierto(false);
             }}
             placeholder={textos.nueva}
-            className="border-2 border-ink bg-card px-2 py-1 text-sm outline-none"
+            className="border-(length:--borde) border-ink rounded-theme bg-card px-2 py-1 text-sm outline-none"
           />
         </div>
       ) : null}

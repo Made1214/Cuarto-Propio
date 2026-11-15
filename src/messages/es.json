@@ -58,7 +58,9 @@
     "privacidad": "Privacidad",
     "espacioUsado": "Espacio usado",
     "espacioDe": "{usado} de {limite}",
-    "espacioAyuda": "Fotos y audios. Te avisaremos antes de que se llene."
+    "espacioAyuda": "Fotos y audios. Te avisaremos antes de que se llene.",
+    "abrirPersonalizacion": "Personalizar",
+    "personalizacionAyudaCorta": "Tema, colores, letras, cursor e iconos"
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -411,5 +413,89 @@
     "audio": "Audio: cuéntalo en voz alta",
     "consejo": "Para empezar cualquier cosa, toca «Crear». Tu foto, tu nombre y el modo claro u oscuro están en tu perfil, arriba a la derecha.",
     "empezar": "Empezar"
+  },
+  "personalizacion": {
+    "titulo": "Personalización",
+    "subtitulo": "Haz que tu cuarto se vea como tú. Cada cambio se guarda solo y se ve en el acto.",
+    "activo": "en uso",
+    "error": "No se pudo guardar el cambio. Prueba de nuevo.",
+    "subiendo": "Subiendo…",
+    "modo": {
+      "claro": "claro",
+      "oscuro": "oscuro"
+    },
+    "tema": {
+      "titulo": "Tema",
+      "ayuda": "El aspecto general: forma de las cajas, bordes, sombras y colores de base. Cambiar de tema vuelve a sus colores y letras.",
+      "retro": "Ventanas de escritorio Y2K: bordes gruesos, esquinas rectas y sombra sólida.",
+      "whimsical": "Suave y cálido, estilo blogspot: esquinas redondeadas, bordes finos y sombra difusa.",
+      "proximamente": "Próximamente: {nombres}."
+    },
+    "colores": {
+      "titulo": "Colores",
+      "ayuda": "Estás cambiando los colores del modo {modo} (el que ves ahora). Los cambios se ven en vivo; se guardan al tocar «Guardar colores».",
+      "guardar": "Guardar colores",
+      "restablecer": "Volver a los del tema",
+      "secundarioMorado": "Acento",
+      "secundarioMoradoUso": "Barra superior, títulos y botones principales",
+      "primarioVerde": "Verde",
+      "primarioVerdeUso": "Botones de guardar y crear",
+      "primarioRosa": "Rosado",
+      "primarioRosaUso": "Botones de escribir y avisos",
+      "secundarioTurquesa": "Turquesa",
+      "secundarioTurquesaUso": "Exhibir, hashtags e imágenes",
+      "fondo": "Fondo",
+      "fondoUso": "El fondo de todas las pantallas",
+      "texto": "Texto",
+      "textoUso": "El color de las letras"
+    },
+    "contraste": {
+      "titulo": "Ojo: algunas combinaciones van a costar leerse.",
+      "texto": "El texto sobre el fondo",
+      "acento": "Los títulos (acento) sobre el fondo",
+      "barra": "Las letras de la barra superior sobre el acento",
+      "botonVerde": "El texto de los botones verdes",
+      "botonRosa": "El texto de los botones rosados",
+      "botonTurquesa": "El texto de los botones turquesa",
+      "minimo": "lo recomendado es {minimo}:1",
+      "revisar": "Revisar colores",
+      "guardarIgual": "Guardar igual"
+    },
+    "tipografia": {
+      "titulo": "Tipografía",
+      "ayuda": "La letra de lo que escribes va por separado de la de los menús y botones, para que una letra decorativa nunca vuelva ilegible un botón.",
+      "diario": "Para lo que escribes",
+      "interfaz": "Para menús y botones",
+      "muestraDiario": "Hoy llovió y escribí con calma.",
+      "muestraInterfaz": "Diario · Listas · Crear"
+    },
+    "cursor": {
+      "titulo": "Cursor",
+      "ayuda": "El puntero del mouse en toda la app (en el celular no se ve). Pasa el mouse por cada opción para probarla.",
+      "sistema": "Sistema",
+      "flecha": "Flecha",
+      "corazon": "Corazón",
+      "estrella": "Estrella",
+      "lapiz": "Lápiz",
+      "propio": "El tuyo",
+      "subir": "Subir mi propio cursor",
+      "formatos": "PNG, WebP, JPG, GIF o SVG, hasta 2 MB. Se reduce a 32 px."
+    },
+    "iconos": {
+      "titulo": "Iconos",
+      "ayuda": "Los dibujos de las secciones en la barra de navegación y en «Crear».",
+      "trazo": "Trazo",
+      "pixel": "Pixel",
+      "propios": "O usa tus propias imágenes, sección por sección:",
+      "subir": "Subir imagen",
+      "cambiar": "Cambiar",
+      "quitar": "Quitar"
+    },
+    "errorSubida": {
+      "formato": "Ese archivo no es una imagen que podamos usar (PNG, WebP, JPG, GIF o SVG).",
+      "tamano": "La imagen pesa demasiado (máximo 2 MB).",
+      "sesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo.",
+      "fallo": "No se pudo subir la imagen. Prueba de nuevo."
+    }
   }
 }

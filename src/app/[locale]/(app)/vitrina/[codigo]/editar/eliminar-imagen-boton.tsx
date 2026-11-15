@@ -15,7 +15,7 @@ export function EliminarImagenBoton({ action }: { action: () => void | Promise<v
       textoConfirmar={t("eliminar")}
       etiqueta={t("eliminar")}
       onConfirmar={() => startTransition(() => void action())}
-      className={`border-2 border-ink bg-primary-pink h-11 px-4 text-sm font-semibold flex items-center text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
+      className={`border-(length:--borde) border-ink rounded-theme bg-primary-pink h-11 px-4 text-sm font-semibold flex items-center text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
         pendiente ? "opacity-60" : ""
       }`}
     >

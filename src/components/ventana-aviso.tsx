@@ -28,16 +28,16 @@ export function VentanaAviso({
   return (
     <div
       role={rol}
-      className="mx-auto my-auto flex w-full max-w-md flex-col border-2 border-ink bg-card shadow-[6px_6px_0_var(--ink)]"
+      className="mx-auto my-auto flex w-full max-w-md flex-col border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-lg"
     >
-      <div className="flex items-center justify-between gap-3 border-b-2 border-ink bg-secondary-purple px-3 py-2">
+      <div className="flex items-center justify-between gap-3 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2">
         <p className="truncate font-pixel text-xs tracking-wide text-background">
           {barra.toUpperCase()}
         </p>
         <div className="flex shrink-0 items-center gap-2" aria-hidden="true">
-          <span className="h-3 w-3 border-2 border-ink bg-primary-green" />
-          <span className="h-3 w-3 border-2 border-ink bg-secondary-turquoise" />
-          <span className="h-3 w-3 border-2 border-ink bg-primary-pink" />
+          <span className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-primary-green" />
+          <span className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-secondary-turquoise" />
+          <span className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-primary-pink" />
         </div>
       </div>
 
@@ -65,9 +65,9 @@ export function VentanaAviso({
  * se "hunde" al tocarlo), compartidas para que reintentar y volver se vean
  * como parte de la misma familia de botones de la app. */
 export const BOTON_AVISO_PRINCIPAL =
-  "flex items-center gap-2 border-2 border-ink bg-primary-green px-4 py-2.5 font-pixel text-xs tracking-wide text-ink-strong shadow-[4px_4px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none";
+  "flex items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green px-4 py-2.5 font-pixel text-xs tracking-wide text-ink-strong shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none";
 
 /** Clases del botón secundario: plano, sin sombra, para no competir con la
  * acción principal. */
 export const BOTON_AVISO_SECUNDARIO =
-  "border-2 border-ink bg-card px-4 py-2.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10";
+  "border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10";

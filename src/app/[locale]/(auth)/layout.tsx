@@ -26,7 +26,7 @@ export default async function AccesoLayout({
 
   return (
     <main className="flex flex-1 flex-col bg-background text-foreground md:flex-row">
-      <section className="flex flex-col gap-4 border-b-[3px] border-ink bg-secondary-purple px-6 pt-12 pb-7 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-[3px] md:border-b-0 md:px-14 md:py-16">
+      <section className="flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-6 pt-12 pb-7 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
         <div className="flex items-center gap-2.5">
           <svg width="22" height="19" viewBox="0 0 14 12" aria-hidden="true">
             <path
@@ -45,7 +45,7 @@ export default async function AccesoLayout({
           {modulos.map(({ clave, fondo }) => (
             <li
               key={clave}
-              className={`flex flex-col gap-1.5 border-2 border-ink p-4 shadow-[4px_4px_0_var(--ink)] ${fondo}`}
+              className={`flex flex-col gap-1.5 border-(length:--borde) border-ink rounded-theme p-4 shadow-marco ${fondo}`}
             >
               <span className="text-[15px] font-bold">
                 {t(`modulo.${clave}`)}

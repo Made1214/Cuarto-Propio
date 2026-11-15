@@ -47,13 +47,13 @@ export default function CargandoVitrina() {
       <div className="columns-[15rem] gap-5 lg:columns-[17rem]">
         {PIEZAS.map((pieza, indice) => (
           <div key={indice} className="mb-5 break-inside-avoid">
-            <div className="border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
-              <div className="flex items-center justify-end gap-2 border-b-2 border-ink bg-secondary-purple px-2 py-1.5 text-background">
+            <div className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+              <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-2 py-1.5 text-background">
                 <BotonesVentana />
               </div>
               <Hueso className={`w-full ${pieza.proporcion}`} />
               {pieza.titulo ? (
-                <div className="border-t-2 border-ink px-2.5 py-2.5">
+                <div className="border-t-(length:--borde) border-ink px-2.5 py-2.5">
                   <Hueso className={`h-3.5 ${pieza.titulo}`} />
                 </div>
               ) : null}

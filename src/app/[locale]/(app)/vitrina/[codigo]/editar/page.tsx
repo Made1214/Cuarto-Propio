@@ -41,8 +41,8 @@ export default async function EditarImagenPage({
         {t("volverPieza")}
       </Link>
 
-      <div className="border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
-        <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
+      <div className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+        <div className="flex items-center gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2 text-background">
           <span className="min-w-0 flex-1 truncate text-sm font-semibold">
             {t("editandoPieza", { titulo })}
           </span>
@@ -50,7 +50,7 @@ export default async function EditarImagenPage({
         </div>
 
         <div className="flex flex-col sm:flex-row">
-          <div className="shrink-0 border-b-2 border-ink bg-background p-3 sm:w-48 sm:border-b-0 sm:border-r-2">
+          <div className="shrink-0 border-b-(length:--borde) border-ink bg-background p-3 sm:w-48 sm:border-b-0 sm:border-r-(length:--borde)">
             {imagen.miniaturaUrl ? (
               <Image
                 src={imagen.miniaturaUrl}
@@ -58,7 +58,7 @@ export default async function EditarImagenPage({
                 width={imagen.ancho ?? 800}
                 height={imagen.alto ?? 800}
                 unoptimized
-                className="mx-auto h-auto w-full max-w-48 border-2 border-ink"
+                className="mx-auto h-auto w-full max-w-48 border-(length:--borde) border-ink rounded-theme"
               />
             ) : null}
           </div>

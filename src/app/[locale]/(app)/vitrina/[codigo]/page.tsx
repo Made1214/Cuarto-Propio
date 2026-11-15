@@ -97,8 +97,8 @@ export default async function ImagenPage({
           <RelacionadasAlCostado locale={locale} relacionadas={relacionadas} />
         </Suspense>
 
-        <div className="order-1 min-w-0 border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)] lg:ml-52 xl:ml-60">
-          <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
+        <div className="order-1 min-w-0 border-(length:--borde) border-ink rounded-theme bg-card shadow-marco lg:ml-52 xl:ml-60">
+          <div className="flex items-center gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2 text-background">
             <span className="min-w-0 flex-1 truncate text-sm font-semibold">
               {titulo}
             </span>
@@ -106,7 +106,7 @@ export default async function ImagenPage({
               href={`/vitrina/${imagen.codigo}/editar`}
               aria-label={t("editar")}
               title={t("editar")}
-              className="flex h-6 w-6 shrink-0 items-center justify-center border-2 border-ink bg-primary-green text-ink-strong transition-[filter] hover:brightness-90"
+              className="flex h-6 w-6 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong transition-[filter] hover:brightness-90"
             >
               <IconoLapiz />
             </Link>
@@ -140,7 +140,7 @@ export default async function ImagenPage({
               )}
             </div>
 
-            <div className="flex min-w-0 flex-col gap-3 border-t-2 border-ink p-4 lg:border-t-0 lg:border-l-2">
+            <div className="flex min-w-0 flex-col gap-3 border-t-(length:--borde) border-ink p-4 lg:border-t-0 lg:border-l-(length:--borde)">
               <h1 className="font-diario text-2xl font-bold text-secondary-purple">{titulo}</h1>
 
               {imagen.descripcion?.trim() ? (
@@ -155,7 +155,7 @@ export default async function ImagenPage({
                     <Link
                       key={hashtag}
                       href={{ pathname: "/vitrina", query: { hashtag } }}
-                      className="border-2 border-ink-strong bg-secondary-turquoise px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
+                      className="border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
                     >
                       #{hashtag}
                     </Link>
@@ -166,14 +166,14 @@ export default async function ImagenPage({
               {imagen.categoriaId && imagen.categoriaNombre ? (
                 <Link
                   href={{ pathname: "/vitrina", query: { categoria: imagen.categoriaId } }}
-                  className="w-fit border-2 border-ink-strong px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
+                  className="w-fit border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
                   style={{ background: colorCategoria(categorias, imagen.categoriaId) }}
                 >
                   {imagen.categoriaNombre}
                 </Link>
               ) : null}
 
-              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-2 border-ink/20 pt-3">
+              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
                 <span className="text-[13px] font-semibold text-muted/70">
                   {format.dateTime(new Date(imagen.fecha), { dateStyle: "long" })}
                 </span>
@@ -182,7 +182,7 @@ export default async function ImagenPage({
                     href={imagen.completaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-2 border-ink bg-card px-2.5 py-1 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
+                    className="border-(length:--borde) border-ink rounded-theme bg-card px-2.5 py-1 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
                   >
                     {t("verCompleta")}
                   </a>
@@ -236,7 +236,7 @@ async function RelacionadasAlCostado({
             key={otra.id}
             href={`/vitrina/${otra.codigo}`}
             title={otra.titulo ?? undefined}
-            className="block border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
+            className="block border-(length:--borde) border-ink rounded-theme bg-background shadow-marco-sm transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
           >
             {otra.miniaturaUrl ? (
               <Image
@@ -266,7 +266,7 @@ function RelacionadasAlCostadoCargando() {
       <Hueso className="h-2.5 w-24" />
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
         {Array.from({ length: AL_COSTADO }, (_, indice) => (
-          <div key={indice} className="border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)]">
+          <div key={indice} className="border-(length:--borde) border-ink rounded-theme bg-background shadow-marco-sm">
             <Hueso className="aspect-square w-full" />
           </div>
         ))}

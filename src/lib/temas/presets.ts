@@ -17,7 +17,7 @@ const whimsical: TemaDiseno = {
       fondoTarjeta: "#FFFFFF",
       texto: "#3D2C4F",
       textoMuted: "rgba(61,44,79,0.62)",
-      tinta: "rgba(91,63,115,0.14)",
+      tinta: "#3D2C4F",
       tintaFuerte: "#3D2C4F",
       primarioVerde: "#9BCFAE",
       primarioRosa: "#F0AEC4",
@@ -29,7 +29,7 @@ const whimsical: TemaDiseno = {
       fondoTarjeta: "#43334F",
       texto: "#FBF4F2",
       textoMuted: "rgba(251,244,242,0.62)",
-      tinta: "rgba(251,244,242,0.12)",
+      tinta: "#FBF4F2",
       tintaFuerte: "#3D2C4F",
       primarioVerde: "#B8E0C6",
       primarioRosa: "#F5C4D3",
@@ -37,18 +37,25 @@ const whimsical: TemaDiseno = {
       secundarioMorado: "#8A6BA3",
     },
   },
-  fuenteDiario: "'Lora', Georgia, serif",
-  fuenteInterfaz: "'Inter', system-ui, sans-serif",
-  radio: "999px",
+  fuenteDiario: "lora",
+  fuenteInterfaz: "inter",
+  // Cajas redondeadas (no píldora entera: en una tarjeta de diario o una
+  // ventanita, 999px la deformaba) y borde fino de la misma tinta que el
+  // texto, para que se lea igual de bien que Retro.
+  radio: "16px",
   anchoBorde: "1px",
   sombra: "suave",
 };
 
 /**
  * Tema retro: ventanas de escritorio Y2K (Windows 98 / DreamWorld OS),
- * bordes gruesos, sombra sólida desplazada sin blur, tipografía pixelada
- * en toda la interfaz — el diario se queda en la fuente literaria para
- * que lo escrito siga siendo cómodo de leer.
+ * bordes gruesos, esquinas rectas, sombra sólida desplazada sin blur. Es el
+ * look por defecto de la app desde el rediseño UX.
+ *
+ * La fuente pixelada (Silkscreen) queda para la marca y los rótulos cortos
+ * (clase `font-pixel`); la interfaz va en Inter porque en botones y
+ * navegación de 10–12 px el pixel costaba leerlo. Quien la quiera en toda la
+ * interfaz la elige en Personalización → Tipografía.
  * Prototipado en: https://claude.ai/artifact/CmEHbvcrAWAxnaUN2tRjK3
  */
 const retro: TemaDiseno = {
@@ -81,21 +88,28 @@ const retro: TemaDiseno = {
       secundarioMorado: "#C9A8E0",
     },
   },
-  fuenteDiario: "'Lora', Georgia, serif",
-  fuenteInterfaz: "'Silkscreen', monospace",
-  radio: "6px",
+  fuenteDiario: "lora",
+  fuenteInterfaz: "inter",
+  radio: "0px",
   anchoBorde: "2px",
   sombra: "dura",
-  sombraOffset: "5px",
+  sombraOffset: "4px",
 };
 
 /** Temas con tokens ya definidos — lo único que existe hoy como opción real. */
-export const TEMAS_DISPONIBLES: Record<string, TemaDiseno> = {
-  whimsical,
+export const TEMAS_DISPONIBLES = {
   retro,
-};
+  whimsical,
+} satisfies Record<string, TemaDiseno>;
 
-export const TEMA_POR_DEFECTO = whimsical;
+/** El tema de quien todavía no eligió ninguno: el look actual de la app. */
+export const TEMA_POR_DEFECTO = retro;
+
+export type PresetId = keyof typeof TEMAS_DISPONIBLES;
+
+export function esPreset(valor: unknown): valor is PresetId {
+  return typeof valor === "string" && valor in TEMAS_DISPONIBLES;
+}
 
 /**
  * Temas con nombre ya decididos (ver conversación de diseño), todavía sin

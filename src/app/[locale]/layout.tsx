@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { Inter, Lora, Silkscreen } from "next/font/google";
+import { Caveat, Inter, Lora, Nunito, Silkscreen, Special_Elite } from "next/font/google";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SCRIPT_MODO } from "@/lib/temas/modo";
@@ -55,6 +55,36 @@ const silkscreen = Silkscreen({
   fallback: ["monospace"],
 });
 
+/*
+ * Las que se pueden elegir en Personalización → Tipografía
+ * (src/lib/temas/fuentes.ts). Sin precarga: casi nadie las usa a la vez, y
+ * el navegador solo baja una si el tema activo la pide.
+ */
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  fallback: ["cursive"],
+});
+
+const specialElite = Special_Elite({
+  variable: "--font-special-elite",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
+  fallback: ["Courier New", "monospace"],
+});
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
+});
+
 export const metadata: Metadata = {
   title: "Cuarto Propio",
   description: "Diario, listas, vitrina y audio — tu espacio personal.",
@@ -86,7 +116,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${lora.variable} ${silkscreen.variable} h-full antialiased`}
+      className={`${inter.variable} ${lora.variable} ${silkscreen.variable} ${caveat.variable} ${specialElite.variable} ${nunito.variable} h-full antialiased`}
       // El script de abajo le escribe `data-modo` a este mismo elemento antes
       // de que React hidrate: sin esto React lo tomaría por un desajuste.
       suppressHydrationWarning

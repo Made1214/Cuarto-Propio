@@ -14,8 +14,8 @@ export default function CargandoEditarPieza() {
     <EsqueletoPantalla className="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <Hueso className="h-3.5 w-28" />
 
-      <div className="border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
-        <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
+      <div className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+        <div className="flex items-center gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2 text-background">
           {/* Sobre el morado, el gris de tinta no se vería: el título de la
               barra se esboza con el color del fondo, translúcido. */}
           <div className="min-w-0 flex-1">
@@ -25,10 +25,10 @@ export default function CargandoEditarPieza() {
         </div>
 
         <div className="flex flex-col sm:flex-row">
-          <div className="shrink-0 border-b-2 border-ink bg-background p-3 sm:w-48 sm:border-b-0 sm:border-r-2">
+          <div className="shrink-0 border-b-(length:--borde) border-ink bg-background p-3 sm:w-48 sm:border-b-0 sm:border-r-(length:--borde)">
             {/* Sin saber la proporción de la foto, se reserva una vertical
                 (4/5), la más común en fotos de celular — igual que la ficha. */}
-            <div className="mx-auto w-full max-w-48 border-2 border-ink">
+            <div className="mx-auto w-full max-w-48 border-(length:--borde) border-ink rounded-theme">
               <Hueso className="aspect-[4/5] w-full" />
             </div>
           </div>
@@ -50,7 +50,7 @@ export default function CargandoEditarPieza() {
 
             <Hueso className="h-7 w-28" />
 
-            <div className="flex flex-wrap items-center gap-2 border-t-2 border-ink/20 pt-3">
+            <div className="flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
               <Hueso className="h-9 w-24" />
               <Hueso className="h-9 w-24" />
               <Hueso className="ml-auto h-9 w-24" />

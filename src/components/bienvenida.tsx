@@ -3,12 +3,7 @@
 import { useEffect, useRef, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { marcarBienvenidaVista } from "@/lib/perfil/actions";
-import {
-  IconoAudio,
-  IconoDiario,
-  IconoListas,
-  IconoVitrina,
-} from "./iconos-secciones";
+import { IconoSeccion } from "./icono-seccion";
 
 /**
  * El mensaje de bienvenida del primer inicio de sesión (CLAUDE.md →
@@ -39,10 +34,10 @@ export function Bienvenida() {
   }
 
   const modulos = [
-    { clave: "diario", Icono: IconoDiario, fondo: "bg-primary-pink" },
-    { clave: "listas", Icono: IconoListas, fondo: "bg-card" },
-    { clave: "vitrina", Icono: IconoVitrina, fondo: "bg-secondary-turquoise" },
-    { clave: "audio", Icono: IconoAudio, fondo: "bg-primary-green" },
+    { clave: "diario", ruta: "/diario", fondo: "bg-primary-pink" },
+    { clave: "listas", ruta: "/listas", fondo: "bg-card" },
+    { clave: "vitrina", ruta: "/vitrina", fondo: "bg-secondary-turquoise" },
+    { clave: "audio", ruta: "/audio", fondo: "bg-primary-green" },
   ] as const;
 
   return (
@@ -55,8 +50,8 @@ export function Bienvenida() {
       }}
       className="ventana-dialogo m-auto w-[min(32rem,calc(100vw-2rem))] max-w-none border-0 bg-transparent p-0 text-foreground backdrop:bg-velo"
     >
-      <div className="border-[3px] border-ink bg-background shadow-[8px_8px_0_var(--ink)]">
-        <div className="border-b-[3px] border-ink bg-secondary-purple px-4 py-2.5 font-pixel text-xs tracking-wide text-background">
+      <div className="border-(length:--borde-grueso) border-ink rounded-theme bg-background shadow-marco-lg">
+        <div className="border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-2.5 font-pixel text-xs tracking-wide text-background">
           {t("barra")}
         </div>
         <div className="flex flex-col gap-5 p-6">
@@ -72,14 +67,14 @@ export function Bienvenida() {
             </p>
           </div>
           <ul className="grid grid-cols-2 gap-2.5">
-            {modulos.map(({ clave, Icono, fondo }) => (
+            {modulos.map(({ clave, ruta, fondo }) => (
               <li
                 key={clave}
-                className={`flex items-center gap-2.5 border-2 border-ink p-3 text-sm font-semibold ${fondo} ${
+                className={`flex items-center gap-2.5 border-(length:--borde) border-ink rounded-theme p-3 text-sm font-semibold ${fondo} ${
                   fondo === "bg-card" ? "text-ink" : "text-ink-strong"
                 }`}
               >
-                <Icono tamano={20} />
+                <IconoSeccion ruta={ruta} tamano={20} />
                 {t(clave)}
               </li>
             ))}
@@ -89,7 +84,7 @@ export function Bienvenida() {
             <button
               type="submit"
               autoFocus
-              className="flex h-12 w-full items-center justify-center border-2 border-ink bg-primary-green text-[15px] font-bold text-ink-strong shadow-[4px_4px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="flex h-12 w-full items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-[15px] font-bold text-ink-strong shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
             >
               {t("empezar")}
             </button>

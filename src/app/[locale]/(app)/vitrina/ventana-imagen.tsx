@@ -38,11 +38,11 @@ export async function VentanaImagen({
   return (
     <Link
       href={`/vitrina/${imagen.codigo}`}
-      className="block border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)] transition-[transform,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--ink)] focus-visible:-translate-x-0.5 focus-visible:-translate-y-0.5"
+      className="block border-(length:--borde) border-ink rounded-theme bg-card shadow-marco transition-[transform,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-marco-lg focus-visible:-translate-x-0.5 focus-visible:-translate-y-0.5"
     >
       {/* Barra de ventana sin texto: el título vive abajo, como en un
           tablero de imágenes, y acá quedan solo los botones de adorno. */}
-      <div className="flex items-center justify-end gap-2 border-b-2 border-ink bg-secondary-purple px-2 py-1.5 text-background">
+      <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-2 py-1.5 text-background">
         <BotonesVentana />
       </div>
 
@@ -79,7 +79,7 @@ export async function VentanaImagen({
       </div>
 
       {titulo ? (
-        <p className="border-t-2 border-ink px-2.5 py-2 font-diario text-sm font-semibold text-foreground">
+        <p className="border-t-(length:--borde) border-ink px-2.5 py-2 font-diario text-sm font-semibold text-foreground">
           {titulo}
         </p>
       ) : null}

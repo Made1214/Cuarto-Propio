@@ -197,14 +197,14 @@ export function Grabador() {
           reconoce como "grabar" sin leer nada) y al lado, qué va a pasar. */}
       <section
         aria-label={t("grabadora")}
-        className="flex items-center gap-4 border-2 border-ink bg-card p-4 shadow-[4px_4px_0_var(--ink)] sm:gap-5 sm:p-5"
+        className="flex items-center gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco sm:gap-5 sm:p-5"
       >
         <button
           type="button"
           onClick={grabando ? detener : () => void grabar()}
           disabled={estado === "subiendo"}
           aria-label={grabando ? t("detener") : t("grabar")}
-          className="flex h-19 w-19 shrink-0 items-center justify-center rounded-full border-[3px] border-ink bg-primary-pink text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60 sm:h-22 sm:w-22"
+          className="flex h-19 w-19 shrink-0 items-center justify-center rounded-full border-(length:--borde-grueso) border-ink bg-primary-pink text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60 sm:h-22 sm:w-22"
         >
           {grabando ? (
             <span aria-hidden="true" className="h-6 w-6 bg-ink-strong" />
@@ -228,7 +228,7 @@ export function Grabador() {
               </span>
               {/* Barra de tiempo: a los 10 minutos llega al final y la
                   grabación se corta sola, así que conviene verla venir. */}
-              <div className="mt-1 h-2 w-full border-2 border-ink/30">
+              <div className="mt-1 h-2 w-full border-(length:--borde) border-ink/30">
                 <div
                   className="h-full bg-primary-pink transition-[width]"
                   style={{ width: `${Math.min(100, (segundos / DURACION_MAXIMA_SEGUNDOS) * 100)}%` }}
@@ -249,13 +249,13 @@ export function Grabador() {
       </section>
 
       {limiteAlcanzado && !error ? (
-        <p className="border-2 border-ink-strong bg-secondary-turquoise px-3 py-2 text-sm text-ink-strong">
+        <p className="border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-3 py-2 text-sm text-ink-strong">
           {t("limiteAlcanzado", { minutos: Math.round(DURACION_MAXIMA_SEGUNDOS / 60) })}
         </p>
       ) : null}
 
       {error ? (
-        <div className="flex flex-wrap items-center gap-2 border-2 border-ink-strong bg-primary-pink px-3 py-2 text-ink-strong">
+        <div className="flex flex-wrap items-center gap-2 border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 text-ink-strong">
           <span className="min-w-0 flex-1 text-sm">{textoError(error)}</span>
 
           {/* La grabación sigue en memoria: se puede reintentar sin volver a
@@ -266,7 +266,7 @@ export function Grabador() {
               type="button"
               onClick={() => void subir(pendiente.blob, pendiente.duracion)}
               disabled={estado === "subiendo"}
-              className="flex h-9 items-center gap-1.5 border-2 border-ink-strong bg-background px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10 disabled:opacity-60"
+              className="flex h-9 items-center gap-1.5 border-(length:--borde) border-ink-strong rounded-theme bg-background px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10 disabled:opacity-60"
             >
               <IconoReintentar />
               {t("reintentar")}

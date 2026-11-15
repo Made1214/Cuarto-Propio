@@ -223,7 +223,7 @@ export default async function VitrinaPage({
       ) : null}
 
       {imagenes.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
           <span className="text-secondary-purple">
             <IconoVitrina />
           </span>
@@ -231,7 +231,7 @@ export default async function VitrinaPage({
           {hayFiltro ? (
             <Link
               href="/vitrina"
-              className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
             >
               {t("limpiarFiltros").toUpperCase()}
             </Link>

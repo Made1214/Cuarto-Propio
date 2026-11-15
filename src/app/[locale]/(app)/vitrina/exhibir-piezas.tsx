@@ -216,7 +216,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className={`flex shrink-0 items-center justify-center gap-2 border-2 border-ink bg-primary-green font-pixel text-xs tracking-wide text-ink-strong shadow-[4px_4px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none ${
+        className={`flex shrink-0 items-center justify-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green font-pixel text-xs tracking-wide text-ink-strong shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none ${
           variante === "panel" ? "px-5 py-3" : "px-4 py-2.5"
         }`}
       >
@@ -236,7 +236,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
               type="button"
               onClick={cerrar}
               disabled={subiendo}
-              className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10 disabled:opacity-60"
+              className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10 disabled:opacity-60"
             >
               {tDialogos("cancelar").toUpperCase()}
             </button>
@@ -244,7 +244,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
               type="button"
               onClick={exhibir}
               disabled={subiendo || pendientes.length === 0}
-              className="flex items-center gap-2 border-2 border-ink bg-primary-green px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60"
+              className="flex items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60"
             >
               {(subiendo
                 ? t("exhibiendo", { hecha: Math.min(exhibidas + 1, piezas.length), total: piezas.length })
@@ -256,7 +256,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
       >
         <div className="flex flex-col gap-3">
           {aviso ? (
-            <p className="border-2 border-ink-strong bg-primary-pink px-3 py-2 font-pixel text-[0.625rem] tracking-wide text-ink-strong">
+            <p className="border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 font-pixel text-[0.625rem] tracking-wide text-ink-strong">
               {aviso}
             </p>
           ) : null}
@@ -267,7 +267,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
               return (
                 <div
                   key={pieza.id}
-                  className={`flex gap-3 border-2 p-2 ${
+                  className={`flex gap-3 border-(length:--borde) p-2 ${
                     pieza.estado === "error"
                       ? "border-ink-strong bg-primary-pink/20"
                       : "border-ink bg-background"
@@ -281,20 +281,20 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
                     <img
                       src={pieza.vistaPrevia}
                       alt={pieza.archivo.name}
-                      className={`aspect-square w-full border-2 border-ink object-cover ${
+                      className={`aspect-square w-full border-(length:--borde) border-ink rounded-theme object-cover ${
                         pieza.estado === "error" ? "opacity-40" : ""
                       }`}
                     />
 
                     {pieza.estado === "subiendo" ? (
-                      <div className="absolute inset-x-0 bottom-0 border-t-2 border-ink bg-card/95 px-1 py-1">
+                      <div className="absolute inset-x-0 bottom-0 border-t-(length:--borde) border-ink bg-card/95 px-1 py-1">
                         <div
                           role="progressbar"
                           aria-valuemin={0}
                           aria-valuemax={100}
                           aria-valuenow={pieza.progreso}
                           aria-label={t("exhibir")}
-                          className="h-2 w-full border-2 border-ink-strong bg-background p-px"
+                          className="h-2 w-full border-(length:--borde) border-ink-strong rounded-theme bg-background p-px"
                         >
                           <div
                             className={`h-full transition-[width] ${
@@ -339,7 +339,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
                       required
                       aria-label={t("campoTitulo")}
                       placeholder={t("tituloPlaceholder")}
-                      className="border-2 border-ink bg-card px-2 py-1 font-diario text-base font-semibold outline-none disabled:opacity-60"
+                      className="border-(length:--borde) border-ink rounded-theme bg-card px-2 py-1 font-diario text-base font-semibold outline-none disabled:opacity-60"
                     />
                     <textarea
                       rows={2}
@@ -351,7 +351,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
                       disabled={bloqueada}
                       aria-label={t("campoDescripcion")}
                       placeholder={t("descripcionCorta")}
-                      className="resize-none border-2 border-ink bg-card px-2 py-1 text-xs outline-none disabled:opacity-60"
+                      className="resize-none border-(length:--borde) border-ink rounded-theme bg-card px-2 py-1 text-xs outline-none disabled:opacity-60"
                     />
                     <input
                       type="text"
@@ -360,7 +360,7 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
                       disabled={bloqueada}
                       aria-label={t("campoHashtags")}
                       placeholder={t("hashtagsPlaceholder")}
-                      className="border-2 border-ink bg-card px-2 py-1 text-xs outline-none disabled:opacity-60"
+                      className="border-(length:--borde) border-ink rounded-theme bg-card px-2 py-1 text-xs outline-none disabled:opacity-60"
                     />
 
                     {pieza.estado === "error" && pieza.error ? (
