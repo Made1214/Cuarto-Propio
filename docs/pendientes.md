@@ -92,7 +92,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## 5. Calidad
 
-- [x] ~~**Tests unitarios:**~~ con Vitest (`npm test`, 56 tests): categorías (color, resolver, filtro), audio (formato real por bytes, duración y límites), pipeline de imágenes (formato real, tamaños, avatar, EXIF), título del Diario (`src/lib/diario/titulo.ts`, función pura sacada de las Server Actions), contraseña, configuración del tema, contraste y hashtags. Archivos `*.test.ts` junto al código. Vitest 3 porque la 4 y la 5 chocan con `@types/node` 20.
+- [x] ~~**Tests unitarios:**~~ con Vitest (`npm test`, 56 tests): categorías (color, resolver, filtro), audio (formato real por bytes, duración y límites), pipeline de imágenes (formato real, tamaños, avatar, EXIF), título del Diario (`src/lib/diario/titulo.ts`, función pura sacada de las Server Actions), contraseña, configuración del tema, contraste y hashtags. Archivos `*.test.ts` junto al código. Vitest 5 con `@types/node` 22 (Vitest 3 traía 2 alertas críticas de `tinypool`).
 - [ ] **Prueba de punta a punta (Playwright):** el script ya está (`e2e/flujo.spec.ts`, `playwright.config.ts`, `npm run e2e`; escritorio y celular). Con cuenta de prueba ya confirmada: `E2E_EMAIL=... E2E_PASSWORD=... npm run e2e`. Verificado aquí solo lo que no necesita sesión (ruta privada y contraseña incorrecta); **falta correr y ajustar los de con sesión** (Diario, borrador, Listas, secciones, cerrar sesión) con la base real: los selectores del botón de perfil y de «Empezar» son una suposición. Pendiente agregar: Vitrina, Audio y Personalización.
 
 ## Ya resuelto (para no volver a preguntarlo)
