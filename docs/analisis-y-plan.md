@@ -171,4 +171,4 @@ Nada de esto se construye todavía; queda anotado lo que el código ya deja prep
 ## 8. Decisiones abiertas
 
 1. **Categorías** (etapa B): ¿colores derivados del tema automáticamente, o elegibles uno por uno desde ya?
-2. **Borde en Void**: quedó siguiendo al color de acento. Si al probarlo preferís que siga a otro color, es un valor en `presets.ts`.
+2. **Borde en Void**: quedó siguiendo al color de acento. Si al probarlo prefieres que siga a otro color, es un valor en `presets.ts`.
