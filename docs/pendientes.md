@@ -1,6 +1,6 @@
 # Pendientes de la Fase 1
 
-Última revisión: 2026-11-15 · rama revisada: `dev` (commit `cdd6343`)
+Última revisión: 2026-11-15 · rama revisada: `dev` (commit `32b641e`)
 
 > **Regla de trabajo:** cada vez que se revise el estado del proyecto, primero
 > se hace `git fetch` y se analiza `origin/dev` (diff contra `main`, `tsc`,
@@ -9,7 +9,7 @@
 
 ## Estado de `dev`
 
-- 13 commits por delante de `main`, sin commits propios en `main` (fusión sin conflictos).
+- 15 commits por delante de `main`, sin commits propios en `main` (fusión sin conflictos).
 - `tsc --noEmit`, `eslint` y `next build`: sin errores. Pruebas con base real: **no verificadas** (el entorno de desarrollo no tiene las claves de Supabase).
 - Construido: acceso completo (entrar, crear cuenta, recuperar y restablecer contraseña, bloqueo tras 5 fallos), Diario, Listas, Vitrina, Audio, Perfil, términos y privacidad, bienvenida, medidor y aviso de espacio, PWA instalable, rediseño de navegación (barra única, barra inferior en el celular, botón Crear, filtros en chips). Migraciones 0001–0011, todas aplicadas en Supabase.
 
