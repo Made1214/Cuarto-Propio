@@ -82,10 +82,15 @@ test.describe("con sesión", () => {
 
   test("Listas: crear una lista y agregar un ítem", async ({ page }) => {
     await page.goto("/es/listas");
+    // El formulario está cerrado hasta tocar «Nueva lista» (puede haber dos
+    // botones: el del encabezado y el del estado vacío).
+    await page.getByRole("button", { name: /nueva lista/i }).first().click();
     await page.getByPlaceholder("Ponle nombre a esta lista").fill(`E2E lista ${sufijo}`);
     await page.keyboard.press("Enter");
-    await expect(page.getByText(`E2E lista ${sufijo}`).first()).toBeVisible();
+    // El nombre de cada lista es un campo editable, no texto suelto.
+    await expect(page.getByDisplayValue(`E2E lista ${sufijo}`)).toBeVisible();
 
+    // Las listas más nuevas van primero: la primera columna es la recién creada.
     await page.getByPlaceholder("Agregar ítem y Enter").first().fill("primer ítem");
     await page.keyboard.press("Enter");
     await expect(page.getByText("primer ítem").first()).toBeVisible();
