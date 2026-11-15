@@ -324,3 +324,5 @@ Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpet
 - No hay pantalla de registro público ni de recuperación de contraseña — hoy solo existe login. Este documento ahora pide ambas.
 - No hay rate limiting de intentos de login todavía.
 - La paleta de colores confirmada en "Identidad visual" no está aplicada como tema por defecto (la interfaz actual usa los grises por defecto de Tailwind).
+
+**Seguimiento:** los pendientes de la Fase 1 viven en `docs/pendientes.md`. Cada vez que se pida revisar el estado del proyecto, primero hacer `git fetch`, analizar `origin/dev` (diff contra `main`, `tsc`, `eslint`) y actualizar ese archivo.
