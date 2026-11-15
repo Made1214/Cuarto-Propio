@@ -1,6 +1,6 @@
 # Pendientes — para seguir en otro chat
 
-Última revisión: 2026-11-15 · rama revisada: `dev` (commit `b0624cc`)
+Última revisión: 2026-11-15 · rama revisada: `dev` (sobre `639ffd8`, más la actualización de dependencias)
 
 > **Regla de trabajo:** cada vez que se revise el estado del proyecto, primero
 > se hace `git fetch` y se analiza `origin/dev` (diff contra `main`, `tsc`,
@@ -24,7 +24,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## Estado de `dev`
 
-- 21 commits por delante de `main`, sin commits propios en `main`: la fusión no tiene conflictos.
+- 22 commits por delante de `main`, sin commits propios en `main`: la fusión no tiene conflictos.
 - `tsc --noEmit`, `eslint` y `next build` pasan sin errores.
 - Migraciones 0001–0011 aplicadas en Supabase.
 - La app ya corre en la computadora de la usuaria con su `.env.local`.
@@ -48,7 +48,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 1. **Probar todo con la base real** (sección 1). Es lo más importante: casi nada de lo último se probó con datos de verdad.
 2. **Operativo pendiente** (sección 2): Redirect URLs de Auth, backups y el correo de contacto de los textos legales.
 3. **Fusionar `dev` en `main` y desplegar en Vercel.**
-4. **Revisar las 14 alertas de `npm audit`** (sección 4).
+4. ~~Revisar las alertas de `npm audit`~~ (hecho; quedan 10 moderadas de herramientas, sección 4).
 5. **Tests automatizados** (sección 5).
 6. **Diseño pendiente** (sección 3): Fairy, la columna de filtros del Diario en escritorio y otros detalles.
 
@@ -85,8 +85,9 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## 4. Mantenimiento
 
-- [ ] **`npm audit`:** reporta 14 alertas (10 moderadas, 3 altas, 1 crítica). Revisarlas una por una para ver cuáles afectan a la app y cuáles solo a herramientas de desarrollo. **No** correr `npm audit fix --force`: puede romper la app.
-- [ ] **Rama `claude/gracious-tesla-3amhrb` en GitHub:** no salió de la sesión que construyó todo esto. Revisar qué tiene y borrarla si no sirve.
+- [x] ~~**`npm audit` (críticas y altas):**~~ resuelto: Next 16.3.5 → 16.4.6 (crítica), y `npm audit fix` sin `--force` para `sharp`, `zod` y `source-map-js` (altas). `tsc`, `eslint` y `next build` pasan.
+- [ ] **`npm audit` (10 moderadas que quedan):** `minimatch` (solo herramientas de lint) y `postcss-selector-parser` (vía `@tailwindcss/typography`, solo en el build). Arreglarlas exige `--force` con cambios mayores; dejarlas hasta que salga una versión compatible. **No** correr `npm audit fix --force`.
+- [ ] **Rama `claude/gracious-tesla-3amhrb` en GitHub:** no salió de la sesión que construyó todo esto. Solo tiene un commit con este mismo archivo de pendientes; ya está cubierto por `dev`, se puede borrar.
 - [ ] **Respaldo local de estilos del login:** si quedó un `git stash` con estilos viejos del login en la computadora de la usuaria, borrarlo (`git stash drop`) una vez confirmado que la pantalla nueva está bien.
 
 ## 5. Calidad
