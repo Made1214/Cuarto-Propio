@@ -183,6 +183,9 @@ const voidTema: TemaDiseno = {
   radio: "0px",
   anchoBorde: "2px",
   sombra: "suave",
+  // El lila de bordes y barras de título es un acento, no el color de la
+  // letra: con colores propios acompaña al acento.
+  tintaSigue: "secundarioMorado",
 };
 
 /** Temas con tokens ya definidos — lo único que existe hoy como opción real. */
@@ -191,7 +194,7 @@ export const TEMAS_DISPONIBLES = {
   whimsical,
   softsignal,
   void: voidTema,
-} satisfies Record<string, TemaDiseno>;
+} satisfies Record<string, TemaDiseno> as Record<"retro" | "whimsical" | "softsignal" | "void", TemaDiseno>;
 
 /** El tema de quien todavía no eligió ninguno: el look actual de la app. */
 export const TEMA_POR_DEFECTO = retro;

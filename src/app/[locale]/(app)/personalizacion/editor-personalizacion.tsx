@@ -16,7 +16,6 @@ import {
 } from "@/lib/temas/actions";
 import {
   COLORES_EDITABLES,
-  paletaEfectiva,
   RUTAS_ICONOS,
   SETS_ICONOS,
   type ColorEditable,
@@ -24,20 +23,13 @@ import {
   type ConfigTema,
 } from "@/lib/temas/config";
 import { revisarContraste, type ProblemaContraste } from "@/lib/temas/contraste";
+import { variablesPaleta } from "@/lib/temas/css";
+import { paletaDerivada, VARIABLES_TEMA, variablesPropiasTema } from "@/lib/temas/derivados";
 import { CURSORES, type CursorId } from "@/lib/temas/cursores";
 import { FUENTES_DIARIO, FUENTES_INTERFAZ } from "@/lib/temas/fuentes";
 import { TEMAS_DISPONIBLES, TEMAS_PLANEADOS, type PresetId } from "@/lib/temas/presets";
 import type { ModoColor } from "@/lib/temas/types";
 
-/** Qué variable CSS pinta cada color editable (las de globals.css). */
-const VARIABLE_COLOR: Record<ColorEditable, string[]> = {
-  secundarioMorado: ["--secondary-purple"],
-  primarioVerde: ["--primary-green"],
-  primarioRosa: ["--primary-pink"],
-  secundarioTurquesa: ["--secondary-turquoise"],
-  fondo: ["--background"],
-  texto: ["--foreground", "--muted"],
-};
 
 const CLASE_SECCION = "flex flex-col gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-5 shadow-marco";
 const CLASE_TITULO = "font-diario text-xl font-semibold text-secondary-purple";
@@ -177,7 +169,8 @@ function SeccionColores({ config, guardar }: PropsSeccion) {
   const [modo, setModo] = useState<ModoColor>("claro");
   const [borrador, setBorrador] = useState<ColoresPropios>({});
   const [problemas, setProblemas] = useState<ProblemaContraste[] | null>(null);
-  const tocados = useRef(new Set<string>());
+  // Elemento → variables que la vista previa le puso encima.
+  const tocados = useRef(new Map<HTMLElement, Set<string>>());
 
   // Se editan los colores del modo que se está viendo, así la vista previa
   // en vivo (sobre toda la app) muestra exactamente lo que se guarda.
@@ -191,25 +184,50 @@ function SeccionColores({ config, guardar }: PropsSeccion) {
 
   // Al salir de la pantalla sin guardar, la vista previa se deshace.
   useEffect(() => {
-    const variables = tocados.current;
+    const mapa = tocados.current;
     return () => {
-      for (const variable of variables) document.documentElement.style.removeProperty(variable);
+      for (const [elemento, variables] of mapa) {
+        for (const variable of variables) elemento.style.removeProperty(variable);
+      }
     };
   }, []);
 
-  const paleta = { ...paletaEfectiva(config, modo), ...borrador };
+  // La misma cuenta que hace el servidor al guardar: los colores elegidos
+  // más los que el tema deriva de ellos (tarjetas, bordes, y en Softsignal y
+  // Void su carcasa, sus pantallas y sus barras).
+  const paleta = paletaDerivada(config.preset, modo, borrador);
 
-  function cambiar(clave: ColorEditable, valor: string) {
-    setBorrador((actual) => ({ ...actual, [clave]: valor.toUpperCase() }));
-    setProblemas(null);
-    for (const variable of VARIABLE_COLOR[clave]) {
-      document.documentElement.style.setProperty(variable, valor);
-      tocados.current.add(variable);
+  function pintar(elemento: HTMLElement | null, variables: Record<string, string | null>) {
+    if (!elemento) return;
+    const puestas = tocados.current.get(elemento) ?? new Set<string>();
+    tocados.current.set(elemento, puestas);
+    for (const [variable, valor] of Object.entries(variables)) {
+      if (valor === null) elemento.style.removeProperty(variable);
+      else elemento.style.setProperty(variable, valor);
+      puestas.add(variable);
     }
   }
 
+  function cambiar(clave: ColorEditable, valor: string) {
+    const siguiente = { ...borrador, [clave]: valor.toUpperCase() };
+    setBorrador(siguiente);
+    setProblemas(null);
+
+    const vista = paletaDerivada(config.preset, modo, siguiente);
+    pintar(document.documentElement, variablesPaleta(vista));
+    // Las variables propias del tema viven en el envoltorio de la app. Las
+    // que ya no dependen de un color cambiado se sueltan, para que vuelva a
+    // mandar la hoja del tema.
+    const propias = variablesPropiasTema(config.preset, modo, vista);
+    const todas: Record<string, string | null> = {};
+    for (const { variable } of VARIABLES_TEMA[config.preset] ?? []) todas[variable] = propias[variable] ?? null;
+    pintar(document.querySelector<HTMLElement>("[data-tema]"), todas);
+  }
+
   function limpiarVistaPrevia() {
-    for (const variable of tocados.current) document.documentElement.style.removeProperty(variable);
+    for (const [elemento, variables] of tocados.current) {
+      for (const variable of variables) elemento.style.removeProperty(variable);
+    }
     tocados.current.clear();
   }
 
@@ -354,6 +372,14 @@ function SeccionTipografia({ config, guardar }: PropsSeccion) {
           ))}
         </div>
       </fieldset>
+
+      {config.fuenteDiario || config.fuenteInterfaz ? (
+        <div>
+          <button type="button" onClick={() => guardar(() => guardarTipografia(null, null))} className={`${CLASE_BOTON} bg-card text-ink`}>
+            {t("tipografia.restablecer")}
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }

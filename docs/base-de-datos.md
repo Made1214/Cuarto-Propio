@@ -135,10 +135,10 @@ Guarda tu personalización visual. Hoy solo se usa el color básico; el resto (c
 | Columna | Qué guarda |
 | --- | --- |
 | `nombre` | Nombre del tema ("Mi tema") |
-| `colores` | Paleta de colores, como JSON |
+| `colores` | Colores propios, guardados **por tema** y por modo: `{ temas: { retro: { claro: {…}, oscuro: {…} }, void: {…} } }`. Solo los seis que se eligen a mano; el resto se calcula |
 | `cursor` | Cursor del mouse elegido |
 | `iconos` | Set de iconos, como JSON |
-| `tipografia` | Tipografía elegida |
+| `tipografia` | Letras elegidas, también **por tema**: texto con JSON `{ temas: { retro: { diario, interfaz } } }` |
 
 ### `intentos_login`
 

@@ -426,7 +426,7 @@
     },
     "tema": {
       "titulo": "Theme",
-      "ayuda": "The overall look: box shape, borders, shadows and base colors. Switching themes goes back to its colors and fonts.",
+      "ayuda": "The overall look: box shapes, borders, shadows and base colors. Each theme keeps its own colors and fonts: when you come back to one, it is just as you left it.",
       "retro": "Y2K desktop windows: thick borders, square corners and solid shadow.",
       "whimsical": "Soft and warm, blogspot style: rounded corners, thin borders and a diffuse shadow.",
       "proximamente": "Coming soon: {nombres}.",
@@ -454,6 +454,7 @@
     "contraste": {
       "titulo": "Heads up: some combinations will be hard to read.",
       "texto": "Text on the background",
+      "tarjeta": "Text on cards",
       "acento": "Titles (accent) on the background",
       "barra": "Top bar letters on the accent",
       "botonVerde": "Text on green buttons",
@@ -465,6 +466,7 @@
     },
     "tipografia": {
       "titulo": "Typography",
+      "restablecer": "Back to the theme's fonts",
       "ayuda": "The font for what you write is separate from menus and buttons, so a decorative font never makes a button unreadable.",
       "diario": "For what you write",
       "interfaz": "For menus and buttons",

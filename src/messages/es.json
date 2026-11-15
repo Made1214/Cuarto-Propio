@@ -426,7 +426,7 @@
     },
     "tema": {
       "titulo": "Tema",
-      "ayuda": "El aspecto general: forma de las cajas, bordes, sombras y colores de base. Cambiar de tema vuelve a sus colores y letras.",
+      "ayuda": "El aspecto general: forma de las cajas, bordes, sombras y colores de base. Cada tema guarda sus propios colores y letras: al volver a uno, lo encuentras como lo dejaste.",
       "retro": "Ventanas de escritorio Y2K: bordes gruesos, esquinas rectas y sombra sólida.",
       "whimsical": "Suave y cálido, estilo blogspot: esquinas redondeadas, bordes finos y sombra difusa.",
       "proximamente": "Próximamente: {nombres}.",
@@ -454,6 +454,7 @@
     "contraste": {
       "titulo": "Ojo: algunas combinaciones van a costar leerse.",
       "texto": "El texto sobre el fondo",
+      "tarjeta": "El texto sobre las tarjetas",
       "acento": "Los títulos (acento) sobre el fondo",
       "barra": "Las letras de la barra superior sobre el acento",
       "botonVerde": "El texto de los botones verdes",
@@ -465,6 +466,7 @@
     },
     "tipografia": {
       "titulo": "Tipografía",
+      "restablecer": "Volver a las letras del tema",
       "ayuda": "La letra de lo que escribes va por separado de la de los menús y botones, para que una letra decorativa nunca vuelva ilegible un botón.",
       "diario": "Para lo que escribes",
       "interfaz": "Para menús y botones",

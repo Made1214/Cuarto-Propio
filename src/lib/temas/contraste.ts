@@ -15,7 +15,7 @@ export function contraste(a: string, b: string): number {
 
 export type ProblemaContraste = {
   /** Clave de mensaje en `personalizacion.contraste`. */
-  clave: "texto" | "acento" | "barra" | "botonVerde" | "botonRosa" | "botonTurquesa";
+  clave: "texto" | "tarjeta" | "acento" | "barra" | "botonVerde" | "botonRosa" | "botonTurquesa";
   ratio: number;
   minimo: number;
 };
@@ -29,6 +29,7 @@ export type ProblemaContraste = {
 export function revisarContraste(paleta: PaletaTema): ProblemaContraste[] {
   const casos: ProblemaContraste[] = [
     { clave: "texto", ratio: contraste(paleta.texto, paleta.fondo), minimo: 4.5 },
+    { clave: "tarjeta", ratio: contraste(paleta.texto, paleta.fondoTarjeta), minimo: 4.5 },
     { clave: "acento", ratio: contraste(paleta.secundarioMorado, paleta.fondo), minimo: 3 },
     { clave: "barra", ratio: contraste(paleta.fondo, paleta.secundarioMorado), minimo: 4.5 },
     { clave: "botonVerde", ratio: contraste(paleta.tintaFuerte, paleta.primarioVerde), minimo: 4.5 },

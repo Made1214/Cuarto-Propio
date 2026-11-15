@@ -60,6 +60,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 - [ ] **Audio:** grabar, cortar a los 10 minutos y reintentar una subida fallida.
 - [ ] **Listas:** crear, marcar, reordenar y borrar.
 - [ ] **Personalización:** elegir cada tema; guardar colores (y ver el aviso de contraste); cambiar las letras; subir un cursor y un icono propios. Comprobar que todo se mantiene al recargar y en otro dispositivo.
+- [ ] **Colores y letras por tema (nuevo, sin probar en pantalla):** en cada tema, cambiar los seis colores y ver que tarjetas, bordes y —en Softsignal y Void— carcasa, pantallas LCD, barras de título y cromo los acompañan, en claro y oscuro; cambiar las letras y ver que rótulos y títulos las siguen; cambiar de tema y volver, y comprobar que cada uno conserva lo suyo. Detalle en `docs/analisis-y-plan.md`, sección 3.
 - [ ] **Softsignal y Void en todas las pantallas** (Listas, Vitrina, Audio, editor, ficha de pieza, perfil, ventanita de Crear), en celular y escritorio, claro y oscuro. Estas pantallas solo se revisaron con capturas de una página de prueba, no con datos reales.
 - [ ] **Bienvenida:** sale una sola vez en una cuenta nueva.
 - [ ] **Medidor de espacio:** se ve en el perfil.

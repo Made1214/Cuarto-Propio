@@ -1,7 +1,8 @@
 import type { RutaSeccion } from "@/components/iconos-secciones";
 import { esCursor, type CursorId } from "./cursores";
 import { esFuenteDiario, esFuenteInterfaz, type FuenteDiarioId, type FuenteInterfazId } from "./fuentes";
-import { esPreset, TEMA_POR_DEFECTO, TEMAS_DISPONIBLES, type PresetId } from "./presets";
+import { paletaDerivada } from "./derivados";
+import { esPreset, TEMA_POR_DEFECTO, type PresetId } from "./presets";
 import type { ModoColor, PaletaTema } from "./types";
 
 /** Los colores que se pueden cambiar a mano. La tinta fuerte (texto sobre
@@ -73,6 +74,38 @@ function coloresValidos(crudo: unknown): ColoresPropios {
   return salida;
 }
 
+/**
+ * Colores y letras se guardan POR TEMA: cada tema con nombre recuerda su
+ * propia personalización, así cambiar de tema no borra nada y al volver se
+ * lo encuentra como se dejó. En la base es `{ temas: { retro: …, void: … } }`.
+ *
+ * Las filas anteriores a este cambio guardaban un solo juego suelto
+ * (`{ claro, oscuro }` / `{ diario, interfaz }`): se lee como el del tema que
+ * estaba activo.
+ */
+export function porTema(crudo: unknown, presetActivo: PresetId): Partial<Record<PresetId, unknown>> {
+  if (!crudo || typeof crudo !== "object") return {};
+  const objeto = crudo as Record<string, unknown>;
+  if (objeto.temas && typeof objeto.temas === "object") {
+    const salida: Partial<Record<PresetId, unknown>> = {};
+    for (const [id, valor] of Object.entries(objeto.temas as Record<string, unknown>)) {
+      if (esPreset(id)) salida[id] = valor;
+    }
+    return salida;
+  }
+  return Object.keys(objeto).length > 0 ? { [presetActivo]: objeto } : {};
+}
+
+/** `tipografia` es una columna de texto con JSON adentro. */
+export function leerTipografia(crudo: unknown): unknown {
+  if (typeof crudo !== "string") return {};
+  try {
+    return JSON.parse(crudo);
+  } catch {
+    return {};
+  }
+}
+
 /** Fila de `temas` (tal como viene de la base) → configuración validada.
  * Cualquier valor raro se descarta en vez de llegar al CSS. */
 export function configDesdeFila(fila: {
@@ -84,14 +117,9 @@ export function configDesdeFila(fila: {
 } | null): ConfigTema {
   if (!fila) return CONFIG_POR_DEFECTO;
 
-  const colores = (fila.colores ?? {}) as Record<string, unknown>;
-
-  let tipografia: Record<string, unknown> = {};
-  try {
-    tipografia = typeof fila.tipografia === "string" ? JSON.parse(fila.tipografia) : {};
-  } catch {
-    tipografia = {};
-  }
+  const preset = esPreset(fila.preset) ? fila.preset : CONFIG_POR_DEFECTO.preset;
+  const colores = (porTema(fila.colores, preset)[preset] ?? {}) as Record<string, unknown>;
+  const tipografia = (porTema(leerTipografia(fila.tipografia), preset)[preset] ?? {}) as Record<string, unknown>;
 
   let cursor: CursorTema = null;
   if (typeof fila.cursor === "string") {
@@ -110,7 +138,7 @@ export function configDesdeFila(fila: {
   }
 
   return {
-    preset: esPreset(fila.preset) ? fila.preset : CONFIG_POR_DEFECTO.preset,
+    preset,
     colores: { claro: coloresValidos(colores.claro), oscuro: coloresValidos(colores.oscuro) },
     fuenteDiario: esFuenteDiario(tipografia.diario) ? tipografia.diario : null,
     fuenteInterfaz: esFuenteInterfaz(tipografia.interfaz) ? tipografia.interfaz : null,
@@ -123,7 +151,8 @@ export function configDesdeFila(fila: {
 }
 
 /** La paleta que se ve en un modo: la del preset con los colores propios
- * encima. */
+ * encima, y los derivados (tarjeta, bordes) acompañándolos — ver
+ * `derivados.ts`. */
 export function paletaEfectiva(config: ConfigTema, modo: ModoColor): PaletaTema {
-  return { ...TEMAS_DISPONIBLES[config.preset].colores[modo], ...config.colores[modo] };
+  return paletaDerivada(config.preset, modo, config.colores[modo]);
 }

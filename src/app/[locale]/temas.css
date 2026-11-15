@@ -74,7 +74,7 @@
     --ss-rosa: #ff77b3;
     --ss-rosa-texto: #1a0f15;
     --ss-tecla: #353b36;
-    --ss-resplandor: 0 0 6px rgb(198 243 107 / 0.55);
+    --ss-resplandor: 0 0 6px color-mix(in srgb, var(--ss-lcd-texto) 55%, transparent);
   }
 }
 
@@ -92,7 +92,7 @@
   --ss-rosa: #ff77b3;
   --ss-rosa-texto: #1a0f15;
   --ss-tecla: #353b36;
-  --ss-resplandor: 0 0 6px rgb(198 243 107 / 0.55);
+  --ss-resplandor: 0 0 6px color-mix(in srgb, var(--ss-lcd-texto) 55%, transparent);
 }
 
 /* Fondo: mesa oscura con cuadrícula, sobre la que se apoya el aparato. */
@@ -114,7 +114,7 @@
 }
 
 [data-tema="softsignal"] .tema-marca {
-  font-family: var(--font-nunito), sans-serif;
+  font-family: var(--fuente-rotulo, var(--font-nunito), sans-serif);
   font-style: italic;
   font-weight: 900;
   font-size: 1.35rem;
@@ -133,7 +133,7 @@
     inset 1px 1px 0 var(--ss-brillo),
     0 3px 0 var(--ss-borde);
   color: var(--foreground);
-  font-family: var(--font-silkscreen), monospace;
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
   font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
@@ -168,7 +168,7 @@
   border-color: var(--foreground);
   border-radius: 8px;
   box-shadow: 0 3px 0 var(--ss-borde);
-  font-family: var(--font-silkscreen), monospace;
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
   font-weight: 400;
   text-transform: uppercase;
 }
@@ -202,7 +202,7 @@
 
 /* Títulos de sección: dígitos de pantalla LCD. */
 [data-tema="softsignal"] .tema-titulo {
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-titulo, var(--font-vt323), monospace);
   font-weight: 400;
   font-size: 3.25rem;
   line-height: 0.9;
@@ -245,7 +245,7 @@
 }
 
 [data-tema="softsignal"] .tema-lcd > * {
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   color: inherit;
 }
 
@@ -253,7 +253,7 @@
   background: var(--ss-lcd);
   border-color: var(--ss-lcd-borde);
   color: var(--ss-lcd-texto);
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 1.3rem;
   box-shadow: inset 0 0 12px rgb(0 0 0 / 0.6);
 }
@@ -301,7 +301,7 @@
 }
 
 [data-tema="softsignal"] .dec-rotulo {
-  font-family: var(--font-silkscreen), monospace;
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
   font-size: 10px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -349,7 +349,7 @@
   border-radius: 8px;
   box-shadow: inset 0 0 16px rgb(0 0 0 / 0.6);
   color: var(--ss-lcd-texto);
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 17px;
   line-height: 1.1;
   text-shadow: var(--ss-resplandor);
@@ -424,7 +424,7 @@
   color: var(--ss-rosa-texto);
   border: 2px solid var(--foreground);
   box-shadow: 3px 3px 0 var(--foreground);
-  font-family: var(--font-silkscreen), monospace;
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
   font-size: 12px;
 }
 
@@ -433,7 +433,7 @@
 [data-tema="void"] {
   --vd-brillo-fondo: rgb(255 95 210 / 0.18);
   --vd-brillo-fondo-2: rgb(140 107 255 / 0.18);
-  --vd-puntos: rgb(122 92 224 / 0.35);
+  --vd-puntos: color-mix(in srgb, var(--vd-lila) 35%, transparent);
   --vd-cuadro-a: #7a5ce0;
   --vd-cuadro-b: #ffffff;
   --vd-barra-a: #b79cff;
@@ -442,8 +442,8 @@
   --vd-lila: #7a5ce0;
   --vd-rosa: #b0187a;
   --vd-rosa-texto: #ffffff;
-  --vd-resplandor: 4px 4px 0 rgb(122 92 224 / 0.35);
-  --vd-resplandor-rosa: 0 0 0 3px rgb(176 24 122 / 0.2);
+  --vd-resplandor: 4px 4px 0 color-mix(in srgb, var(--vd-lila) 35%, transparent);
+  --vd-resplandor-rosa: 0 0 0 3px color-mix(in srgb, var(--vd-rosa) 20%, transparent);
   --vd-cromo-a: #ffffff;
   --vd-cromo-b: #ff7ad9;
   --vd-cromo-c: #8c6bff;
@@ -466,8 +466,8 @@
     --vd-lila: #9b7bff;
     --vd-rosa: #ff5fd2;
     --vd-rosa-texto: #1b0716;
-    --vd-resplandor: 0 0 22px rgb(155 123 255 / 0.28);
-    --vd-resplandor-rosa: 0 0 14px #ff5fd2;
+    --vd-resplandor: 0 0 22px color-mix(in srgb, var(--vd-lila) 28%, transparent);
+    --vd-resplandor-rosa: 0 0 14px var(--vd-rosa);
     --vd-cromo-a: #ffd6f5;
     --vd-cromo-b: #ff5fd2;
     --vd-cromo-c: #9b7bff;
@@ -489,8 +489,8 @@
   --vd-lila: #9b7bff;
   --vd-rosa: #ff5fd2;
   --vd-rosa-texto: #1b0716;
-  --vd-resplandor: 0 0 22px rgb(155 123 255 / 0.28);
-  --vd-resplandor-rosa: 0 0 14px #ff5fd2;
+  --vd-resplandor: 0 0 22px color-mix(in srgb, var(--vd-lila) 28%, transparent);
+  --vd-resplandor-rosa: 0 0 14px var(--vd-rosa);
   --vd-cromo-a: #ffd6f5;
   --vd-cromo-b: #ff5fd2;
   --vd-cromo-c: #9b7bff;
@@ -546,7 +546,7 @@
 [data-tema="void"] .tema-marca,
 [data-tema="void"] .tema-titulo,
 .dec-vd-cromo {
-  font-family: var(--font-rubik), sans-serif;
+  font-family: var(--fuente-titulo, var(--font-rubik), sans-serif);
   font-style: italic;
   font-weight: 900;
   letter-spacing: -0.01em;
@@ -575,7 +575,7 @@
   background: transparent;
   border-color: transparent;
   color: var(--foreground);
-  font-family: var(--font-pixelify), monospace;
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
   font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -592,7 +592,7 @@
   border-color: var(--vd-rosa);
   border-radius: 0;
   box-shadow: var(--vd-resplandor-rosa);
-  font-family: var(--font-pixelify), monospace;
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
   font-weight: 400;
   text-transform: uppercase;
 }
@@ -629,7 +629,7 @@
       right 6px center / 52px 14px no-repeat,
     linear-gradient(90deg, var(--vd-barra-a), var(--vd-barra-b));
   color: var(--vd-barra-texto);
-  font-family: var(--font-pixelify), monospace;
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
   font-size: 13px;
   letter-spacing: 0.05em;
 }
@@ -668,7 +668,7 @@
 }
 
 [data-tema="void"] .tema-lcd > * {
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   color: inherit;
 }
 
@@ -677,7 +677,7 @@
   border-color: var(--vd-lila);
   border-radius: 0;
   background: var(--background);
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 1.3rem;
 }
 
@@ -687,7 +687,7 @@
   border-radius: 999px;
   background: transparent;
   color: var(--foreground);
-  font-family: var(--font-pixelify), monospace;
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
 }
 
 [data-tema="void"] .tema-chip-activo {
@@ -712,7 +712,7 @@
   padding: 0 8px;
   background: linear-gradient(90deg, var(--vd-barra-a), var(--vd-barra-b));
   color: var(--vd-barra-texto);
-  font-family: var(--font-pixelify), monospace;
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
   font-size: 12px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -730,7 +730,7 @@
   flex-direction: row;
   align-items: center;
   color: var(--vd-rosa);
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 20px;
   line-height: 1;
 }
@@ -741,20 +741,20 @@
   background: #000000;
   border: 1px solid var(--vd-lila);
   color: var(--vd-digital);
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 26px;
   letter-spacing: 3px;
 }
 
 .dec-vd-conteos {
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 17px;
 }
 
 .dec-vd-reproductor {
   background: #000000;
   color: #ede4ff;
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
   font-size: 18px;
   text-decoration: none;
 }
@@ -803,7 +803,7 @@
     padding: 0 12px;
     border: 1px solid var(--vd-lila);
     color: var(--foreground);
-    font-family: var(--font-pixelify), monospace;
+    font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
     font-size: 13px;
     text-decoration: none;
   }
@@ -820,7 +820,7 @@
   .dec-vd-reloj {
     margin-left: auto;
     color: var(--foreground);
-    font-family: var(--font-vt323), monospace;
+    font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
     font-size: 20px;
   }
 }

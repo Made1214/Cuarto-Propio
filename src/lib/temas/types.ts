@@ -47,4 +47,10 @@ export type TemaDiseno = {
   sombra: EstiloSombra;
   /** Requerido cuando `sombra` es "dura" (sombra sólida desplazada, sin blur). */
   sombraOffset?: string;
+  /**
+   * De qué color depende la tinta (bordes) cuando la usuaria pone colores
+   * propios. Por defecto del texto; en los temas donde la tinta es un acento
+   * y no el color de la letra (Void), del color que se indique acá.
+   */
+  tintaSigue?: keyof PaletaTema;
 };

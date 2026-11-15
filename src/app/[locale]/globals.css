@@ -57,7 +57,7 @@
   --color-secondary-purple: var(--secondary-purple);
   --font-sans: var(--fuente-interfaz);
   --font-diario: var(--fuente-diario);
-  --font-pixel: var(--font-silkscreen);
+  --font-pixel: var(--fuente-rotulo, var(--font-silkscreen));
   --radius-theme: var(--radio);
   --shadow-marco-sm: var(--sombra-sm);
   --shadow-marco: var(--sombra);
