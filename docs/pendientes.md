@@ -92,8 +92,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## 5. Calidad
 
-- [x] ~~**Tests unitarios:**~~ con Vitest (`npm test`, 45 tests): categorías (color, resolver, filtro), audio (formato real por bytes, duración y límites), título del Diario (`src/lib/diario/titulo.ts`, función pura sacada de las Server Actions), contraseña, configuración del tema, contraste y hashtags. Archivos `*.test.ts` junto al código. Vitest 3 porque la 4 y la 5 chocan con `@types/node` 20.
-- [ ] **Más tests:** pipeline de imágenes (`src/lib/imagenes/procesar.ts`, con `sharp`) y límites de imágenes.
+- [x] ~~**Tests unitarios:**~~ con Vitest (`npm test`, 56 tests): categorías (color, resolver, filtro), audio (formato real por bytes, duración y límites), pipeline de imágenes (formato real, tamaños, avatar, EXIF), título del Diario (`src/lib/diario/titulo.ts`, función pura sacada de las Server Actions), contraseña, configuración del tema, contraste y hashtags. Archivos `*.test.ts` junto al código. Vitest 3 porque la 4 y la 5 chocan con `@types/node` 20.
 - [ ] **Prueba de punta a punta:** con Playwright (ya está instalado en el entorno de Claude Code) y una cuenta de prueba.
 
 ## Ya resuelto (para no volver a preguntarlo)
