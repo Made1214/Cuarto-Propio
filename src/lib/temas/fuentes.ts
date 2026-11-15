@@ -12,12 +12,15 @@ export const FUENTES_DIARIO = {
   inter: { nombre: "Inter", variable: "--font-inter", respaldo: "system-ui, sans-serif" },
   caveat: { nombre: "Caveat", variable: "--font-caveat", respaldo: "cursive" },
   maquina: { nombre: "Special Elite", variable: "--font-special-elite", respaldo: "Courier New, monospace" },
+  mono: { nombre: "IBM Plex Mono", variable: "--font-plex-mono", respaldo: "Courier New, monospace" },
 } as const;
 
 export const FUENTES_INTERFAZ = {
   inter: { nombre: "Inter", variable: "--font-inter", respaldo: "system-ui, sans-serif" },
   nunito: { nombre: "Nunito", variable: "--font-nunito", respaldo: "system-ui, sans-serif" },
   pixel: { nombre: "Silkscreen", variable: "--font-silkscreen", respaldo: "monospace" },
+  mono: { nombre: "IBM Plex Mono", variable: "--font-plex-mono", respaldo: "Courier New, monospace" },
+  pixelify: { nombre: "Pixelify Sans", variable: "--font-pixelify", respaldo: "monospace" },
 } as const;
 
 export type FuenteDiarioId = keyof typeof FUENTES_DIARIO;

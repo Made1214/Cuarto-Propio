@@ -74,7 +74,7 @@ export default async function DiarioPage({
               <rect x="4" y="8" width="2" height="2" fill="var(--secondary-turquoise)" />
             </svg>
             <div>
-              <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+              <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
               <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
             </div>
           </div>
@@ -168,11 +168,11 @@ export default async function DiarioPage({
                             en la letra del diario. */}
                         <Link
                           href={`/diario/${entrada.codigo}`}
-                          className="flex gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco transition-transform hover:-translate-y-0.5 sm:gap-5 sm:p-5"
+                          className="tema-panel flex gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco transition-transform hover:-translate-y-0.5 sm:gap-5 sm:p-5"
                         >
                           <time
                             dateTime={entrada.fecha}
-                            className="flex w-11 shrink-0 flex-col items-center pt-0.5 sm:w-13"
+                            className="tema-lcd flex w-11 shrink-0 flex-col items-center pt-0.5 sm:w-13"
                           >
                             <span className="font-pixel text-[22px] leading-none sm:text-[26px]">
                               {format.dateTime(new Date(entrada.fecha), { day: "2-digit" })}

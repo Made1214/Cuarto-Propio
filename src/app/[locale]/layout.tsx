@@ -1,6 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { Caveat, Inter, Lora, Nunito, Silkscreen, Special_Elite } from "next/font/google";
+import {
+  Caveat,
+  IBM_Plex_Mono,
+  Inter,
+  Lora,
+  Nunito,
+  Pixelify_Sans,
+  Rubik,
+  Silkscreen,
+  Special_Elite,
+  VT323,
+} from "next/font/google";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SCRIPT_MODO } from "@/lib/temas/modo";
@@ -85,6 +96,45 @@ const nunito = Nunito({
   fallback: ["system-ui", "sans-serif"],
 });
 
+// Las de los temas Softsignal y Void (src/app/[locale]/temas.css): letra
+// mono de máquina, la de las pantallas LCD, la pixelada redonda de las
+// ventanitas Y2K y la itálica gruesa de los títulos cromados.
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
+  fallback: ["Courier New", "monospace"],
+});
+
+const vt323 = VT323({
+  variable: "--font-vt323",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
+  fallback: ["monospace"],
+});
+
+const pixelify = Pixelify_Sans({
+  variable: "--font-pixelify",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  fallback: ["monospace"],
+});
+
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin"],
+  weight: "900",
+  style: "italic",
+  display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
+});
+
 export const metadata: Metadata = {
   title: "Cuarto Propio",
   description: "Diario, listas, vitrina y audio — tu espacio personal.",
@@ -116,7 +166,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${lora.variable} ${silkscreen.variable} ${caveat.variable} ${specialElite.variable} ${nunito.variable} h-full antialiased`}
+      className={`${inter.variable} ${lora.variable} ${silkscreen.variable} ${caveat.variable} ${specialElite.variable} ${nunito.variable} ${plexMono.variable} ${vt323.variable} ${pixelify.variable} ${rubik.variable} h-full antialiased`}
       // El script de abajo le escribe `data-modo` a este mismo elemento antes
       // de que React hidrate: sin esto React lo tomaría por un desajuste.
       suppressHydrationWarning

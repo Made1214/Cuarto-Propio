@@ -197,7 +197,7 @@ export function Grabador() {
           reconoce como "grabar" sin leer nada) y al lado, qué va a pasar. */}
       <section
         aria-label={t("grabadora")}
-        className="flex items-center gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco sm:gap-5 sm:p-5"
+        className="tema-panel flex items-center gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco sm:gap-5 sm:p-5"
       >
         <button
           type="button"

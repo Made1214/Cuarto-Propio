@@ -162,7 +162,7 @@ export default async function VitrinaPage({
             <IconoVitrina />
           </span>
           <div>
-            <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
         </div>
@@ -181,7 +181,7 @@ export default async function VitrinaPage({
       />
 
       {hashtags.length > 0 ? (
-        <nav aria-label={t("filtrarHashtag")} className="-mx-5 -mt-3 sm:mx-0">
+        <nav aria-label={t("filtrarHashtag")} className="tema-fila-chips -mx-5 -mt-3 sm:mx-0">
           <ul className="flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
             {hashtags.map((etiqueta) => {
               const activo = etiqueta.nombre === hashtag;

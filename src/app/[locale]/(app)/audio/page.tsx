@@ -40,7 +40,7 @@ export default async function AudioPage({
             <IconoAudio />
           </span>
           <div>
-            <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
         </div>

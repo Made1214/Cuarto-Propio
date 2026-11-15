@@ -6,6 +6,7 @@ import {
   type UsuarioSesion,
 } from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
+import { DecoracionTema } from "@/components/decoracion-tema/decoracion-tema";
 import { IconosProvider } from "@/components/icono-seccion";
 import { MenuCrear } from "@/components/menu-crear";
 import { generarCssTema } from "@/lib/temas/css";
@@ -69,14 +70,19 @@ export default async function AppLayout({
         contenido, así el primer pintado ya sale con el tema. Solo lleva
         valores validados (ver `generarCssTema`). */}
       <style dangerouslySetInnerHTML={{ __html: generarCssTema(tema) }} />
-      <div className="flex min-h-full flex-1 flex-col bg-background text-foreground">
+      {/* `data-tema`: los temas con estilo propio (Softsignal, Void) cuelgan
+          de acá su decoración en `temas.css`; los demás solo usan tokens. */}
+      <div
+        data-tema={tema.preset}
+        className="tema-pagina flex min-h-full flex-1 flex-col bg-background text-foreground"
+      >
         {/* Una sola barra fija arriba: marca, secciones (desde tablet), Crear y
           el avatar. Antes eran dos barras apiladas (título decorativo + menú)
           que ocupaban 96 px fijos en el celular. z-30 para pasarle por encima
           a los desplegables de las pantallas, que usan z-20. Los <dialog>
           (perfil, Crear, ventanitas) no compiten: el navegador los pinta en
           su capa superior, por encima de cualquier z-index. */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
+        <header className="tema-barra sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
           <div className="flex items-center gap-2.5">
             <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
               <path
@@ -84,7 +90,7 @@ export default async function AppLayout({
                 fill="var(--primary-pink)"
               />
             </svg>
-            <span className="font-pixel text-sm tracking-wide text-background">
+            <span className="tema-marca font-pixel text-sm tracking-wide text-background">
               CUARTO PROPIO
             </span>
           </div>
@@ -113,8 +119,14 @@ export default async function AppLayout({
           <Suspense fallback={null}>
             <AvisosCuenta usuarioId={usuario.id} locale={locale} />
           </Suspense>
-          {children}
+          {/* El marco del contenido: en Softsignal es la carcasa del aparato,
+              en Void la ventana principal; en los demás temas no se ve. */}
+          <div className="tema-contenido flex flex-1 flex-col">{children}</div>
         </main>
+
+        <Suspense fallback={null}>
+          <DecoracionTema preset={tema.preset} locale={locale} />
+        </Suspense>
 
         <NavSecciones secciones={links} variante="inferior" />
       </div>

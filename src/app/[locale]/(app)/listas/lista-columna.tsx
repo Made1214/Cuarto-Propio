@@ -180,7 +180,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
   }
 
   return (
-    <div className="flex w-full flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
+    <div className="tema-panel flex w-full flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
       <div className="flex items-center justify-between gap-1">
         <input
           ref={nombreRef}

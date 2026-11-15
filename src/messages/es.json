@@ -429,7 +429,9 @@
       "ayuda": "El aspecto general: forma de las cajas, bordes, sombras y colores de base. Cambiar de tema vuelve a sus colores y letras.",
       "retro": "Ventanas de escritorio Y2K: bordes gruesos, esquinas rectas y sombra sólida.",
       "whimsical": "Suave y cálido, estilo blogspot: esquinas redondeadas, bordes finos y sombra difusa.",
-      "proximamente": "Próximamente: {nombres}."
+      "proximamente": "Próximamente: {nombres}.",
+      "softsignal": "Aparato retro: carcasa de plástico, teclas con lucecita y pantallas LCD verdes.",
+      "void": "Y2K emo: ventanitas de los 2000, estrellas, brillos y títulos cromados."
     },
     "colores": {
       "titulo": "Colores",
@@ -497,5 +499,36 @@
       "sesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo.",
       "fallo": "No se pudo subir la imagen. Prueba de nuevo."
     }
+  },
+  "decoracion": {
+    "panelIzquierdo": "Tu cuarto en números",
+    "panelDerecho": "Lo último",
+    "senal": "SEÑAL",
+    "frecuencia": "FRECUENCIA PERSONAL",
+    "ahoraSuena": "Ahora suena",
+    "tuCuarto": "Tu cuarto",
+    "entradas": "entradas",
+    "piezas": "piezas",
+    "notas": "notas",
+    "listas": "listas",
+    "audio": "audio",
+    "sinNotas": "Todavía no grabaste nada",
+    "notaSinTitulo": "Nota sin título",
+    "archivo": "ARCHIVO",
+    "estado": "Estado",
+    "escribiendo": "escribiendo en tu cuarto",
+    "brillo": "brillo",
+    "angel": "¿ángel?",
+    "barraTareas": "Barra de tareas",
+    "inicio": "inicio",
+    "dias": [
+      "L",
+      "M",
+      "M",
+      "J",
+      "V",
+      "S",
+      "D"
+    ]
   }
 }

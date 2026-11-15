@@ -55,7 +55,7 @@ export function NotaAudio({
   });
 
   return (
-    <div className="flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
+    <div className="tema-panel flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
       <div className="flex items-center gap-1">
         <input
           ref={tituloRef}

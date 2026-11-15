@@ -7,8 +7,8 @@ import type { Categoria } from "@/lib/categorias/types";
  * acá, hashtags en la Vitrina): misma altura, mismo texto, mismo estado
  * activo, para que filtrar se lea igual en todos los módulos. */
 export const CLASE_CHIP =
-  "flex h-9 shrink-0 items-center gap-2 border-(length:--borde) border-ink rounded-theme px-3 text-[13px] whitespace-nowrap transition-colors";
-export const CLASE_CHIP_ACTIVO = "bg-secondary-purple font-semibold text-background";
+  "tema-chip flex h-9 shrink-0 items-center gap-2 border-(length:--borde) border-ink rounded-theme px-3 text-[13px] whitespace-nowrap transition-colors";
+export const CLASE_CHIP_ACTIVO = "tema-chip-activo bg-secondary-purple font-semibold text-background";
 export const CLASE_CHIP_INACTIVO = "bg-card font-medium text-ink hover:bg-primary-pink/30";
 
 /**
@@ -43,7 +43,7 @@ export function FiltroCategoria({
   if (categorias.length === 0) return null;
 
   return (
-    <nav aria-label={t("filtrarCategoria")} className="-mx-5 sm:mx-0">
+    <nav aria-label={t("filtrarCategoria")} className="tema-fila-chips -mx-5 sm:mx-0">
       <ul className="flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
         <li>
           <Link

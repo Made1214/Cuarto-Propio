@@ -44,7 +44,9 @@
 - [x] ~~Cursor: set curado + subir imagen propia (validando tipo real).~~
 - [x] ~~Iconos de la interfaz: set curado + subir imagen propia.~~
 - [ ] Probar con base real: elegir tema, guardar colores, subir cursor e icono propios, y ver que se mantenga al recargar y en otro dispositivo.
-- [ ] Diseñar Fairy y Emo (reservados en `TEMAS_PLANEADOS`).
+- [x] ~~Temas con estilo propio Softsignal y Void (claro y oscuro), con decoración de costados.~~ (`temas.css`)
+- [ ] Probar Softsignal y Void con contenido real en todas las pantallas (Listas, Vitrina, Audio, editor, perfil), en celular y escritorio.
+- [ ] Diseñar Fairy (reservado en `TEMAS_PLANEADOS`).
 
 ## 5. Galería / imágenes
 

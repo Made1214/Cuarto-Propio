@@ -96,10 +96,101 @@ const retro: TemaDiseno = {
   sombraOffset: "4px",
 };
 
+/**
+ * Softsignal: la app como un aparato retro de plástico (carcasa crema, teclas
+ * con lucecita, pantallas LCD verdes). Los tokens de abajo cubren color,
+ * letra y forma; lo que no es un token —la textura de cuadrícula del fondo,
+ * el bisel de las piezas, el LCD de las fechas y del buscador, las teclas de
+ * la barra— vive en `src/app/[locale]/temas.css`, colgado de
+ * `[data-tema="softsignal"]`.
+ */
+const softsignal: TemaDiseno = {
+  id: "softsignal",
+  nombre: "Softsignal",
+  descripcion: "Aparato retro: carcasa de plástico, teclas con lucecita y pantallas LCD verdes.",
+  colores: {
+    claro: {
+      fondo: "#E6E2D0",
+      fondoTarjeta: "#F5F2E6",
+      texto: "#2C3122",
+      textoMuted: "rgba(44,49,34,0.68)",
+      tinta: "#2C3122",
+      tintaFuerte: "#2C3122",
+      primarioVerde: "#B8D96E",
+      primarioRosa: "#F2A3C4",
+      secundarioTurquesa: "#9CCFC4",
+      secundarioMorado: "#3D4A26",
+    },
+    oscuro: {
+      fondo: "#2B302C",
+      fondoTarjeta: "#1B201C",
+      texto: "#E4ECD3",
+      textoMuted: "rgba(228,236,211,0.68)",
+      tinta: "#A9B39C",
+      tintaFuerte: "#1A0F15",
+      primarioVerde: "#C6F36B",
+      primarioRosa: "#FF77B3",
+      secundarioTurquesa: "#6FD3CC",
+      secundarioMorado: "#C6F36B",
+    },
+  },
+  fuenteDiario: "mono",
+  fuenteInterfaz: "mono",
+  radio: "10px",
+  anchoBorde: "2px",
+  sombra: "dura",
+  sombraOffset: "3px",
+};
+
+/**
+ * Void: Y2K emo. Todo vive en ventanitas de escritorio de los 2000 con barra
+ * de título, sobre un fondo estrellado con franjas de cuadros; títulos en
+ * letra cromada y acentos rosa fuerte con brillo. Igual que Softsignal, lo
+ * decorativo está en `temas.css` (`[data-tema="void"]`).
+ */
+const voidTema: TemaDiseno = {
+  id: "void",
+  nombre: "Void",
+  descripcion: "Y2K emo: ventanitas de los 2000, estrellas, brillos y títulos cromados.",
+  colores: {
+    claro: {
+      fondo: "#F3ECFF",
+      fondoTarjeta: "#FFFFFF",
+      texto: "#2A1B47",
+      textoMuted: "rgba(42,27,71,0.7)",
+      tinta: "#7A5CE0",
+      tintaFuerte: "#2A1B47",
+      primarioVerde: "#7FE8B0",
+      primarioRosa: "#FF7AD9",
+      secundarioTurquesa: "#8FD8F0",
+      secundarioMorado: "#A0157A",
+    },
+    oscuro: {
+      fondo: "#0A0614",
+      fondoTarjeta: "#140C27",
+      texto: "#EDE4FF",
+      textoMuted: "rgba(237,228,255,0.7)",
+      tinta: "#9B7BFF",
+      tintaFuerte: "#1B0716",
+      primarioVerde: "#3DFF8A",
+      primarioRosa: "#FF5FD2",
+      secundarioTurquesa: "#8FE8FF",
+      secundarioMorado: "#FF5FD2",
+    },
+  },
+  fuenteDiario: "inter",
+  fuenteInterfaz: "pixelify",
+  radio: "0px",
+  anchoBorde: "2px",
+  sombra: "suave",
+};
+
 /** Temas con tokens ya definidos — lo único que existe hoy como opción real. */
 export const TEMAS_DISPONIBLES = {
   retro,
   whimsical,
+  softsignal,
+  void: voidTema,
 } satisfies Record<string, TemaDiseno>;
 
 /** El tema de quien todavía no eligió ninguno: el look actual de la app. */
@@ -118,5 +209,4 @@ export function esPreset(valor: unknown): valor is PresetId {
  */
 export const TEMAS_PLANEADOS = [
   { id: "fairy", vibra: "Pastel soñado: cursiva, brillos, gradientes suaves." },
-  { id: "emo", vibra: "Oscuro y dramático: tipografía gótica, alto contraste, acentos en rojo/negro." },
 ] as const;

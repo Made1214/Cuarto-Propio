@@ -49,7 +49,7 @@ export function MenuCrear({ variante }: { variante: "barra" | "inferior" }) {
           onClick={() => setAbierto(true)}
           aria-haspopup="dialog"
           aria-expanded={abierto}
-          className="flex h-10 items-center gap-1.5 border-(length:--borde) border-ink rounded-theme bg-primary-green px-4 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+          className="tema-crear flex h-10 items-center gap-1.5 border-(length:--borde) border-ink rounded-theme bg-primary-green px-4 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
         >
           <IconoMas tamano={18} />
           {t("crear")}

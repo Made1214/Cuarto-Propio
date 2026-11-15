@@ -429,7 +429,9 @@
       "ayuda": "The overall look: box shape, borders, shadows and base colors. Switching themes goes back to its colors and fonts.",
       "retro": "Y2K desktop windows: thick borders, square corners and solid shadow.",
       "whimsical": "Soft and warm, blogspot style: rounded corners, thin borders and a diffuse shadow.",
-      "proximamente": "Coming soon: {nombres}."
+      "proximamente": "Coming soon: {nombres}.",
+      "softsignal": "Retro gadget: plastic casing, keys with little lights and green LCD screens.",
+      "void": "Y2K emo: 2000s desktop windows, stars, glitter and chrome titles."
     },
     "colores": {
       "titulo": "Colors",
@@ -497,5 +499,36 @@
       "sesion": "Your session expired. Sign in again and try once more.",
       "fallo": "Couldn't upload the image. Try again."
     }
+  },
+  "decoracion": {
+    "panelIzquierdo": "Your room in numbers",
+    "panelDerecho": "Latest",
+    "senal": "SIGNAL",
+    "frecuencia": "PERSONAL FREQUENCY",
+    "ahoraSuena": "Now playing",
+    "tuCuarto": "Your room",
+    "entradas": "entries",
+    "piezas": "pieces",
+    "notas": "notes",
+    "listas": "lists",
+    "audio": "audio",
+    "sinNotas": "Nothing recorded yet",
+    "notaSinTitulo": "Untitled note",
+    "archivo": "ARCHIVE",
+    "estado": "Status",
+    "escribiendo": "writing in your room",
+    "brillo": "glitter",
+    "angel": "angel?",
+    "barraTareas": "Taskbar",
+    "inicio": "start",
+    "dias": [
+      "M",
+      "T",
+      "W",
+      "T",
+      "F",
+      "S",
+      "S"
+    ]
   }
 }

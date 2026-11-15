@@ -53,7 +53,7 @@ export function NavSecciones({
   return (
     <nav
       aria-label={t("secciones")}
-      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t-(length:--borde-grueso) border-ink bg-card pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden"
+      className="tema-nav-inferior fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t-(length:--borde-grueso) border-ink bg-card pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden"
     >
       {secciones.slice(0, mitad).map((seccion) => (
         <LinkSeccion key={seccion.href} seccion={seccion} activa={esActiva(seccion.href)} variante="inferior" />
@@ -79,7 +79,7 @@ function LinkSeccion({
 }) {
   const clases =
     variante === "barra"
-      ? `relative flex h-10 items-center gap-2 border-(length:--borde) px-3.5 text-sm transition-colors ${
+      ? `tema-nav-link relative flex h-10 items-center gap-2 border-(length:--borde) px-3.5 text-sm transition-colors ${
           activa
             ? "border-ink bg-background font-bold text-foreground"
             : "border-transparent font-medium text-background hover:bg-background/15"
