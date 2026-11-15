@@ -19,7 +19,9 @@
     "nuevaListaAyuda": "Books, ideas, to-dos…",
     "cerrar": "Close",
     "filtrarCategoria": "Filter by category",
-    "todas": "All"
+    "todas": "All",
+    "avisoStorage": "Your storage is at {porcentaje}%: {usado} of {limite}. When it fills up you won't be able to upload more photos or audio.",
+    "avisoStorageLleno": "Your storage is full ({usado} of {limite}). To upload more photos or audio, free up space or move to a plan with more storage."
   },
   "perfil": {
     "titulo": "Profile",
@@ -51,7 +53,12 @@
     "proximamente": "Soon",
     "cerrarSesion": "Log out",
     "errorFormato": "Unsupported format. Upload a JPG, PNG or WebP.",
-    "errorSesion": "Your session expired. Sign in again and try once more."
+    "errorSesion": "Your session expired. Sign in again and try once more.",
+    "terminos": "Terms of use",
+    "privacidad": "Privacy",
+    "espacioUsado": "Storage used",
+    "espacioDe": "{usado} of {limite}",
+    "espacioAyuda": "Photos and audio. We'll warn you before it fills up."
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -104,7 +111,12 @@
     "contrasenaNueva": "New password",
     "guardarContrasena": "Save and sign in",
     "pedirOtro": "Ask for another link",
-    "errorRestablecer": "Couldn't change the password. Try again."
+    "errorRestablecer": "Couldn't change the password. Try again.",
+    "cuentaBloqueada": "Too many failed attempts. For your security, wait {minutos, plural, one {# minute} other {# minutes}} before trying again.",
+    "legal": "By creating an account you accept the <terminos>terms of use</terminos> and the <privacidad>privacy policy</privacidad>.",
+    "terminos": "Terms of use",
+    "privacidad": "Privacy",
+    "documentos": "Documents"
   },
   "diario": {
     "titulo": "Journal",
@@ -306,5 +318,88 @@
     "appActualizadaBarra": "Something new",
     "appActualizadaTitulo": "Your room got a refresh",
     "recargar": "Reload"
+  },
+  "legal": {
+    "documentos": "Documents",
+    "actualizado": "Last updated: November 15, 2026",
+    "terminos": {
+      "titulo": "Terms of use",
+      "intro": "Cuarto Propio is a personal space to write, collect and keep your everyday life. By using it you accept these terms, written in plain language.",
+      "secciones": [
+        {
+          "titulo": "Your account",
+          "texto": "You need a verified email and a password to sign in. Keep your password safe: what happens inside your account is your responsibility."
+        },
+        {
+          "titulo": "Your content is yours",
+          "texto": "Everything you write, upload or record remains yours. You only give us permission to store it and show it to you, including making lighter versions of your photos so they load fast. We don't publish it or share it with anyone."
+        },
+        {
+          "titulo": "Acceptable use",
+          "texto": "Only keep content that is yours or that you have the right to keep. Don't use Cuarto Propio for anything illegal, and don't try to access other accounts or overload the service."
+        },
+        {
+          "titulo": "Service limits",
+          "texto": "This is a personal project in its first stage, running on free plans: it may have occasional downtime and a storage limit (we'll warn you when you get close). Photos can be up to 25 MB and audio up to 50 MB or 10 minutes.\nThere's no trash: deleting is permanent. Data export isn't available yet."
+        },
+        {
+          "titulo": "No warranty",
+          "texto": "The service is provided as is. Keep your own backups of anything important to you."
+        },
+        {
+          "titulo": "Closing your account",
+          "texto": "You can ask for your account and all its content to be deleted by writing to [CONTACT EMAIL]."
+        },
+        {
+          "titulo": "Changes",
+          "texto": "If these terms change, the date above is updated. Important changes are announced inside the app."
+        }
+      ]
+    },
+    "privacidad": {
+      "titulo": "Privacy",
+      "intro": "What you keep here is personal and intimate. This page explains what we store, where and why. In short: only so that you can see it.",
+      "secciones": [
+        {
+          "titulo": "What we store",
+          "texto": "Your email and password (encrypted, handled by Supabase Auth). Your name and profile photo, if you add them. Your journal entries, lists, photos (thumbnail and full size), voice notes, categories and hashtags."
+        },
+        {
+          "titulo": "What stays on your device",
+          "texto": "Your journal draft while you write and your light or dark mode preference are saved in the browser. We only use the cookies needed to keep you signed in."
+        },
+        {
+          "titulo": "What we use it for",
+          "texto": "Only to show you your own content. Never to train artificial intelligence, for third-party analytics or for advertising. We don't sell or share your data."
+        },
+        {
+          "titulo": "Where it lives",
+          "texto": "On Supabase (database, files and authentication) and Vercel (where the app runs). Everything travels encrypted over HTTPS, and every record is protected so only your account can read it."
+        },
+        {
+          "titulo": "Emails",
+          "texto": "We only email you about your account: to confirm sign-up and to recover your password."
+        },
+        {
+          "titulo": "How long",
+          "texto": "For as long as you have the account. What you delete is deleted permanently; the database's automatic backups renew on their own according to the provider's schedule."
+        },
+        {
+          "titulo": "Your rights",
+          "texto": "You can view, correct and delete your content from the app. To delete the whole account, write to [CONTACT EMAIL]."
+        }
+      ]
+    }
+  },
+  "bienvenida": {
+    "barra": "WELCOME",
+    "titulo": "This is your room of your own",
+    "texto": "A place just for you to write, collect and keep your everyday life. Nobody else sees what you keep here.",
+    "diario": "Journal: write",
+    "listas": "Lists: collect",
+    "vitrina": "Showcase: display your art",
+    "audio": "Audio: say it out loud",
+    "consejo": "To start anything, tap “Create”. Your photo, name and light or dark mode are in your profile, top right.",
+    "empezar": "Get started"
   }
 }

@@ -21,19 +21,28 @@ export async function GET(request: Request) {
 
   // Solo rutas de este mismo sitio: nada de `//otro-sitio.com`.
   const pedido = url.searchParams.get("next") ?? "";
-  const siguiente = pedido.startsWith("/") && !pedido.startsWith("//") ? pedido : `/${routing.defaultLocale}/diario`;
+  const siguiente =
+    pedido.startsWith("/") && !pedido.startsWith("//")
+      ? pedido
+      : `/${routing.defaultLocale}/diario`;
 
   const supabase = await createClient();
   let abierta = false;
   if (code) {
     abierta = !(await supabase.auth.exchangeCodeForSession(code)).error;
   } else if (tokenHash && tipo) {
-    abierta = !(await supabase.auth.verifyOtp({ type: tipo, token_hash: tokenHash })).error;
+    abierta = !(
+      await supabase.auth.verifyOtp({ type: tipo, token_hash: tokenHash })
+    ).error;
   }
 
   if (abierta) return NextResponse.redirect(new URL(siguiente, url.origin));
 
   const segmento = siguiente.split("/")[1];
-  const locale = (routing.locales as readonly string[]).includes(segmento) ? segmento : routing.defaultLocale;
-  return NextResponse.redirect(new URL(`/${locale}/login?error=enlace`, url.origin));
+  const locale = (routing.locales as readonly string[]).includes(segmento)
+    ? segmento
+    : routing.defaultLocale;
+  return NextResponse.redirect(
+    new URL(`/${locale}/login?error=enlace`, url.origin),
+  );
 }

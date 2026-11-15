@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { Inter, Lora, Silkscreen } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -58,6 +58,16 @@ const silkscreen = Silkscreen({
 export const metadata: Metadata = {
   title: "Cuarto Propio",
   description: "Diario, listas, vitrina y audio — tu espacio personal.",
+  // iOS no lee los íconos del manifest: necesita su propio apple-touch-icon
+  // y la marca de "app web" para abrirse a pantalla completa al instalarla.
+  icons: { apple: "/icons/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: "Cuarto Propio", statusBarStyle: "default" },
+};
+
+/** El color de la barra del sistema en el celular: el morado de la barra de
+ * la app, para que se vean como una sola pieza. */
+export const viewport: Viewport = {
+  themeColor: "#5B3F73",
 };
 
 export default async function LocaleLayout({

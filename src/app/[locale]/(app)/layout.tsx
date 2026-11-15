@@ -1,11 +1,22 @@
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { createClient, obtenerUsuario, type UsuarioSesion } from "@/lib/supabase/server";
+import {
+  createClient,
+  obtenerUsuario,
+  type UsuarioSesion,
+} from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
 import { MenuCrear } from "@/components/menu-crear";
 import { NavSecciones } from "@/components/nav-secciones";
 import { PanelPerfil } from "@/components/perfil/panel-perfil";
-import { obtenerPerfil } from "@/lib/perfil/queries";
+import { Bienvenida } from "@/components/bienvenida";
+import { bienvenidaPendiente, obtenerPerfil } from "@/lib/perfil/queries";
+import { formatearBytes } from "@/lib/storage/formato";
+import {
+  LIMITE_STORAGE_BYTES,
+  obtenerUsoStorage,
+  UMBRAL_AVISO_STORAGE,
+} from "@/lib/storage/uso";
 import { logout } from "../(auth)/login/actions";
 
 export default async function AppLayout({
@@ -63,7 +74,9 @@ export default async function AppLayout({
               fill="var(--primary-pink)"
             />
           </svg>
-          <span className="font-pixel text-sm tracking-wide text-background">CUARTO PROPIO</span>
+          <span className="font-pixel text-sm tracking-wide text-background">
+            CUARTO PROPIO
+          </span>
         </div>
 
         <NavSecciones secciones={links} variante="barra" />
@@ -85,11 +98,57 @@ export default async function AppLayout({
       {/* En el celular, abajo queda espacio para la barra de secciones fija
           (más la zona segura del iPhone). */}
       <main className="flex flex-1 flex-col px-5 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:px-6 md:py-10">
+        {/* Bienvenida y aviso de espacio: cada uno su consulta, por
+            streaming, para no demorar la página. */}
+        <Suspense fallback={null}>
+          <AvisosCuenta usuarioId={usuario.id} locale={locale} />
+        </Suspense>
         {children}
       </main>
 
       <NavSecciones secciones={links} variante="inferior" />
     </div>
+  );
+}
+
+/**
+ * Lo que la cuenta tiene que avisar por su cuenta: la bienvenida la primera
+ * vez, y el espacio de Storage cuando pasa del 80 % del plan gratuito.
+ */
+async function AvisosCuenta({
+  usuarioId,
+  locale,
+}: {
+  usuarioId: string;
+  locale: string;
+}) {
+  const [pendiente, uso, t] = await Promise.all([
+    createClient().then((supabase) => bienvenidaPendiente(supabase, usuarioId)),
+    obtenerUsoStorage(),
+    getTranslations({ locale, namespace: "nav" }),
+  ]);
+
+  const fraccion = uso === null ? 0 : uso / LIMITE_STORAGE_BYTES;
+  const datos = {
+    porcentaje: Math.min(100, Math.round(fraccion * 100)),
+    usado: formatearBytes(uso ?? 0, locale),
+    limite: formatearBytes(LIMITE_STORAGE_BYTES, locale),
+  };
+
+  return (
+    <>
+      {pendiente ? <Bienvenida /> : null}
+      {fraccion >= UMBRAL_AVISO_STORAGE ? (
+        <p
+          role="status"
+          className="mx-auto mb-6 w-full max-w-3xl border-2 border-ink bg-primary-pink px-4 py-3 text-sm leading-snug text-ink-strong"
+        >
+          {fraccion >= 1
+            ? t("avisoStorageLleno", datos)
+            : t("avisoStorage", datos)}
+        </p>
+      ) : null}
+    </>
   );
 }
 
@@ -100,8 +159,17 @@ async function AvatarPerfil({
   usuario: UsuarioSesion;
   cerrarSesion: () => Promise<void>;
 }) {
-  const perfil = await obtenerPerfil(await createClient(), usuario);
-  return <PanelPerfil perfil={perfil} cerrarSesion={cerrarSesion} />;
+  const [perfil, usoStorage] = await Promise.all([
+    createClient().then((supabase) => obtenerPerfil(supabase, usuario)),
+    obtenerUsoStorage(),
+  ]);
+  return (
+    <PanelPerfil
+      perfil={perfil}
+      usoStorage={usoStorage}
+      cerrarSesion={cerrarSesion}
+    />
+  );
 }
 
 /** Mismo tamaño y marco que el avatar de la barra (32 px), para que nada

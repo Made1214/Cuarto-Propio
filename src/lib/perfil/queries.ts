@@ -51,3 +51,22 @@ export async function obtenerPerfil(
     fotoUrl,
   };
 }
+
+/**
+ * ¿Hay que mostrar la bienvenida? Solo la primera vez que entra (columna
+ * `bienvenida_vista_en`, migración 0010).
+ *
+ * Consulta aparte y tolerante a errores, a propósito: si la migración todavía
+ * no está aplicada, la columna no existe y la consulta falla — en ese caso no
+ * se muestra nada, en vez de tumbar el perfil entero.
+ */
+export async function bienvenidaPendiente(supabase: SupabaseClient, usuarioId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("perfiles")
+    .select("bienvenida_vista_en")
+    .eq("id", usuarioId)
+    .maybeSingle();
+
+  if (error) return false;
+  return !data?.bienvenida_vista_en;
+}

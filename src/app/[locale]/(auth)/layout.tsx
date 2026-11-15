@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 /**
  * El marco de las pantallas de acceso (entrar, crear cuenta, recuperar y
@@ -33,7 +34,9 @@ export default async function AccesoLayout({
               fill="var(--primary-pink)"
             />
           </svg>
-          <span className="font-pixel text-base tracking-wide">CUARTO PROPIO</span>
+          <span className="font-pixel text-base tracking-wide">
+            CUARTO PROPIO
+          </span>
         </div>
         <p className="font-diario text-[22px] leading-snug md:text-4xl md:leading-tight md:font-bold">
           {t("lema")}
@@ -44,16 +47,39 @@ export default async function AccesoLayout({
               key={clave}
               className={`flex flex-col gap-1.5 border-2 border-ink p-4 shadow-[4px_4px_0_var(--ink)] ${fondo}`}
             >
-              <span className="text-[15px] font-bold">{t(`modulo.${clave}`)}</span>
+              <span className="text-[15px] font-bold">
+                {t(`modulo.${clave}`)}
+              </span>
               <span className="text-[13px]">{t(`modulo.${clave}Ayuda`)}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-auto hidden text-[13px] opacity-90 md:block">{t("privado")}</p>
+        <p className="mt-auto hidden text-[13px] opacity-90 md:block">
+          {t("privado")}
+        </p>
       </section>
 
       <div className="flex flex-1 justify-center px-6 py-8 md:items-center">
-        <div className="w-full max-w-100">{children}</div>
+        <div className="flex w-full max-w-100 flex-col gap-8">
+          {children}
+          <nav
+            aria-label={t("documentos")}
+            className="flex gap-4 text-[13px] text-muted/80"
+          >
+            <Link
+              href="/terminos"
+              className="underline-offset-2 hover:underline"
+            >
+              {t("terminos")}
+            </Link>
+            <Link
+              href="/privacidad"
+              className="underline-offset-2 hover:underline"
+            >
+              {t("privacidad")}
+            </Link>
+          </nav>
+        </div>
       </div>
     </main>
   );

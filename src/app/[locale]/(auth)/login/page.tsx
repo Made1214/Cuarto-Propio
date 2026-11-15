@@ -15,10 +15,14 @@ export default async function LoginPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="font-diario text-3xl font-bold text-secondary-purple">{t("saludoEntrar")}</h1>
+      <h1 className="font-diario text-3xl font-bold text-secondary-purple">
+        {t("saludoEntrar")}
+      </h1>
       <PestanasAcceso activa="entrar" />
       {/* Volvió de un enlace de correo vencido o ya usado. */}
-      {error === "enlace" ? <AvisoAcceso tipo="error">{t("enlaceVencido")}</AvisoAcceso> : null}
+      {error === "enlace" ? (
+        <AvisoAcceso tipo="error">{t("enlaceVencido")}</AvisoAcceso>
+      ) : null}
       <LoginForm locale={locale} />
     </div>
   );

@@ -1,12 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { AvisoErrorAccion } from "@/components/aviso-error-accion";
-import { useRouter } from "@/i18n/navigation";
-import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
+import { Link, useRouter } from "@/i18n/navigation";
+import {
+  clasificarErrorAccion,
+  type ErrorAccion,
+} from "@/lib/acciones/errores";
 import { renombrarPerfil } from "@/lib/perfil/actions";
 import { NOMBRE_MAXIMO } from "@/lib/perfil/limites";
+import { formatearBytes } from "@/lib/storage/formato";
+import {
+  LIMITE_STORAGE_BYTES,
+  UMBRAL_AVISO_STORAGE,
+} from "@/lib/storage/limites";
 import type { PerfilVisible } from "@/lib/perfil/types";
 import { Avatar } from "./avatar";
 import { FotoPerfil } from "./foto-perfil";
@@ -17,7 +25,13 @@ import { SelectorModo } from "./selector-modo";
 /** Lo que va a vivir acá cuando se retome Personalización (CLAUDE.md →
  * Temas de diseño). Se nombran en una sola fila "próximamente" en vez de
  * esconderlas: dicen a dónde va la app sin prometer que ya funciona. */
-const PERSONALIZACION = ["temas", "colores", "cursor", "iconos", "tipografia"] as const;
+const PERSONALIZACION = [
+  "temas",
+  "colores",
+  "cursor",
+  "iconos",
+  "tipografia",
+] as const;
 
 /**
  * El perfil: un cajón que sale del borde derecho al tocar el avatar del
@@ -33,13 +47,18 @@ const PERSONALIZACION = ["temas", "colores", "cursor", "iconos", "tipografia"] a
  */
 export function PanelPerfil({
   perfil,
+  usoStorage,
   cerrarSesion,
 }: {
   perfil: PerfilVisible;
+  /** Bytes usados en Storage, o `null` si no se pudo saber (ver
+   * `obtenerUsoStorage`): entonces el medidor no se muestra. */
+  usoStorage: number | null;
   /** La Server Action de logout, ya atada al idioma actual por el layout. */
   cerrarSesion: () => Promise<void>;
 }) {
   const t = useTranslations("perfil");
+  const locale = useLocale();
   const router = useRouter();
   const ref = useRef<HTMLDialogElement>(null);
   const [abierto, setAbierto] = useState(false);
@@ -106,10 +125,7 @@ export function PanelPerfil({
             <FotoPerfil perfil={perfil} />
 
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="perfil-nombre"
-                className="text-xs font-semibold"
-              >
+              <label htmlFor="perfil-nombre" className="text-xs font-semibold">
                 {t("nombre")}
               </label>
               <input
@@ -131,7 +147,9 @@ export function PanelPerfil({
                     } catch (fallo) {
                       // Avisar dentro del panel en vez de caer en la pantalla
                       // de error, igual que Listas y Audio.
-                      startTransition(() => setErrorNombre(clasificarErrorAccion(fallo)));
+                      startTransition(() =>
+                        setErrorNombre(clasificarErrorAccion(fallo)),
+                      );
                       return;
                     }
                     router.refresh();
@@ -142,9 +160,14 @@ export function PanelPerfil({
                 }}
                 className="border-2 border-ink bg-background px-3 py-2 font-diario text-base outline-none placeholder:text-muted/50"
               />
-              <AvisoErrorAccion error={errorNombre} mensajeFallo={t("errorNombre")} />
+              <AvisoErrorAccion
+                error={errorNombre}
+                mensajeFallo={t("errorNombre")}
+              />
               {perfil.email ? (
-                <p className="truncate pt-0.5 text-xs text-muted/70">{perfil.email}</p>
+                <p className="truncate pt-0.5 text-xs text-muted/70">
+                  {perfil.email}
+                </p>
               ) : null}
             </div>
 
@@ -171,11 +194,24 @@ export function PanelPerfil({
                 </p>
               </div>
             </section>
+
+            {usoStorage !== null ? (
+              <Seccion titulo={t("espacioUsado")} ayuda={t("espacioAyuda")}>
+                <MedidorStorage
+                  usado={usoStorage}
+                  etiqueta={t("espacioUsado")}
+                  texto={t("espacioDe", {
+                    usado: formatearBytes(usoStorage, locale),
+                    limite: formatearBytes(LIMITE_STORAGE_BYTES, locale),
+                  })}
+                />
+              </Seccion>
+            ) : null}
           </div>
 
           <form
             action={cerrarSesion}
-            className="shrink-0 border-t-[3px] border-ink bg-background px-5 py-4"
+            className="flex shrink-0 flex-col gap-3 border-t-[3px] border-ink bg-background px-5 py-4"
           >
             <button
               type="submit"
@@ -184,6 +220,22 @@ export function PanelPerfil({
               <IconoSalir />
               {t("cerrarSesion")}
             </button>
+            <p className="flex justify-center gap-4 text-xs text-muted/80">
+              <Link
+                href="/terminos"
+                onClick={() => setAbierto(false)}
+                className="underline-offset-2 hover:underline"
+              >
+                {t("terminos")}
+              </Link>
+              <Link
+                href="/privacidad"
+                onClick={() => setAbierto(false)}
+                className="underline-offset-2 hover:underline"
+              >
+                {t("privacidad")}
+              </Link>
+            </p>
           </form>
         </div>
       </dialog>
@@ -206,7 +258,40 @@ function Seccion({
         {titulo.toUpperCase()}
       </h3>
       {children}
-      {ayuda ? <p className="text-xs leading-relaxed text-muted/70">{ayuda}</p> : null}
+      {ayuda ? (
+        <p className="text-xs leading-relaxed text-muted/70">{ayuda}</p>
+      ) : null}
     </section>
+  );
+}
+
+function MedidorStorage({
+  usado,
+  etiqueta,
+  texto,
+}: {
+  usado: number;
+  etiqueta: string;
+  texto: string;
+}) {
+  const fraccion = Math.min(1, usado / LIMITE_STORAGE_BYTES);
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-sm font-semibold tabular-nums">{texto}</span>
+      <div
+        role="meter"
+        aria-label={etiqueta}
+        aria-valuemin={0}
+        aria-valuemax={LIMITE_STORAGE_BYTES}
+        aria-valuenow={usado}
+        aria-valuetext={texto}
+        className="h-3 w-full border-2 border-ink bg-background"
+      >
+        <div
+          className={`h-full ${fraccion >= UMBRAL_AVISO_STORAGE ? "bg-primary-pink" : "bg-secondary-turquoise"}`}
+          style={{ width: `${Math.max(fraccion * 100, usado > 0 ? 2 : 0)}%` }}
+        />
+      </div>
+    </div>
   );
 }

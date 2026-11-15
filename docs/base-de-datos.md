@@ -61,6 +61,7 @@ Extiende la tabla de usuarios de Supabase Auth con datos propios del producto. T
 | `foto_perfil_path` | Miniatura de tu foto de perfil en Storage (la que se ve en el avatar) |
 | `foto_perfil_completa_path` | Versión completa de esa misma foto |
 | `tema_activo_id` | Qué fila de `temas` está activa ahora |
+| `bienvenida_vista_en` | Cuándo cerraste el mensaje de bienvenida (`NULL` = todavía no lo viste) |
 
 Se crea sola la primera vez que te registrás (ver "Lo que la base hace sola" más abajo).
 
@@ -138,6 +139,19 @@ Guarda tu personalización visual. Hoy solo se usa el color básico; el resto (c
 | `cursor` | Cursor del mouse elegido |
 | `iconos` | Set de iconos, como JSON |
 | `tipografia` | Tipografía elegida |
+
+### `intentos_login`
+
+Cuenta los fallos de login seguidos por correo, para bloquear 15 minutos una cuenta tras 5 contraseñas equivocadas (además de los límites por IP que ya trae Supabase Auth). Es la única tabla sin `usuario_id`: los intentos pasan **antes** de que haya sesión.
+
+| Columna | Qué guarda |
+| --- | --- |
+| `email` | El correo intentado, en minúsculas |
+| `fallidos` | Cuántos fallos seguidos lleva |
+| `bloqueado_hasta` | Hasta cuándo está bloqueada (`NULL` = no lo está) |
+| `actualizado_en` | El último intento: un fallo de hace más de 15 minutos ya no cuenta como "seguido" |
+
+Tiene RLS activo y **ninguna** política: nadie la lee ni la escribe directo. Solo se toca con tres funciones `security definer`: `login_bloqueado_hasta(email)` y `registrar_fallo_login(email)` (las llama el login antes y después de intentar) y `limpiar_intentos_login()` (tras entrar bien, solo con sesión y solo sobre el correo propio — así nadie puede borrar el bloqueo de otra cuenta).
 
 ## Seguridad: Row Level Security
 
@@ -225,7 +239,11 @@ El primero, `0001_esquema_completo.sql`, crea las 8 tablas (con `categoria_id` e
 | `0006_listas_con_casillas.sql` | La casilla deja de ser por ítem: ahora la lista entera es de notas o de casillas (`listas.con_casillas`) |
 | `0007_codigo_imagenes.sql` | `imagenes.codigo`, el código corto de las URLs de la Vitrina |
 | `0008_perfil_foto.sql` | `perfiles.foto_perfil_completa_path`: la segunda versión de la foto de perfil, la que faltaba para no dejar archivos sueltos |
+| `0009_intentos_login.sql` | Tabla `intentos_login` y sus tres funciones: bloqueo de 15 minutos tras 5 fallos de login seguidos |
+| `0010_bienvenida_y_storage.sql` | `perfiles.bienvenida_vista_en` (el mensaje de bienvenida sale una sola vez por cuenta) y la función `uso_storage()`, que suma lo que ocupan tus fotos y audios para el medidor del perfil y el aviso de espacio |
 
-Cada cambio de esquema nuevo (por ejemplo al construir Audio o Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
+Si 0009 o 0010 todavía no están aplicadas, la app sigue funcionando: el login entra sin el bloqueo propio, y la bienvenida y el medidor de espacio simplemente no aparecen.
+
+Cada cambio de esquema nuevo (por ejemplo al construir Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
 
 Para aplicarlo en un proyecto de Supabase nuevo: con la Supabase CLI, `supabase db push`; o pegando el archivo en el SQL Editor del dashboard. El detalle de setup completo está en el `README.md` del repositorio.

@@ -344,8 +344,11 @@ Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpet
 
 **Acceso** (`src/app/[locale]/(auth)/`): entrar (`/login`), crear cuenta (`/registro`, con requisitos de contraseña visibles mientras se escribe — 8 caracteres, una letra, un número, validados también en la Server Action, `src/lib/auth/contrasena.ts`), recuperar contraseña (`/recuperar`) y elegir una nueva (`/restablecer`). El registro responde lo mismo exista o no el correo. Los enlaces de los correos de Supabase pasan por `/api/auth/confirmar`, que canjea el código por sesión y redirige; para que funcionen, en Supabase → Authentication → URL Configuration hay que agregar `https://<dominio>/api/auth/confirmar` (y `http://localhost:3000/api/auth/confirmar` para desarrollo) a las Redirect URLs.
 
+**Seguridad de acceso y cumplimiento:** bloqueo de 15 minutos tras 5 fallos de login seguidos sobre la misma cuenta (tabla `intentos_login`, migración 0009; si la migración falta, el login funciona sin el bloqueo). Páginas públicas de términos (`/terminos`) y privacidad (`/privacidad`), con el texto en los mensajes (`legal`) y un `[CORREO DE CONTACTO]` que hay que completar antes de publicar. Mensaje de bienvenida una sola vez por cuenta (`perfiles.bienvenida_vista_en`) y medidor de espacio en el perfil, con aviso en toda la app desde el 80 % del GB del free tier (`uso_storage()`, migración 0010; `src/lib/storage/limites.ts`).
+
+**PWA:** manifest (`src/app/manifest.ts`), íconos en `public/icons/` (corazón pixelado, generados con `node scripts/generar-iconos.mjs public/icons`) y metadatos de iOS. A propósito sin service worker: Fase 1 no tiene modo offline.
+
 **Base sentada para Temas de diseño** (ver esa sección arriba): tipos y presets en `src/lib/temas/`, columna `temas.preset` en la base de datos. Es solo la capa de datos — todavía no hay `ThemeProvider` ni switcher, y los temas con nombre aparecen en el panel de perfil solo como fila bloqueada, así que no cambia nada de lo que se ve hoy en la app.
 
 **Implicaciones de este documento que todavía no están reflejadas en el código** (a resolver cuando se retome cada módulo, no automáticamente):
-- No hay rate limiting propio de intentos de login (5 intentos → 15 minutos) todavía: por ahora solo cuentan los límites por IP que trae Supabase Auth, y el login muestra un aviso cuando Supabase los aplica.
 - La transcripción de audio no está (ni tiene que estar: es Fase 2). La columna `audios.transcripcion` existe y queda vacía.

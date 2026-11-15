@@ -19,7 +19,9 @@
     "nuevaListaAyuda": "Libros, ideas, pendientes…",
     "cerrar": "Cerrar",
     "filtrarCategoria": "Filtrar por categoría",
-    "todas": "Todas"
+    "todas": "Todas",
+    "avisoStorage": "Tu espacio está al {porcentaje} %: {usado} de {limite}. Cuando se llene no vas a poder subir más fotos ni audios.",
+    "avisoStorageLleno": "Tu espacio está lleno ({usado} de {limite}). Para subir más fotos o audios hay que liberar espacio o pasar a un plan con más almacenamiento."
   },
   "perfil": {
     "titulo": "Perfil",
@@ -51,7 +53,12 @@
     "proximamente": "Pronto",
     "cerrarSesion": "Cerrar sesión",
     "errorFormato": "Formato no soportado. Sube un JPG, PNG o WebP.",
-    "errorSesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo."
+    "errorSesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo.",
+    "terminos": "Términos de uso",
+    "privacidad": "Privacidad",
+    "espacioUsado": "Espacio usado",
+    "espacioDe": "{usado} de {limite}",
+    "espacioAyuda": "Fotos y audios. Te avisaremos antes de que se llene."
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -104,7 +111,12 @@
     "contrasenaNueva": "Contraseña nueva",
     "guardarContrasena": "Guardar y entrar",
     "pedirOtro": "Pedir otro enlace",
-    "errorRestablecer": "No se pudo cambiar la contraseña. Prueba de nuevo."
+    "errorRestablecer": "No se pudo cambiar la contraseña. Prueba de nuevo.",
+    "cuentaBloqueada": "Demasiados intentos fallidos. Por seguridad, espera {minutos, plural, one {# minuto} other {# minutos}} antes de volver a probar.",
+    "legal": "Al crear tu cuenta aceptas los <terminos>términos de uso</terminos> y la <privacidad>política de privacidad</privacidad>.",
+    "terminos": "Términos de uso",
+    "privacidad": "Privacidad",
+    "documentos": "Documentos"
   },
   "diario": {
     "titulo": "Diario",
@@ -306,5 +318,88 @@
     "appActualizadaBarra": "Hay novedades",
     "appActualizadaTitulo": "Tu cuarto se renovó",
     "recargar": "Recargar"
+  },
+  "legal": {
+    "documentos": "Documentos",
+    "actualizado": "Última actualización: 15 de noviembre de 2026",
+    "terminos": {
+      "titulo": "Términos de uso",
+      "intro": "Cuarto Propio es un espacio personal para escribir, coleccionar y archivar tu vida cotidiana. Al usarlo aceptas estas condiciones, escritas en lenguaje simple.",
+      "secciones": [
+        {
+          "titulo": "Tu cuenta",
+          "texto": "Para entrar necesitas un correo verificado y una contraseña. Cuida tu contraseña: lo que pase dentro de tu cuenta es tu responsabilidad."
+        },
+        {
+          "titulo": "Tu contenido es tuyo",
+          "texto": "Todo lo que escribes, subes o grabas sigue siendo tuyo. Solo nos das permiso para guardarlo y mostrártelo a ti, incluido preparar versiones más livianas de tus fotos para que carguen rápido. No lo publicamos ni lo compartimos con nadie."
+        },
+        {
+          "titulo": "Uso aceptable",
+          "texto": "Guarda solo contenido propio o que tengas derecho a guardar. No uses Cuarto Propio para nada ilegal, no intentes entrar a cuentas ajenas ni sobrecargar el servicio."
+        },
+        {
+          "titulo": "Límites del servicio",
+          "texto": "Es un proyecto personal en su primera etapa y funciona sobre planes gratuitos: puede tener caídas ocasionales y un límite de espacio (te avisaremos cuando te acerques). Las fotos pueden pesar hasta 25 MB y los audios hasta 50 MB o 10 minutos.\nNo hay papelera: borrar es permanente. Todavía no hay exportación de datos."
+        },
+        {
+          "titulo": "Sin garantías",
+          "texto": "El servicio se ofrece tal como está. Haz tus propios respaldos de lo que sea importante para ti."
+        },
+        {
+          "titulo": "Cerrar tu cuenta",
+          "texto": "Puedes pedir que se borre tu cuenta y todo su contenido escribiendo a [CORREO DE CONTACTO]."
+        },
+        {
+          "titulo": "Cambios",
+          "texto": "Si estos términos cambian, se actualiza la fecha de arriba. Los cambios importantes se avisan dentro de la app."
+        }
+      ]
+    },
+    "privacidad": {
+      "titulo": "Privacidad",
+      "intro": "Lo que guardas aquí es personal e íntimo. Esta página explica qué guardamos, dónde y para qué. En corto: solo para que tú lo veas.",
+      "secciones": [
+        {
+          "titulo": "Qué guardamos",
+          "texto": "Tu correo y tu contraseña (cifrada, la gestiona Supabase Auth). Tu nombre y foto de perfil, si los agregas. Tus entradas del diario, listas, fotos (en miniatura y completa), notas de voz, categorías y hashtags."
+        },
+        {
+          "titulo": "Qué queda en tu dispositivo",
+          "texto": "El borrador del diario mientras escribes y tu preferencia de modo claro u oscuro se guardan en el navegador. Usamos solo las cookies necesarias para mantener tu sesión abierta."
+        },
+        {
+          "titulo": "Para qué lo usamos",
+          "texto": "Solo para mostrarte tu propio contenido. Nunca para entrenar inteligencia artificial, ni para analítica de terceros, ni para publicidad. No vendemos ni compartimos tus datos."
+        },
+        {
+          "titulo": "Dónde vive",
+          "texto": "En Supabase (base de datos, archivos y autenticación) y en Vercel (donde corre la app). Todo viaja cifrado por HTTPS, y cada registro está protegido para que solo tu cuenta pueda leerlo."
+        },
+        {
+          "titulo": "Correos",
+          "texto": "Solo te escribimos por tu cuenta: para confirmar el registro y para recuperar la contraseña."
+        },
+        {
+          "titulo": "Cuánto tiempo",
+          "texto": "Mientras tengas la cuenta. Lo que borras se borra de forma permanente; las copias de respaldo automáticas de la base de datos se renuevan solas según los plazos del proveedor."
+        },
+        {
+          "titulo": "Tus derechos",
+          "texto": "Puedes ver, corregir y borrar tu contenido desde la app. Para borrar la cuenta entera, escribe a [CORREO DE CONTACTO]."
+        }
+      ]
+    }
+  },
+  "bienvenida": {
+    "barra": "BIENVENIDA",
+    "titulo": "Este es tu cuarto propio",
+    "texto": "Un lugar solo tuyo para escribir, coleccionar y archivar tu vida cotidiana. Nadie más ve lo que guardas aquí.",
+    "diario": "Diario: escribe",
+    "listas": "Listas: colecciona",
+    "vitrina": "Vitrina: exhibe tu arte",
+    "audio": "Audio: cuéntalo en voz alta",
+    "consejo": "Para empezar cualquier cosa, toca «Crear». Tu foto, tu nombre y el modo claro u oscuro están en tu perfil, arriba a la derecha.",
+    "empezar": "Empezar"
   }
 }

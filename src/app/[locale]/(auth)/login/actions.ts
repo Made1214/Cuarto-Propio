@@ -27,22 +27,72 @@ async function enlaceConfirmacion(siguiente: string) {
 }
 
 function esLimiteDeIntentos(error: AuthError) {
-  return error.status === 429 || error.code === "over_request_rate_limit" || error.code === "over_email_send_rate_limit";
+  return (
+    error.status === 429 ||
+    error.code === "over_request_rate_limit" ||
+    error.code === "over_email_send_rate_limit"
+  );
 }
 
-export async function login(locale: string, formData: FormData): Promise<EstadoAcceso> {
-  const email = String(formData.get("email") ?? "");
+/** Minutos (redondeados para arriba) que faltan para `hasta`. */
+function minutosHasta(hasta: string): number {
+  return Math.max(
+    1,
+    Math.ceil((new Date(hasta).getTime() - Date.now()) / 60_000),
+  );
+}
+
+/**
+ * Entrar. Además de los límites por IP de Supabase, bloquea 15 minutos una
+ * cuenta tras 5 contraseñas equivocadas seguidas (migración 0009). Si esa
+ * migración todavía no está aplicada, las llamadas fallan y el login sigue
+ * funcionando como antes, sin el bloqueo: mejor eso que dejar a la usuaria
+ * afuera por una función que falta.
+ */
+export async function login(
+  locale: string,
+  formData: FormData,
+): Promise<EstadoAcceso> {
+  const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
 
   const supabase = await createClient();
+  const t = await getTranslations({ locale, namespace: "login" });
+
+  const bloqueo = await supabase.rpc("login_bloqueado_hasta", {
+    p_email: email,
+  });
+  if (!bloqueo.error && bloqueo.data) {
+    return {
+      error: t("cuentaBloqueada", {
+        minutos: minutosHasta(bloqueo.data as string),
+      }),
+    };
+  }
+
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    const t = await getTranslations({ locale, namespace: "login" });
     if (esLimiteDeIntentos(error)) return { error: t("demasiadosIntentos") };
-    if (error.code === "email_not_confirmed") return { error: t("confirmarCorreo") };
+    if (error.code === "email_not_confirmed")
+      return { error: t("confirmarCorreo") };
+    if (error.code === "invalid_credentials") {
+      const fallo = await supabase.rpc("registrar_fallo_login", {
+        p_email: email,
+      });
+      if (!fallo.error && fallo.data) {
+        return {
+          error: t("cuentaBloqueada", {
+            minutos: minutosHasta(fallo.data as string),
+          }),
+        };
+      }
+    }
     return { error: t("error") };
   }
+
+  // Entró: los fallos anteriores ya no cuentan como "seguidos".
+  await supabase.rpc("limpiar_intentos_login");
 
   redirect({ href: "/diario", locale });
 }
@@ -54,7 +104,10 @@ export async function login(locale: string, formData: FormData): Promise<EstadoA
  * La respuesta es la misma exista o no una cuenta con ese correo (CLAUDE.md →
  * Login: mensaje genérico, para no revelar qué correos están registrados).
  */
-export async function registrar(locale: string, formData: FormData): Promise<EstadoAcceso> {
+export async function registrar(
+  locale: string,
+  formData: FormData,
+): Promise<EstadoAcceso> {
   const t = await getTranslations({ locale, namespace: "login" });
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
@@ -86,7 +139,10 @@ export async function registrar(locale: string, formData: FormData): Promise<Est
 
 /** "Olvidé mi contraseña": manda el enlace para elegir una nueva. Misma
  * respuesta exista o no la cuenta. */
-export async function pedirRecuperacion(locale: string, formData: FormData): Promise<EstadoAcceso> {
+export async function pedirRecuperacion(
+  locale: string,
+  formData: FormData,
+): Promise<EstadoAcceso> {
   const t = await getTranslations({ locale, namespace: "login" });
   const email = String(formData.get("email") ?? "").trim();
 
@@ -95,13 +151,17 @@ export async function pedirRecuperacion(locale: string, formData: FormData): Pro
     redirectTo: await enlaceConfirmacion(`/${locale}/restablecer`),
   });
 
-  if (error && esLimiteDeIntentos(error)) return { error: t("demasiadosIntentos") };
+  if (error && esLimiteDeIntentos(error))
+    return { error: t("demasiadosIntentos") };
   return { enviado: true };
 }
 
 /** Guarda la contraseña nueva. Solo funciona con la sesión que abrió el
  * enlace del correo de recuperación. */
-export async function restablecer(locale: string, formData: FormData): Promise<EstadoAcceso> {
+export async function restablecer(
+  locale: string,
+  formData: FormData,
+): Promise<EstadoAcceso> {
   const t = await getTranslations({ locale, namespace: "login" });
   const password = String(formData.get("password") ?? "");
 

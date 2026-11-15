@@ -14,9 +14,20 @@ export function RestablecerForm({ locale }: { locale: string }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <CampoContrasena id="password-restablecer" etiqueta={t("contrasenaNueva")} autoComplete="new-password" requisitos />
-      {state?.error ? <AvisoAcceso tipo="error">{state.error}</AvisoAcceso> : null}
-      <button type="submit" disabled={pending} className={`${CLASE_BOTON} bg-primary-green`}>
+      <CampoContrasena
+        id="password-restablecer"
+        etiqueta={t("contrasenaNueva")}
+        autoComplete="new-password"
+        requisitos
+      />
+      {state?.error ? (
+        <AvisoAcceso tipo="error">{state.error}</AvisoAcceso>
+      ) : null}
+      <button
+        type="submit"
+        disabled={pending}
+        className={`${CLASE_BOTON} bg-primary-green`}
+      >
         {t("guardarContrasena")}
       </button>
     </form>

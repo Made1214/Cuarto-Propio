@@ -22,7 +22,10 @@ export function PestanasAcceso({ activa }: { activa: "entrar" | "crear" }) {
   ] as const;
 
   return (
-    <nav aria-label={t("acceso")} className="grid grid-cols-2 border-2 border-ink bg-card">
+    <nav
+      aria-label={t("acceso")}
+      className="grid grid-cols-2 border-2 border-ink bg-card"
+    >
       {pestanas.map(({ clave, href, texto }) => (
         <Link
           key={clave}
@@ -85,7 +88,17 @@ export function CampoContrasena({
           aria-pressed={visible}
           className="flex w-11 shrink-0 items-center justify-center border-l-2 border-ink text-ink hover:bg-primary-pink/30"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
             <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" />
             <circle cx="12" cy="12" r="3" />
             {visible ? <path d="M4 4l16 16" /> : null}
@@ -94,25 +107,44 @@ export function CampoContrasena({
       </div>
 
       {requisitos ? (
-        <ul id={`${id}-requisitos`} aria-label={t("requisitos")} className="flex flex-col gap-1 text-[13px]">
+        <ul
+          id={`${id}-requisitos`}
+          aria-label={t("requisitos")}
+          className="flex flex-col gap-1 text-[13px]"
+        >
           {REQUISITOS_CONTRASENA.map(({ clave, cumple }) => {
             const ok = cumple(valor);
             return (
-              <li key={clave} className={`flex items-center gap-2 ${ok ? "" : "text-muted/75"}`}>
+              <li
+                key={clave}
+                className={`flex items-center gap-2 ${ok ? "" : "text-muted/75"}`}
+              >
                 <span
                   aria-hidden="true"
                   className={`flex h-4 w-4 items-center justify-center border-2 ${
-                    ok ? "border-ink bg-primary-green text-ink-strong" : "border-ink/40"
+                    ok
+                      ? "border-ink bg-primary-green text-ink-strong"
+                      : "border-ink/40"
                   }`}
                 >
                   {ok ? (
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" aria-hidden="true">
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      aria-hidden="true"
+                    >
                       <path d="M4 12l5 5L20 6" />
                     </svg>
                   ) : null}
                 </span>
                 {t(clave)}
-                <span className="sr-only">{ok ? t("cumplido") : t("pendiente")}</span>
+                <span className="sr-only">
+                  {ok ? t("cumplido") : t("pendiente")}
+                </span>
               </li>
             );
           })}
@@ -123,7 +155,13 @@ export function CampoContrasena({
 }
 
 /** Aviso dentro del formulario: error (rosado) o confirmación (verde). */
-export function AvisoAcceso({ tipo, children }: { tipo: "error" | "ok"; children: React.ReactNode }) {
+export function AvisoAcceso({
+  tipo,
+  children,
+}: {
+  tipo: "error" | "ok";
+  children: React.ReactNode;
+}) {
   return (
     <p
       role={tipo === "error" ? "alert" : "status"}
