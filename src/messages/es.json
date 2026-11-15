@@ -59,7 +59,52 @@
     "email": "Correo electrónico",
     "password": "Contraseña",
     "entrar": "Entrar",
-    "error": "No se pudo iniciar sesión. Revisa tus datos e intenta de nuevo."
+    "error": "No se pudo iniciar sesión. Revisa tus datos e intenta de nuevo.",
+    "lema": "Tu espacio para escribir, coleccionar y archivar la vida cotidiana.",
+    "modulo": {
+      "diario": "Diario",
+      "diarioAyuda": "Lo que piensas, con formato.",
+      "listas": "Listas",
+      "listasAyuda": "Libros, ideas, pendientes.",
+      "vitrina": "Vitrina",
+      "vitrinaAyuda": "Tu arte, en exhibición.",
+      "audio": "Audio",
+      "audioAyuda": "Lo que prefieres decir en voz alta."
+    },
+    "privado": "Privado: lo que guardas aquí solo lo ves tú.",
+    "acceso": "Acceso",
+    "tabEntrar": "Entrar",
+    "tabCrear": "Crear cuenta",
+    "saludoEntrar": "Qué bueno verte de nuevo",
+    "saludoCrear": "Bienvenida a tu cuarto",
+    "olvide": "¿Olvidaste tu contraseña?",
+    "mostrar": "Mostrar contraseña",
+    "ocultar": "Ocultar contraseña",
+    "requisitos": "Requisitos de la contraseña",
+    "reqLargo": "Al menos 8 caracteres",
+    "reqLetra": "Una letra",
+    "reqNumero": "Un número",
+    "cumplido": "(cumplido)",
+    "pendiente": "(pendiente)",
+    "crear": "Crear mi cuarto",
+    "registroAyuda": "Te enviaremos un correo para confirmar tu cuenta antes de entrar.",
+    "registroEnviado": "¡Listo! Si el correo es válido, te va a llegar un enlace para confirmar tu cuenta. Ábrelo y entras directo a tu diario.",
+    "contrasenaDebil": "La contraseña no cumple los requisitos.",
+    "mismaContrasena": "Elige una contraseña distinta de la anterior.",
+    "errorRegistro": "No se pudo crear la cuenta. Prueba de nuevo en un rato.",
+    "confirmarCorreo": "Antes de entrar, confirma tu cuenta desde el enlace que te enviamos por correo.",
+    "demasiadosIntentos": "Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.",
+    "enlaceVencido": "El enlace venció o ya se usó. Pide uno nuevo.",
+    "recuperarTitulo": "Recupera tu contraseña",
+    "recuperarAyuda": "Escribe tu correo y te enviaremos un enlace para elegir una nueva.",
+    "enviarEnlace": "Enviar enlace",
+    "recuperarEnviado": "Si hay una cuenta con ese correo, te va a llegar un enlace en unos minutos.",
+    "volverEntrar": "Volver a entrar",
+    "restablecerTitulo": "Elige una contraseña nueva",
+    "contrasenaNueva": "Contraseña nueva",
+    "guardarContrasena": "Guardar y entrar",
+    "pedirOtro": "Pedir otro enlace",
+    "errorRestablecer": "No se pudo cambiar la contraseña. Prueba de nuevo."
   },
   "diario": {
     "titulo": "Diario",
@@ -89,7 +134,9 @@
     "eliminarConfirmar": "¿Eliminar esta entrada? No se puede deshacer.",
     "volver": "Volver al diario",
     "nueva": "Nueva",
-    "conLaPalabra": "con «{palabra}»"
+    "conLaPalabra": "con «{palabra}»",
+    "campoTitulo": "Título",
+    "borradorGuardado": "Borrador guardado en este dispositivo · {hora}"
   },
   "dialogos": {
     "cerrar": "Cerrar",
@@ -141,7 +188,7 @@
     "bajarItem": "Bajar ítem",
     "todasLasCategorias": "Todas las categorías",
     "sinItemsAun": "Todavía no hay ítems. Agrega el primero.",
-    "itemPlaceholder": "Agregar un ítem...",
+    "itemPlaceholder": "Agregar ítem y Enter",
     "agregarItem": "Agregar ítem",
     "eliminarItem": "Eliminar ítem",
     "eliminarItemConfirmar": "¿Eliminar este ítem? No se puede deshacer.",
@@ -149,7 +196,9 @@
     "cancelar": "Cancelar",
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta lista? No se puede deshacer.",
-    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo."
+    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo.",
+    "progresoTexto": "{hechos} de {total} hechos",
+    "agregar": "Agregar"
   },
   "vitrina": {
     "titulo": "Vitrina",
@@ -229,7 +278,11 @@
     "nuevaCategoriaPlaceholder": "Nueva categoría…",
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta nota de audio? No se puede deshacer.",
-    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo."
+    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo.",
+    "grabadora": "Grabadora",
+    "tocaParaGrabar": "Toca para grabar",
+    "tocaParaDetener": "toca el cuadrado para detener",
+    "ayudaGrabar": "Hasta {minutos} minutos. Al terminar se guarda sola; el título lo pones después (o queda la fecha y hora)."
   },
   "paginacion": {
     "cargarMas": "Cargar más",

@@ -59,7 +59,52 @@
     "email": "Email",
     "password": "Password",
     "entrar": "Sign in",
-    "error": "Could not sign in. Check your details and try again."
+    "error": "Could not sign in. Check your details and try again.",
+    "lema": "Your space to write, collect and keep everyday life.",
+    "modulo": {
+      "diario": "Journal",
+      "diarioAyuda": "Your thoughts, with formatting.",
+      "listas": "Lists",
+      "listasAyuda": "Books, ideas, to-dos.",
+      "vitrina": "Showcase",
+      "vitrinaAyuda": "Your art, on display.",
+      "audio": "Audio",
+      "audioAyuda": "What you'd rather say out loud."
+    },
+    "privado": "Private: only you can see what you keep here.",
+    "acceso": "Access",
+    "tabEntrar": "Sign in",
+    "tabCrear": "Create account",
+    "saludoEntrar": "Good to see you again",
+    "saludoCrear": "Welcome to your room",
+    "olvide": "Forgot your password?",
+    "mostrar": "Show password",
+    "ocultar": "Hide password",
+    "requisitos": "Password requirements",
+    "reqLargo": "At least 8 characters",
+    "reqLetra": "A letter",
+    "reqNumero": "A number",
+    "cumplido": "(done)",
+    "pendiente": "(missing)",
+    "crear": "Create my room",
+    "registroAyuda": "We'll email you a link to confirm your account before you sign in.",
+    "registroEnviado": "Done! If the email is valid, you'll get a link to confirm your account. Open it and you'll go straight to your journal.",
+    "contrasenaDebil": "The password doesn't meet the requirements.",
+    "mismaContrasena": "Pick a password different from the previous one.",
+    "errorRegistro": "Couldn't create the account. Try again in a while.",
+    "confirmarCorreo": "Before signing in, confirm your account from the link we emailed you.",
+    "demasiadosIntentos": "Too many attempts in a row. Wait a few minutes and try again.",
+    "enlaceVencido": "That link expired or was already used. Ask for a new one.",
+    "recuperarTitulo": "Recover your password",
+    "recuperarAyuda": "Enter your email and we'll send you a link to choose a new one.",
+    "enviarEnlace": "Send link",
+    "recuperarEnviado": "If there's an account with that email, a link will arrive in a few minutes.",
+    "volverEntrar": "Back to sign in",
+    "restablecerTitulo": "Choose a new password",
+    "contrasenaNueva": "New password",
+    "guardarContrasena": "Save and sign in",
+    "pedirOtro": "Ask for another link",
+    "errorRestablecer": "Couldn't change the password. Try again."
   },
   "diario": {
     "titulo": "Journal",
@@ -89,7 +134,9 @@
     "eliminarConfirmar": "Delete this entry? This cannot be undone.",
     "volver": "Back to journal",
     "nueva": "New",
-    "conLaPalabra": "with “{palabra}”"
+    "conLaPalabra": "with “{palabra}”",
+    "campoTitulo": "Title",
+    "borradorGuardado": "Draft saved on this device · {hora}"
   },
   "dialogos": {
     "cerrar": "Close",
@@ -141,7 +188,7 @@
     "bajarItem": "Move item down",
     "todasLasCategorias": "All categories",
     "sinItemsAun": "No items yet. Add the first one.",
-    "itemPlaceholder": "Add an item...",
+    "itemPlaceholder": "Add an item and press Enter",
     "agregarItem": "Add item",
     "eliminarItem": "Delete item",
     "eliminarItemConfirmar": "Delete this item? This cannot be undone.",
@@ -149,7 +196,9 @@
     "cancelar": "Cancel",
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this list? This cannot be undone.",
-    "errorGuardar": "Couldn’t save that change. Please try again."
+    "errorGuardar": "Couldn’t save that change. Please try again.",
+    "progresoTexto": "{hechos} of {total} done",
+    "agregar": "Add"
   },
   "vitrina": {
     "titulo": "Showcase",
@@ -229,7 +278,11 @@
     "nuevaCategoriaPlaceholder": "New category…",
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this audio note? This cannot be undone.",
-    "errorGuardar": "Couldn’t save that change. Please try again."
+    "errorGuardar": "Couldn’t save that change. Please try again.",
+    "grabadora": "Recorder",
+    "tocaParaGrabar": "Tap to record",
+    "tocaParaDetener": "tap the square to stop",
+    "ayudaGrabar": "Up to {minutos} minutes. It saves itself when you stop; add a title later (or keep the date and time)."
   },
   "paginacion": {
     "cargarMas": "Load more",

@@ -1,0 +1,60 @@
+import { getTranslations } from "next-intl/server";
+
+/**
+ * El marco de las pantallas de acceso (entrar, crear cuenta, recuperar y
+ * restablecer contraseña): a la izquierda —arriba en el celular— la marca y
+ * qué es Cuarto Propio, para quien llega por primera vez; a la derecha el
+ * formulario de turno.
+ */
+export default async function AccesoLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "login" });
+
+  const modulos = [
+    { clave: "diario", fondo: "bg-primary-pink text-ink-strong" },
+    { clave: "listas", fondo: "bg-card text-ink" },
+    { clave: "vitrina", fondo: "bg-secondary-turquoise text-ink-strong" },
+    { clave: "audio", fondo: "bg-primary-green text-ink-strong" },
+  ] as const;
+
+  return (
+    <main className="flex flex-1 flex-col bg-background text-foreground md:flex-row">
+      <section className="flex flex-col gap-4 border-b-[3px] border-ink bg-secondary-purple px-6 pt-12 pb-7 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-[3px] md:border-b-0 md:px-14 md:py-16">
+        <div className="flex items-center gap-2.5">
+          <svg width="22" height="19" viewBox="0 0 14 12" aria-hidden="true">
+            <path
+              d="M2 0h4v2H2zM8 0h4v2H8zM0 2h14v4H0zM2 6h10v2H2zM4 8h6v2H4zM6 10h2v2H6z"
+              fill="var(--primary-pink)"
+            />
+          </svg>
+          <span className="font-pixel text-base tracking-wide">CUARTO PROPIO</span>
+        </div>
+        <p className="font-diario text-[22px] leading-snug md:text-4xl md:leading-tight md:font-bold">
+          {t("lema")}
+        </p>
+        <ul className="mt-2 hidden grid-cols-2 gap-3.5 md:grid">
+          {modulos.map(({ clave, fondo }) => (
+            <li
+              key={clave}
+              className={`flex flex-col gap-1.5 border-2 border-ink p-4 shadow-[4px_4px_0_var(--ink)] ${fondo}`}
+            >
+              <span className="text-[15px] font-bold">{t(`modulo.${clave}`)}</span>
+              <span className="text-[13px]">{t(`modulo.${clave}Ayuda`)}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-auto hidden text-[13px] opacity-90 md:block">{t("privado")}</p>
+      </section>
+
+      <div className="flex flex-1 justify-center px-6 py-8 md:items-center">
+        <div className="w-full max-w-100">{children}</div>
+      </div>
+    </main>
+  );
+}
