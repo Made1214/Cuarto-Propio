@@ -7,6 +7,7 @@ import { listarCategorias } from "@/lib/categorias/queries";
 import { obtenerEntradaPorCodigo } from "@/lib/diario/queries";
 import { EntradaForm } from "../../entrada-form";
 import { EliminarEntradaBoton } from "../eliminar-boton";
+import { GuardadoProvider, GuardarBoton } from "../../guardar-boton";
 
 export default async function EditarEntradaPage({
   params,
@@ -43,47 +44,46 @@ export default async function EditarEntradaPage({
         {t("volver")}
       </Link>
 
-      <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
-        <div className="flex items-center justify-between gap-4 p-5">
-          <div className="flex items-center gap-3">
-            <span className="apoyo">
-              {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" })}
-            </span>
-            {entrada.categoriaNombre && entrada.categoriaId ? (
-              <span
-                className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-xs font-semibold text-ink-strong"
-                style={{ background: colorCategoria(categorias, entrada.categoriaId) }}
-              >
-                {entrada.categoriaNombre}
+      <GuardadoProvider>
+        <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+          <div className="flex items-center justify-between gap-4 p-5">
+            <div className="flex items-center gap-3">
+              <span className="apoyo">
+                {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" })}
               </span>
-            ) : null}
+              {entrada.categoriaNombre && entrada.categoriaId ? (
+                <span
+                  className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-xs font-semibold text-ink-strong"
+                  style={{ background: colorCategoria(categorias, entrada.categoriaId) }}
+                >
+                  {entrada.categoriaNombre}
+                </span>
+              ) : null}
+            </div>
+            <div className="flex items-center gap-2.5">
+              <GuardarBoton
+                formId={formId}
+                className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+              />
+              <EliminarEntradaBoton action={eliminar} />
+            </div>
           </div>
-          <div className="flex items-center gap-2.5">
-            <button
-              type="submit"
-              form={formId}
-              className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              {t("guardar")}
-            </button>
-            <EliminarEntradaBoton action={eliminar} />
-          </div>
-        </div>
 
-        <div className="p-5">
-          <EntradaForm
-            formId={formId}
-            claveBorrador={codigo}
-            action={actualizar}
-            categorias={categorias}
-            valoresIniciales={{
-              titulo: entrada.titulo,
-              categoriaNombre: entrada.categoriaNombre,
-              contenido: entrada.contenido,
-            }}
-          />
+          <div className="p-5">
+            <EntradaForm
+              formId={formId}
+              claveBorrador={codigo}
+              action={actualizar}
+              categorias={categorias}
+              valoresIniciales={{
+                titulo: entrada.titulo,
+                categoriaNombre: entrada.categoriaNombre,
+                contenido: entrada.contenido,
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </GuardadoProvider>
     </div>
   );
 }

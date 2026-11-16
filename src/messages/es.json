@@ -173,7 +173,11 @@
     "nueva": "Nueva",
     "conLaPalabra": "con «{palabra}»",
     "campoTitulo": "Título",
-    "borradorGuardado": "Borrador guardado en este dispositivo · {hora}"
+    "borradorGuardado": "Borrador guardado en este dispositivo · {hora}",
+    "guardando": "Guardando…",
+    "contenidoRequerido": "Tu entrada todavía está en blanco: escribe algo (o suma una imagen) antes de guardar.",
+    "errorGuardar": "No se pudo guardar. Lo que escribiste sigue aquí: prueba de nuevo en un ratito.",
+    "sesionVencida": "Se venció tu sesión y no se pudo guardar. Lo que escribiste quedó como borrador en este dispositivo: vuelve a entrar y lo recuperas."
   },
   "dialogos": {
     "cerrar": "Cerrar",

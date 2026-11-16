@@ -173,7 +173,11 @@
     "nueva": "New",
     "conLaPalabra": "with “{palabra}”",
     "campoTitulo": "Title",
-    "borradorGuardado": "Draft saved on this device · {hora}"
+    "borradorGuardado": "Draft saved on this device · {hora}",
+    "guardando": "Saving…",
+    "contenidoRequerido": "Your entry is still blank — write something (or add an image) before saving.",
+    "errorGuardar": "We couldn't save it. What you wrote is still here — try again in a moment.",
+    "sesionVencida": "Your session expired and we couldn't save. What you wrote is kept as a draft on this device — sign in again to get it back."
   },
   "dialogos": {
     "cerrar": "Close",
