@@ -131,7 +131,17 @@
     "metaEntrar": "Log in",
     "metaCrear": "Create account",
     "metaRecuperar": "Recover password",
-    "metaRestablecer": "New password"
+    "metaRestablecer": "New password",
+    "detalle": {
+      "categorias": "Your own categories",
+      "hashtags": "Showcase hashtags",
+      "busqueda": "Keyword search",
+      "temas": "Themes and colors",
+      "cursor": "Your own cursor",
+      "modo": "Light or dark mode",
+      "idiomas": "Spanish and English",
+      "instalable": "Installs like an app"
+    }
   },
   "diario": {
     "titulo": "Journal",

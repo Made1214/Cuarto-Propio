@@ -206,6 +206,13 @@ body {
   animation: marquee-corre 32s linear infinite;
 }
 
+/* La segunda cinta va al revés y más lenta: dos ritmos distintos se leen
+   como movimiento tranquilo, no como una pared que corre. */
+.marquee-cinta-reversa {
+  animation-direction: reverse;
+  animation-duration: 44s;
+}
+
 .marquee-mascara:hover .marquee-cinta,
 .marquee-mascara:focus-within .marquee-cinta {
   animation-play-state: paused;

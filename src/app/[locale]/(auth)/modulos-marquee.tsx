@@ -75,8 +75,33 @@ const MODULOS: Modulo[] = [
   },
 ];
 
+// Los detalles de la segunda cinta: solo cosas que ya existen en la app.
+const DETALLES = [
+  "categorias",
+  "hashtags",
+  "busqueda",
+  "temas",
+  "cursor",
+  "modo",
+  "idiomas",
+  "instalable",
+] as const;
+
 export async function ModulosMarquee({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: "login.modulo" });
+  const tDetalle = await getTranslations({ locale, namespace: "login.detalle" });
+
+  const pastillas = (copia: boolean) =>
+    DETALLES.map((clave) => (
+      <li
+        key={`${clave}-${copia ? "b" : "a"}`}
+        aria-hidden={copia || undefined}
+        className="flex shrink-0 items-center gap-2 rounded-full border-(length:--borde) border-background/30 bg-background/10 px-3.5 py-1.5 text-[13px] whitespace-nowrap"
+      >
+        <span aria-hidden="true" className="text-primary-pink">✦</span>
+        {tDetalle(clave)}
+      </li>
+    ));
 
   // La lista va dos veces para que el loop sea continuo: la animación corre
   // -50% y la segunda copia ocupa justo el lugar de la primera. La copia es
@@ -101,11 +126,19 @@ export async function ModulosMarquee({ locale }: { locale: string }) {
     ));
 
   return (
-    <div className="marquee-mascara relative w-full overflow-hidden py-3">
-      <ul className="marquee-cinta flex w-max gap-5 px-2.5">
-        {tarjetas(false)}
-        {tarjetas(true)}
-      </ul>
-    </div>
+    <>
+      <div className="marquee-mascara relative w-full overflow-hidden py-3">
+        <ul className="marquee-cinta flex w-max gap-5 px-2.5">
+          {tarjetas(false)}
+          {tarjetas(true)}
+        </ul>
+      </div>
+      <div className="marquee-mascara relative w-full overflow-hidden py-1">
+        <ul className="marquee-cinta marquee-cinta-reversa flex w-max gap-3 px-1.5">
+          {pastillas(false)}
+          {pastillas(true)}
+        </ul>
+      </div>
+    </>
   );
 }

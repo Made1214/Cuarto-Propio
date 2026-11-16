@@ -131,7 +131,17 @@
     "metaEntrar": "Iniciar sesión",
     "metaCrear": "Crear cuenta",
     "metaRecuperar": "Recuperar contraseña",
-    "metaRestablecer": "Nueva contraseña"
+    "metaRestablecer": "Nueva contraseña",
+    "detalle": {
+      "categorias": "Categorías propias",
+      "hashtags": "Hashtags en la Vitrina",
+      "busqueda": "Búsqueda por palabra",
+      "temas": "Temas y colores",
+      "cursor": "Tu propio cursor",
+      "modo": "Modo claro u oscuro",
+      "idiomas": "Español e inglés",
+      "instalable": "Se instala como app"
+    }
   },
   "diario": {
     "titulo": "Diario",

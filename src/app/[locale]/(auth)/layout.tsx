@@ -46,14 +46,24 @@ export default async function AccesoLayout({
             <ControlesAcceso />
           </Suspense>
         </div>
-        <p className="hidden font-diario text-4xl leading-tight font-bold md:block">
-          {t("lema")}
-        </p>
-        {/* Lo que se puede hacer adentro, en una cinta que pasa sola. */}
-        <div className="-mx-14 mt-2 hidden md:block">
-          <ModulosMarquee locale={locale} />
+        {/* Lema y cintas van juntos y centrados en lo que sobra de alto: así
+            el espacio libre se reparte arriba y abajo en vez de quedar todo
+            amontonado sobre el aviso de privacidad. */}
+        <div className="hidden flex-col gap-7 md:my-auto md:flex">
+          <p className="font-diario text-4xl leading-tight font-bold">
+            {t("lema")}
+          </p>
+          {/* Lo que se puede hacer adentro: los cuatro módulos y, debajo, los
+              detalles, en dos cintas que pasan en sentidos contrarios. */}
+          <div className="-mx-14 flex flex-col gap-2">
+            <ModulosMarquee locale={locale} />
+          </div>
         </div>
-        <p className="mt-auto hidden text-[13px] opacity-90 md:block">
+        <p className="hidden items-center gap-2 self-start rounded-full border-(length:--borde) border-background/30 bg-background/10 px-3.5 py-1.5 text-[13px] md:inline-flex">
+          <svg aria-hidden="true" className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <rect x="4" y="11" width="16" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          </svg>
           {t("privado")}
         </p>
       </section>
