@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { formatearDuracion } from "@/lib/audio/duracion";
-import { DURACION_MAXIMA_SEGUNDOS, TAMANO_MAXIMO_BYTES } from "@/lib/audio/limites";
+import {
+  BITRATE_AUDIO_BPS,
+  DURACION_MAXIMA_SEGUNDOS,
+  TAMANO_MAXIMO_BYTES,
+} from "@/lib/audio/limites";
 import { IconoAudio as IconoMicrofono } from "@/components/iconos-secciones";
 import { IconoCerrar, IconoReintentar } from "./iconos";
 
@@ -37,9 +41,10 @@ function puedeGrabar(): boolean {
 }
 
 /**
- * Grabadora de notas de voz. Graba en el navegador con MediaRecorder (ya sale
- * comprimida de ahí, no hace falta un segundo paso como en las fotos), corta
- * sola a los 10 minutos y sube la nota apenas se detiene.
+ * Grabadora de notas de voz. Graba en el navegador con MediaRecorder a un
+ * bitrate de voz (ya sale comprimida de ahí, no hace falta un segundo paso
+ * como en las fotos), corta sola a los 10 minutos y sube la nota apenas se
+ * detiene.
  *
  * Si la subida falla, la grabación NO se descarta: queda en memoria con su
  * botón de reintentar, que es lo que pide CLAUDE.md → Confiabilidad. Perder
@@ -147,7 +152,12 @@ export function Grabador() {
     }
 
     const tipo = tipoPreferido();
-    const grabadora = new MediaRecorder(stream, tipo ? { mimeType: tipo } : undefined);
+    // El bitrate bajo es lo que hace que 10 minutos quepan en el límite de
+    // subida de Vercel (ver limites.ts); el formato sigue siendo el preferido.
+    const grabadora = new MediaRecorder(stream, {
+      ...(tipo ? { mimeType: tipo } : {}),
+      audioBitsPerSecond: BITRATE_AUDIO_BPS,
+    });
     grabadoraRef.current = grabadora;
     trozosRef.current = [];
 
