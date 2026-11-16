@@ -1,6 +1,7 @@
 "use server";
 
 import { generateText, type JSONContent } from "@tiptap/core";
+import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { borrarPaths } from "@/lib/imagenes/almacenamiento";
@@ -12,6 +13,14 @@ import { contenidoVacio } from "@/lib/diario/contenido";
 import type { EntradaActionState } from "@/lib/diario/types";
 import { errorTitulo, TITULO_MAXIMO } from "@/lib/diario/titulo";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
+
+/** Vacía la caché de navegación del navegador antes de redirigir. Sin esto,
+ * `staleTimes.dynamic` (next.config.ts) hace que la ficha y el listado
+ * visitados hace menos de 30 s se muestren como estaban: se guardaba la
+ * edición y la pantalla seguía mostrando el texto viejo hasta recargar. */
+function refrescarDiario() {
+  revalidatePath("/", "layout");
+}
 
 /** Valida el título del lado del servidor: el `maxLength` del campo es
  * comodidad, no una garantía — se puede saltear. */
@@ -130,6 +139,7 @@ export async function crearEntrada(
     return { error: t("errorGuardar") };
   }
 
+  refrescarDiario();
   redirect({ href: `/diario/${codigo}`, locale });
 }
 
@@ -175,6 +185,7 @@ export async function actualizarEntrada(
   const quitadas = pathsImagenesEnContenido(anterior).filter((path) => !siguen.has(path));
   await borrarImagenesSilencioso(supabase, usuarioId, quitadas);
 
+  refrescarDiario();
   redirect({ href: `/diario/${codigo}`, locale });
 }
 
@@ -199,5 +210,6 @@ export async function eliminarEntrada(locale: string, id: string) {
     );
   }
 
+  refrescarDiario();
   redirect({ href: "/diario", locale });
 }
