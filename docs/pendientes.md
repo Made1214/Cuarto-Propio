@@ -1,6 +1,6 @@
 # Pendientes — para seguir en otro chat
 
-Última revisión: 2026-11-15 · rama revisada: `dev` (sobre `639ffd8`, más la actualización de dependencias)
+Última revisión: 2026-11-15 · rama revisada: `dev` (sobre `c44103b`, más CI y colores de categoría)
 
 > **Regla de trabajo:** cada vez que se revise el estado del proyecto, primero
 > se hace `git fetch` y se analiza `origin/dev` (diff contra `main`, `tsc`,
@@ -24,8 +24,8 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## Estado de `dev`
 
-- 22 commits por delante de `main`, sin commits propios en `main`: la fusión no tiene conflictos.
-- `tsc --noEmit`, `eslint` y `next build` pasan sin errores.
+- Más de 30 commits por delante de `main`, sin commits propios en `main`: la fusión no tiene conflictos.
+- `tsc --noEmit`, `eslint`, `npm test` (78) y `next build` pasan sin errores, y ahora los corre el CI (`.github/workflows/ci.yml`) en cada push.
 - Migraciones 0001–0011 aplicadas en Supabase.
 - La app ya corre en la computadora de la usuaria con su `.env.local`.
 
@@ -61,6 +61,8 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 - [ ] **Listas:** crear, marcar, reordenar y borrar.
 - [ ] **Personalización:** elegir cada tema; guardar colores (y ver el aviso de contraste); cambiar las letras; subir un cursor y un icono propios. Comprobar que todo se mantiene al recargar y en otro dispositivo.
 - [ ] **Colores y letras por tema (nuevo, sin probar en pantalla):** en cada tema, cambiar los seis colores y ver que tarjetas, bordes y —en Softsignal y Void— carcasa, pantallas LCD, barras de título y cromo los acompañan, en claro y oscuro; cambiar las letras y ver que rótulos y títulos las siguen; cambiar de tema y volver, y comprobar que cada uno conserva lo suyo. Detalle en `docs/analisis-y-plan.md`, sección 3.
+- [ ] **Colores de categoría (nuevo, sin probar en pantalla):** en cada tema, claro y oscuro, ver los chips del filtro y del selector; crear una categoría nueva y comprobar que las demás no cambian de color. Detalle en `docs/analisis-y-plan.md`, sección 3.6.
+- [ ] **CI:** después del primer push, mirar en GitHub → Actions que el flujo `CI` quede en verde.
 - [ ] **Softsignal y Void en todas las pantallas** (Listas, Vitrina, Audio, editor, ficha de pieza, perfil, ventanita de Crear), en celular y escritorio, claro y oscuro. Estas pantallas solo se revisaron con capturas de una página de prueba, no con datos reales.
 - [ ] **Bienvenida:** sale una sola vez en una cuenta nueva.
 - [ ] **Medidor de espacio:** se ve en el perfil.

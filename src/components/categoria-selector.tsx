@@ -52,9 +52,10 @@ export function CategoriaSelector({
     nombre: categoriaNombre,
   });
 
-  // Una categoría nueva todavía no está en la lista: se suma ordenada por
-  // nombre (como la devuelve `listarCategorias`) para que su color ya sea
-  // el que va a tener cuando llegue la real, en vez de cambiar al refrescar.
+  // Una categoría nueva todavía no está en la lista: se suma (ordenada por
+  // nombre, como la devuelve `listarCategorias`) para que se vea al
+  // momento. Sin fecha de creación cuenta como la más nueva, así que su
+  // color ya es el que va a tener cuando llegue la real.
   const categoriasVisibles =
     actual.id === ID_PROVISORIO && actual.nombre
       ? [...categorias, { id: ID_PROVISORIO, nombre: actual.nombre }].sort((a, b) =>

@@ -1,6 +1,7 @@
 import { CURSORES, PUNTO_CURSOR_PROPIO } from "./cursores";
 import { paletaEfectiva, type ConfigTema } from "./config";
 import { FUENTES_DIARIO, FUENTES_INTERFAZ } from "./fuentes";
+import { variablesCategorias } from "./categorias";
 import { variablesPropiasTema } from "./derivados";
 import { TEMAS_DISPONIBLES } from "./presets";
 import type { PaletaTema } from "./types";
@@ -19,6 +20,7 @@ export function variablesPaleta(paleta: PaletaTema): Record<string, string> {
     "--primary-pink": paleta.primarioRosa,
     "--secondary-turquoise": paleta.secundarioTurquesa,
     "--secondary-purple": paleta.secundarioMorado,
+    ...variablesCategorias(paleta),
   };
 }
 

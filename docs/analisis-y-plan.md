@@ -1,6 +1,6 @@
 # Cuarto Propio — análisis del estado actual y plan para seguir
 
-Fecha del análisis: 15 de noviembre de 2026 · rama `dev`. Segunda versión: incorpora las decisiones tomadas y lo que ya se construyó a partir de ellas.
+Fecha del análisis: 15 de noviembre de 2026 · rama `dev`. Tercera versión: suma la integración continua, los colores de categoría según el tema (etapa B) y una revisión de las tres fases (sección 7).
 
 Este documento hace tres cosas: dice dónde está parado el proyecto frente a lo que pide `CLAUDE.md`, señala las áreas de mejora encontradas leyendo el código, y propone cómo seguir — con la **Personalización** desarrollada en detalle, porque es lo que diferencia a la app.
 
@@ -10,7 +10,7 @@ Se complementa con los otros documentos, no los reemplaza:
 - `docs/pendientes.md`: la lista operativa de tareas (qué probar, qué configurar). Lo que ya está ahí no se repite acá.
 - `docs/base-de-datos.md`: el esquema explicado.
 
-Alcance: lectura del código, más `npm test` (66 tests), `tsc`, `eslint` y `next build`, que pasan. **No se probó en pantalla ni contra la base real**: lo construido en esta vuelta está verificado por tests, no a ojo.
+Alcance: lectura del código, más `npm test` (78 tests), `tsc`, `eslint` y `next build`, que pasan. **No se probó en pantalla ni contra la base real**: lo construido en esta vuelta está verificado por tests, no a ojo.
 
 ---
 
@@ -20,7 +20,8 @@ Alcance: lectura del código, más `npm test` (66 tests), `tsc`, `eslint` y `nex
 - **Lo que falta para cerrarla es verificación y despliegue**: probar con datos reales, la configuración de Supabase y Vercel, y fusionar a `main`. Está detallado en `docs/pendientes.md`.
 - **La Personalización ahora es por tema y completa.** Cada tema guarda sus propios colores y letras, y lo que se elige cambia toda la interfaz, también en Softsignal y Void (sección 3).
 - **`CLAUDE.md`, `README.md` y `docs/base-de-datos.md` están al día** con el código.
-- **Sigue sin haber integración continua**: los tests existen pero nada los corre solos.
+- **Hay integración continua**: `.github/workflows/ci.yml` corre lint, tipos, tests y build en cada push a `dev` y `main` y en cada pull request.
+- **Las categorías siguen al tema** y su color ya no se corre al crear o borrar otra (sección 3.6).
 
 ---
 
@@ -33,6 +34,7 @@ Alcance: lectura del código, más `npm test` (66 tests), `tsc`, `eslint` y `nex
 | Los colores salen del tema | Se eligen seis colores; el resto se calcula a partir de ellos con la proporción que tiene cada tema |
 | Seguir con las mejoras de corrido | No se espera a las semanas de uso; el orden está en la sección 5 |
 | Documentación al día | Hecho en esta vuelta |
+| Categorías: color automático según el tema | Elegir el color de cada categoría queda en Fase 2, junto con la pantalla de gestión de categorías |
 
 ---
 
@@ -86,7 +88,20 @@ Antes, los rótulos pixelados (unas 50 apariciones) y los títulos que cada tema
 - El aviso de contraste revisa además el texto sobre las tarjetas.
 - 10 tests nuevos (66 en total).
 
-### 3.6 Corrección a la versión anterior de este documento
+### 3.6 Colores de categoría según el tema (etapa B)
+
+Antes las categorías usaban 12 pasteles fijos, asignados por **posición alfabética**: crear una categoría que empezara con "A" corría el color de todas las demás.
+
+- **Siguen al tema** (`src/lib/temas/categorias.ts`): de los tres acentos del tema (rosa, verde, turquesa) se toma qué tan claros y saturados son, y con eso se arman 12 tonos parejos alrededor del círculo, empezando por el rosa del tema. Whimsical da pasteles suaves; Softsignal y Void, colores más vivos. Si la usuaria eligió colores propios, salen de esos. Se calcula en OKLCH para que "igual de claro" se vea igual en todos los tonos.
+- **Siempre legibles**: cada color se aclara lo necesario para llegar a 4.5:1 contra la tinta que va encima. Un test lo comprueba en los cuatro temas, claro y oscuro.
+- **Llegan como variables** `--cat-0` … `--cat-11`, junto con el resto de la paleta, así que también se ven en la vista previa en vivo de Personalización.
+- **Color estable** (`src/lib/categorias/color.ts`): cada categoría toma un lugar según un hash de su id, recorriéndolas por fecha de creación; si el lugar está ocupado, el siguiente libre. Crear una categoría ya no cambia el color de ninguna otra; borrar una solo mueve a las que habían chocado con ella. Con 12 o menos, nunca se repite un color. No hizo falta migración: usa `created_at`, que ya existía.
+
+### 3.7 Integración continua
+
+`.github/workflows/ci.yml`: lint, `tsc`, `npm test` y `next build` en cada push a `dev` y `main` y en cada pull request. No toca Supabase; el build recibe variables de mentira.
+
+### 3.8 Corrección a la versión anterior de este documento
 
 La primera versión decía que el color por defecto del editor del diario podía dejar texto ilegible en modo oscuro. No es así: ese valor solo es el color que muestra el selector cuando no hay ninguno elegido; no se aplica al texto.
 
@@ -98,9 +113,9 @@ La primera versión decía que el color por defecto del editor del diario podía
 
 Lo de la sección 3 está verificado por tests, no a ojo. Hay que recorrer los cuatro temas, en claro y oscuro, cambiando cada uno de los seis colores y las dos letras, y mirar sobre todo Softsignal y Void. La regla de "misma distancia" da resultados previsibles con colores cercanos a los del tema; con colores muy lejanos (un fondo negro en un tema claro) puede hacer falta ajustar alguna pieza.
 
-### Etapa B — Colores de categoría según el tema
+### ~~Etapa B — Colores de categoría según el tema~~ (hecho, sección 3.6)
 
-Las categorías usan 12 pasteles fijos (`src/lib/categorias/color.ts`), asignados por posición. No siguen al tema, y el color de una categoría se corre si se borra otra anterior. Propuesta: derivar la paleta del tema y, más adelante, permitir elegir el color de cada categoría.
+Queda para la Fase 2 elegir el color de cada categoría a mano, junto con la pantalla de gestión de categorías.
 
 ### Etapa C — Sacar las imágenes propias de la página
 
@@ -130,10 +145,10 @@ Guardar varias combinaciones con nombre dentro de un mismo tema. La tabla `temas
 
 | # | Bloque | Contenido | Por qué en este orden |
 | --- | --- | --- | --- |
-| 1 | Probar | Etapa A, junto con la prueba general con base real de `pendientes.md` | Lo nuevo no se vio en pantalla |
+| 1 | Probar | Etapa A (ahora también los colores de categoría), junto con la prueba general con base real de `pendientes.md` | Lo nuevo no se vio en pantalla |
 | 2 | Cerrar la Fase 1 | Operativo de Supabase y Vercel, fusión a `main`, despliegue | Lo único que separa al proyecto de estar en uso |
-| 3 | Red de seguridad | CI con lint, tipos, tests y build; completar la prueba de punta a punta | Antes de seguir tocando estilos |
-| 4 | Coherencia | Etapa B | Lo último que queda sin seguir al tema |
+| 3 | Red de seguridad | ~~CI~~ (hecho); completar la prueba de punta a punta | Antes de seguir tocando estilos |
+| 4 | ~~Coherencia~~ | ~~Etapa B~~ (hecho) | — |
 | 5 | Rendimiento | Etapa C | Importa más con la app desplegada y en el celular |
 | 6 | Alcance | Etapas D y E | Mejoras, no correcciones |
 | 7 | Temas | Etapas F y G | Lo más vistoso, lo menos urgente |
@@ -142,26 +157,44 @@ Guardar varias combinaciones con nombre dentro de un mismo tema. La tabla `temas
 
 ## 6. Otras áreas de mejora
 
-- **Integración continua**: no hay carpeta `.github/`. Un flujo que corra `npm test`, `eslint`, `tsc` y el build en cada push a `dev` cuesta poco.
 - **`temas.tipografia` es texto con JSON adentro**; `colores` e `iconos` ya son `jsonb`. Igualarla cuando haya otra migración sobre esa tabla.
 - **Prueba de punta a punta**: el script existe; los flujos con sesión no se verificaron y faltan Vitrina, Audio y Personalización.
 
 ---
 
-## 7. Después de la Fase 1
+## 7. Revisión de las fases
 
-Nada de esto se construye todavía; queda anotado lo que el código ya deja preparado.
+### Fase 1 — MVP personal: construida, falta verificarla y desplegarla
 
-**Fase 2 — escalable**
+Contra las historias de usuario de `CLAUDE.md`:
+
+| Área | Construido | Falta |
+| --- | --- | --- |
+| Diario | Editor con formato e imágenes, título obligatorio (campo y servidor), categorías, búsqueda, editar y borrar con confirmación, borrador local | Probar con base real |
+| Listas | Crear, marcar, reordenar, borrar, nombre y categoría inline | Probar con base real |
+| Vitrina | Exhibir por lote, miniatura + completa, hashtags normalizados, filtros, ficha y edición aparte | Probar con base real |
+| Audio | Grabar, corte a 10 min, reintento de subida, título por defecto | Probar con base real |
+| Personalización | Temas, colores por tema con derivados, contraste, letras, cursor, iconos, modo claro/oscuro/automático, categorías según el tema | Etapa A (en pantalla) |
+| Acceso | Entrar, crear cuenta, verificación, recuperar contraseña, bloqueo tras 5 fallos | Redirect URLs en Supabase |
+| Idioma | Español e inglés | — |
+| No funcionales | RLS, tipo real de archivo, aviso de espacio, PWA, términos y privacidad, tests, CI | Backups en Supabase, desplegar en Vercel |
+
+Lo que separa a la Fase 1 de estar cerrada no es código: es probar en pantalla con la base real y hacer el operativo de `pendientes.md` (sección 2). Las etapas C, D y E de este documento son mejoras de la Fase 1, no requisitos de `CLAUDE.md`; pueden ir antes o después de desplegar.
+
+**Recomendación:** desplegar en cuanto pase la prueba con base real, y hacer C, D y E con la app ya en uso. Así las mejoras salen de lo que se nota usándola, como sugería el plan original.
+
+### Fase 2 — Escalable: no empezar todavía
+
+Nada de esto se construye; queda anotado lo que el código ya deja preparado.
 
 - Temas guardables (etapa G).
 - Multiusuario real: el modelo ya cuelga de `usuario_id` con RLS. Faltan cuotas por cuenta y límites de subida; el aviso de espacio hoy mide contra el total del plan gratuito, no por cuenta.
 - Transcripción de audio: la columna `audios.transcripcion` existe y está vacía.
 - Búsqueda cruzada por categoría y hashtag entre los cuatro módulos; momento de revisar la regla de una sola categoría por elemento.
-- Pantalla de gestión de categorías, con color elegible.
+- Pantalla de gestión de categorías, con color elegible. El color automático ya vive en variables `--cat-N`: elegir uno a mano sería guardar el número en la categoría.
 - Exportación y backup de datos; modo offline básico.
 
-**Fase 3 — comercial**
+### Fase 3 — Comercial: solo como horizonte
 
 - Perfiles públicos: implican políticas de lectura pública y otra forma de servir los archivos publicados.
 - Planes y límites por cuenta, moderación, descubrimiento.
@@ -170,5 +203,5 @@ Nada de esto se construye todavía; queda anotado lo que el código ya deja prep
 
 ## 8. Decisiones abiertas
 
-1. **Categorías** (etapa B): ¿colores derivados del tema automáticamente, o elegibles uno por uno desde ya?
+1. ~~**Categorías**~~: resuelto, automáticas según el tema; elegirlas a mano queda en Fase 2.
 2. **Borde en Void**: quedó siguiendo al color de acento. Si al probarlo prefieres que siga a otro color, es un valor en `presets.ts`.
