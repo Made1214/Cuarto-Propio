@@ -11,7 +11,7 @@ export default function CargandoEntrada() {
     <EsqueletoPantalla className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <Hueso className="h-3.5 w-20" />
 
-      <div className="divide-y-2 divide-ink border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
+      <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
         <div className="flex flex-wrap items-center justify-between gap-4 p-5">
           <div className="flex items-center gap-3">
             <Hueso className="h-3 w-28" />

@@ -32,11 +32,6 @@ export default async function AudioPage({
   // como si no hubiera filtro (ver `listarConFiltroCategoria`).
   const categoria = categoriaActual?.id;
   const notas = pagina.filas;
-  // Con el archivo vacío, la invitación del centro ya es el botón de grabar:
-  // repetirlo arriba no solo se ve redundante, son dos grabadoras con estado
-  // propio (empezar en una no apagaría la otra). Se muestra una sola.
-  const vacioSinFiltro = notas.length === 0 && !categoria;
-
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -45,39 +40,32 @@ export default async function AudioPage({
             <IconoAudio />
           </span>
           <div>
-            <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
         </div>
-
-        {vacioSinFiltro ? null : <Grabador />}
       </div>
 
-      {categorias.length > 0 ? (
-        <FiltroCategoria
-          pathname="/audio"
-          categorias={categorias}
-          categoriaActualId={categoria ?? null}
-          etiquetaTodas={t("todasLasCategorias")}
-        />
-      ) : null}
+      {/* Una sola grabadora, siempre arriba y a la vista: grabar es lo
+          principal de esta pantalla, también con el archivo vacío. */}
+      <Grabador />
+
+      <FiltroCategoria pathname="/audio" categorias={categorias} categoriaActualId={categoria ?? null} />
 
       {categoria ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-pixel text-xs text-muted/70 tabular-nums">
+        <p className="-mt-2 text-sm text-muted/80">
+          <span className="font-semibold tabular-nums">
             {t("resultados", { cantidad: pagina.total ?? notas.length })}
           </span>
-          <Link
-            href="/audio"
-            className="border-2 border-ink bg-card px-2.5 py-1 font-pixel text-[10px] tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
-          >
-            {t("limpiarFiltros").toUpperCase()}
+          {" · "}
+          <Link href="/audio" className="font-semibold text-secondary-purple underline-offset-2 hover:underline">
+            {t("limpiarFiltros")}
           </Link>
-        </div>
+        </p>
       ) : null}
 
       {notas.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
           <span className="text-secondary-purple">
             <IconoAudio />
           </span>
@@ -85,13 +73,11 @@ export default async function AudioPage({
           {categoria ? (
             <Link
               href="/audio"
-              className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
             >
-              {t("limpiarFiltros").toUpperCase()}
+              {t("limpiarFiltros")}
             </Link>
-          ) : (
-            <Grabador variante="panel" />
-          )}
+          ) : null}
         </div>
       ) : (
         /* Una nota por fila y no en columnas como Listas o Vitrina: acá lo

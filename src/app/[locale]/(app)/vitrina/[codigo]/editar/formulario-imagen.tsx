@@ -61,7 +61,7 @@ export function FormularioImagen({
   return (
     <form action={enviarAction} {...validacion} className="flex flex-col gap-4 p-4">
       {estado?.error ? (
-        <p className="border-2 border-ink-strong bg-primary-pink px-3 py-2 font-pixel text-[0.625rem] tracking-wide text-ink-strong">
+        <p className="border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 text-[13px] font-semibold text-ink-strong">
           {estado.error}
         </p>
       ) : null}
@@ -74,7 +74,7 @@ export function FormularioImagen({
         maxLength={TITULO_MAXIMO}
         aria-label={t("campoTitulo")}
         placeholder={t("tituloPlaceholder")}
-        className="border-2 border-ink bg-background px-3 py-2 font-diario text-2xl font-bold text-secondary-purple outline-none placeholder:font-normal placeholder:text-muted/40"
+        className="border-(length:--borde) border-ink rounded-theme bg-background px-3 py-2 font-diario text-2xl font-bold text-secondary-purple outline-none placeholder:font-normal placeholder:text-muted/40"
       />
 
       <textarea
@@ -85,7 +85,7 @@ export function FormularioImagen({
         maxLength={DESCRIPCION_MAXIMA}
         aria-label={t("campoDescripcion")}
         placeholder={t("descripcionPlaceholder")}
-        className="resize-y border-2 border-ink bg-background px-3 py-2 text-sm outline-none placeholder:text-muted/40"
+        className="resize-y border-(length:--borde) border-ink rounded-theme bg-background px-3 py-2 text-sm outline-none placeholder:text-muted/40"
       />
 
       <div className="flex flex-col gap-1.5">
@@ -96,14 +96,14 @@ export function FormularioImagen({
           onChange={(evento) => setHashtagsTexto(evento.target.value)}
           aria-label={t("campoHashtags")}
           placeholder={t("hashtagsPlaceholder")}
-          className="border-2 border-ink bg-background px-3 py-2 text-sm text-secondary-purple outline-none placeholder:text-muted/40"
+          className="border-(length:--borde) border-ink rounded-theme bg-background px-3 py-2 text-sm text-secondary-purple outline-none placeholder:text-muted/40"
         />
         {etiquetas.length > 0 ? (
           <div className="flex flex-wrap gap-1">
             {etiquetas.map((etiqueta) => (
               <span
                 key={etiqueta}
-                className="border-2 border-ink-strong bg-secondary-turquoise px-1.5 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink-strong"
+                className="border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-2.5 py-1 text-[13px] font-semibold text-ink-strong"
               >
                 #{etiqueta}
               </span>
@@ -123,7 +123,7 @@ export function FormularioImagen({
           onClick={() => setEligiendoCategoria((valor) => !valor)}
           aria-expanded={eligiendoCategoria}
           aria-label={t("campoCategoria")}
-          className="flex w-fit max-w-full items-center gap-1.5 border-2 px-2 py-1 font-pixel text-[0.625rem] tracking-wide"
+          className="flex w-fit max-w-full items-center gap-1.5 border-(length:--borde) px-2.5 py-1 text-[13px] font-semibold"
           style={
             categoriaElegida
               ? {
@@ -135,20 +135,20 @@ export function FormularioImagen({
           }
         >
           <span className="truncate">
-            {(categoriaTexto || t("categoriaPlaceholder")).toUpperCase()}
+            {categoriaTexto || t("categoriaPlaceholder")}
           </span>
         </button>
 
         {eligiendoCategoria ? (
-          <div className="flex flex-col gap-2 border-2 border-ink bg-background p-2">
+          <div className="flex flex-col gap-2 border-(length:--borde) border-ink rounded-theme bg-background p-2">
             <div className="flex flex-wrap gap-1">
               {categoriaTexto ? (
                 <button
                   type="button"
                   onClick={() => setCategoriaTexto("")}
-                  className="border-2 border-dashed border-ink px-2 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink hover:bg-secondary-purple/10"
+                  className="border-(length:--borde) border-dashed border-ink rounded-theme px-2.5 py-1 text-[13px] font-semibold text-ink hover:bg-secondary-purple/10"
                 >
-                  {t("categoriaPlaceholder").toUpperCase()}
+                  {t("categoriaPlaceholder")}
                 </button>
               ) : null}
               {categorias.map((cat) => (
@@ -159,10 +159,10 @@ export function FormularioImagen({
                     setCategoriaTexto(cat.nombre);
                     setEligiendoCategoria(false);
                   }}
-                  className="border-2 border-transparent px-2 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink-strong hover:border-ink-strong"
+                  className="border-(length:--borde) border-transparent px-2.5 py-1 text-[13px] font-semibold text-ink-strong hover:border-ink-strong"
                   style={{ background: colorCategoria(categorias, cat.id) }}
                 >
-                  {cat.nombre.toUpperCase()}
+                  {cat.nombre}
                 </button>
               ))}
             </div>
@@ -178,25 +178,25 @@ export function FormularioImagen({
                 if (evento.key === "Escape") setEligiendoCategoria(false);
               }}
               placeholder={t("nuevaCategoriaPlaceholder")}
-              className="border-2 border-ink bg-card px-2 py-1 text-sm outline-none"
+              className="border-(length:--borde) border-ink rounded-theme bg-card px-2 py-1 text-sm outline-none"
             />
           </div>
         ) : null}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 border-t-2 border-ink/20 pt-3">
+      <div className="flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
         <button
           type="submit"
           disabled={enviando}
-          className="border-2 border-ink bg-primary-green px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-60"
+          className="border-(length:--borde) border-ink rounded-theme bg-primary-green h-11 px-4 text-sm font-semibold flex items-center text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-60"
         >
-          {(enviando ? t("guardando") : t("guardar")).toUpperCase()}
+          {enviando ? t("guardando") : t("guardar")}
         </button>
         <Link
           href={`/vitrina/${imagen.codigo}`}
-          className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+          className="border-(length:--borde) border-ink rounded-theme bg-card h-11 px-4 text-sm font-semibold flex items-center text-ink transition-colors hover:bg-secondary-purple/10"
         >
-          {t("cancelar").toUpperCase()}
+          {t("cancelar")}
         </Link>
         <span className="ml-auto">{acciones}</span>
       </div>

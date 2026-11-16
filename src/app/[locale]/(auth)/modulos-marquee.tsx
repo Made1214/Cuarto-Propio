@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 
 /*
- * Cinta que pasa sola debajo del login mostrando los cuatro módulos de la app
- * — lo que se puede hacer adentro, antes de entrar. Los colores salen de los
+ * Cinta que pasa sola en el panel de acceso mostrando los cuatro módulos de
+ * la app — lo que se puede hacer adentro, antes de entrar. Los colores salen de los
  * tokens del tema (globals.css), nunca de hex sueltos, para que el modo
  * oscuro y los temas futuros la cubran sin tocar este archivo.
  */
@@ -32,11 +32,10 @@ const MODULOS: Modulo[] = [
   },
   {
     clave: "listas",
-    // Tinta fija (no se invierte en modo oscuro), así la tarjeta oscura sigue
-    // siendo oscura y el texto blanco conserva su contraste.
-    fondo: "bg-ink-strong",
-    texto: "text-white",
-    fondoIcono: "bg-white/15 text-primary-pink",
+    // El panel ya es morado: esta va en el color de tarjeta para no perderse.
+    fondo: "bg-card",
+    texto: "text-ink",
+    fondoIcono: "bg-primary-pink text-ink-strong",
     icono: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
         <rect x="3" y="5" width="6" height="6" rx="1" />
@@ -77,7 +76,7 @@ const MODULOS: Modulo[] = [
 ];
 
 export async function ModulosMarquee({ locale }: { locale: string }) {
-  const t = await getTranslations({ locale, namespace: "login.modulos" });
+  const t = await getTranslations({ locale, namespace: "login.modulo" });
 
   // La lista va dos veces para que el loop sea continuo: la animación corre
   // -50% y la segunda copia ocupa justo el lugar de la primera. La copia es
@@ -87,7 +86,7 @@ export async function ModulosMarquee({ locale }: { locale: string }) {
       <li
         key={`${m.clave}-${copia ? "b" : "a"}`}
         aria-hidden={copia || undefined}
-        className={`flex w-[265px] shrink-0 items-start gap-3.5 rounded-theme border-2 border-ink ${m.fondo} ${m.texto} p-4 shadow-[4px_4px_0_var(--ink)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[7px_7px_0_var(--ink)]`}
+        className={`flex w-[265px] shrink-0 items-start gap-3.5 rounded-theme border-(length:--borde) border-ink ${m.fondo} ${m.texto} p-4 shadow-marco transition-transform duration-200 hover:-translate-y-1`}
       >
         <div
           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-theme border border-current/20 ${m.fondoIcono}`}
@@ -95,26 +94,18 @@ export async function ModulosMarquee({ locale }: { locale: string }) {
           {m.icono}
         </div>
         <div>
-          <h3 className="font-pixel text-[15px] tracking-tight">{t(`${m.clave}.titulo`)}</h3>
-          <p className="mt-1 text-xs leading-snug opacity-85">{t(`${m.clave}.descripcion`)}</p>
+          <span className="block text-[15px] font-bold">{t(m.clave)}</span>
+          <span className="mt-1 block text-[13px] leading-snug">{t(`${m.clave}Ayuda`)}</span>
         </div>
       </li>
     ));
 
   return (
-    <section aria-labelledby="modulos-titulo" className="w-full">
-      <h2
-        id="modulos-titulo"
-        className="mb-1 text-center font-pixel text-xs uppercase tracking-widest text-muted"
-      >
-        {t("titulo")}
-      </h2>
-      <div className="marquee-mascara relative w-full overflow-hidden py-3">
-        <ul className="marquee-cinta flex w-max gap-5 px-2.5">
-          {tarjetas(false)}
-          {tarjetas(true)}
-        </ul>
-      </div>
-    </section>
+    <div className="marquee-mascara relative w-full overflow-hidden py-3">
+      <ul className="marquee-cinta flex w-max gap-5 px-2.5">
+        {tarjetas(false)}
+        {tarjetas(true)}
+      </ul>
+    </div>
   );
 }

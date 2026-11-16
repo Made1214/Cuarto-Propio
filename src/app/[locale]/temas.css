@@ -1,0 +1,832 @@
+/*
+ * Estilo propio de los temas Softsignal y Void.
+ *
+ * Los tokens (colores, letras, borde, radio, sombra) los pone el <style> del
+ * tema activo (src/lib/temas/css.ts). Acá va lo que un token no alcanza a
+ * describir: texturas de fondo, biseles de plástico, pantallas LCD, barras de
+ * título de ventanita, títulos cromados, brillos y la decoración de los
+ * costados (src/components/decoracion-tema/).
+ *
+ * Todo cuelga de `[data-tema="…"]` (el envoltorio de la app, en el layout de
+ * `(app)`), así un tema nunca toca a otro. Los componentes solo llevan clases
+ * "gancho" sin estilo propio: tema-pagina, tema-barra, tema-marca,
+ * tema-nav-link, tema-nav-inferior, tema-crear, tema-contenido, tema-titulo,
+ * tema-panel, tema-lcd, tema-campo, tema-chip, tema-chip-activo.
+ *
+ * Estas reglas están fuera de las capas de Tailwind a propósito: así le ganan
+ * a las utilidades de los componentes sin `!important`.
+ *
+ * Claro/oscuro: igual que globals.css, las variables oscuras se aplican por
+ * preferencia del sistema salvo que se haya fijado "claro", y al final las
+ * del oscuro fijado a mano.
+ */
+
+/* Los paneles de los costados solo existen en estos dos temas y solo en
+   pantallas muy anchas. */
+.dec-lado {
+  display: none;
+}
+
+/* Dentro de la carcasa o de la ventana, la fila de chips del celular no sale
+   hasta el borde de la pantalla (eso la haría cruzar el marco): se desliza
+   dentro del marco. */
+[data-tema="softsignal"] .tema-fila-chips,
+[data-tema="void"] .tema-fila-chips {
+  margin-inline: 0;
+}
+
+[data-tema="softsignal"] .tema-fila-chips > ul,
+[data-tema="void"] .tema-fila-chips > ul {
+  padding-inline: 0;
+}
+
+/* ════════════════════════════ SOFTSIGNAL ════════════════════════════ */
+
+[data-tema="softsignal"] {
+  --ss-pagina: #2e3432;
+  --ss-rejilla: rgb(255 255 255 / 0.05);
+  --ss-carcasa: #e6e2d0;
+  --ss-borde: #8f8b78;
+  --ss-brillo: rgb(255 255 255 / 0.7);
+  --ss-hundido: rgb(60 56 40 / 0.25);
+  --ss-lcd: #21300f;
+  --ss-lcd-borde: #141c09;
+  --ss-lcd-texto: #b6e05a;
+  --ss-lcd-tenue: #7f9e3f;
+  --ss-rosa: #d84f8c;
+  --ss-rosa-texto: #ffffff;
+  --ss-tecla: #d9d4bf;
+  --ss-resplandor: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) [data-tema="softsignal"] {
+    --ss-pagina: #111513;
+    --ss-rejilla: rgb(198 243 107 / 0.05);
+    --ss-carcasa: #2b302c;
+    --ss-borde: #4e564c;
+    --ss-brillo: rgb(255 255 255 / 0.08);
+    --ss-hundido: rgb(0 0 0 / 0.5);
+    --ss-lcd: #0b1205;
+    --ss-lcd-borde: #040802;
+    --ss-lcd-texto: #c6f36b;
+    --ss-lcd-tenue: #86aa42;
+    --ss-rosa: #ff77b3;
+    --ss-rosa-texto: #1a0f15;
+    --ss-tecla: #353b36;
+    --ss-resplandor: 0 0 6px color-mix(in srgb, var(--ss-lcd-texto) 55%, transparent);
+  }
+}
+
+:root[data-modo="oscuro"] [data-tema="softsignal"] {
+  --ss-pagina: #111513;
+  --ss-rejilla: rgb(198 243 107 / 0.05);
+  --ss-carcasa: #2b302c;
+  --ss-borde: #4e564c;
+  --ss-brillo: rgb(255 255 255 / 0.08);
+  --ss-hundido: rgb(0 0 0 / 0.5);
+  --ss-lcd: #0b1205;
+  --ss-lcd-borde: #040802;
+  --ss-lcd-texto: #c6f36b;
+  --ss-lcd-tenue: #86aa42;
+  --ss-rosa: #ff77b3;
+  --ss-rosa-texto: #1a0f15;
+  --ss-tecla: #353b36;
+  --ss-resplandor: 0 0 6px color-mix(in srgb, var(--ss-lcd-texto) 55%, transparent);
+}
+
+/* Fondo: mesa oscura con cuadrícula, sobre la que se apoya el aparato. */
+[data-tema="softsignal"].tema-pagina {
+  background-color: var(--ss-pagina);
+  background-image:
+    linear-gradient(var(--ss-rejilla) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ss-rejilla) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Barra superior: la tapa del aparato. */
+[data-tema="softsignal"] .tema-barra {
+  background: var(--ss-carcasa);
+  border-bottom: 2px solid var(--ss-borde);
+  box-shadow:
+    inset 0 2px 0 var(--ss-brillo),
+    inset 0 -3px 0 var(--ss-hundido);
+}
+
+[data-tema="softsignal"] .tema-marca {
+  font-family: var(--fuente-rotulo, var(--font-nunito), sans-serif);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  color: var(--foreground);
+}
+
+/* Secciones: teclas físicas con lucecita; la activa queda hundida y
+   encendida como una pantalla LCD. */
+[data-tema="softsignal"] .tema-nav-link {
+  background: var(--ss-tecla);
+  border: 2px solid var(--ss-borde);
+  border-radius: 8px;
+  box-shadow:
+    inset 1px 1px 0 var(--ss-brillo),
+    0 3px 0 var(--ss-borde);
+  color: var(--foreground);
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+[data-tema="softsignal"] .tema-nav-link::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ss-lcd-tenue);
+  border: 1px solid var(--ss-lcd-borde);
+}
+
+[data-tema="softsignal"] .tema-nav-link[aria-current="page"] {
+  background: var(--ss-lcd);
+  color: var(--ss-lcd-texto);
+  border-color: var(--ss-lcd-borde);
+  box-shadow: inset 0 0 10px rgb(0 0 0 / 0.5);
+  transform: translateY(2px);
+  text-shadow: var(--ss-resplandor);
+}
+
+[data-tema="softsignal"] .tema-nav-link[aria-current="page"]::before {
+  background: var(--ss-lcd-texto);
+  box-shadow: 0 0 8px var(--ss-lcd-texto);
+}
+
+[data-tema="softsignal"] .tema-crear {
+  background: var(--ss-rosa);
+  color: var(--ss-rosa-texto);
+  border-color: var(--foreground);
+  border-radius: 8px;
+  box-shadow: 0 3px 0 var(--ss-borde);
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+[data-tema="softsignal"] .tema-nav-inferior {
+  background: var(--ss-carcasa);
+  border-top: 3px solid var(--ss-borde);
+}
+
+/* El contenido vive dentro de la carcasa del aparato. */
+[data-tema="softsignal"] .tema-contenido {
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding: 20px 16px;
+  background: var(--ss-carcasa);
+  border: 2px solid var(--ss-borde);
+  border-radius: 18px;
+  box-shadow:
+    inset 2px 2px 0 var(--ss-brillo),
+    inset -3px -3px 0 var(--ss-hundido),
+    0 18px 40px rgb(0 0 0 / 0.35);
+}
+
+@media (min-width: 40rem) {
+  [data-tema="softsignal"] .tema-contenido {
+    padding: 28px;
+  }
+}
+
+/* Títulos de sección: dígitos de pantalla LCD. */
+[data-tema="softsignal"] .tema-titulo {
+  font-family: var(--fuente-titulo, var(--font-vt323), monospace);
+  font-weight: 400;
+  font-size: 3.25rem;
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: var(--foreground);
+}
+
+:root[data-modo="oscuro"] [data-tema="softsignal"] .tema-titulo {
+  color: var(--ss-lcd-texto);
+  text-shadow: var(--ss-resplandor);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) [data-tema="softsignal"] .tema-titulo {
+    color: var(--ss-lcd-texto);
+    text-shadow: var(--ss-resplandor);
+  }
+}
+
+/* Tarjetas: pantallitas de plástico con bisel. */
+[data-tema="softsignal"] .tema-panel {
+  border-color: var(--ss-borde);
+  box-shadow:
+    inset 1px 1px 0 var(--ss-brillo),
+    0 3px 0 var(--ss-borde);
+}
+
+/* Fechas y buscador: pantallas LCD verdes. */
+[data-tema="softsignal"] .tema-lcd {
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 56px;
+  box-sizing: border-box;
+  background: var(--ss-lcd);
+  border: 2px solid var(--ss-lcd-borde);
+  border-radius: 8px;
+  box-shadow: inset 0 0 12px rgb(0 0 0 / 0.6);
+  color: var(--ss-lcd-texto);
+  text-shadow: var(--ss-resplandor);
+}
+
+[data-tema="softsignal"] .tema-lcd > * {
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  color: inherit;
+}
+
+[data-tema="softsignal"] .tema-campo {
+  background: var(--ss-lcd);
+  border-color: var(--ss-lcd-borde);
+  color: var(--ss-lcd-texto);
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 1.3rem;
+  box-shadow: inset 0 0 12px rgb(0 0 0 / 0.6);
+}
+
+[data-tema="softsignal"] .tema-campo::placeholder {
+  color: var(--ss-lcd-tenue);
+}
+
+/* Chips: teclitas; la elegida, rosa. */
+[data-tema="softsignal"] .tema-chip {
+  background: var(--ss-tecla);
+  border-color: var(--ss-borde);
+  border-radius: 6px;
+  box-shadow: 0 2px 0 var(--ss-borde);
+  color: var(--foreground);
+}
+
+[data-tema="softsignal"] .tema-chip-activo {
+  background: var(--ss-rosa);
+  border-color: var(--foreground);
+  color: var(--ss-rosa-texto);
+}
+
+/* ── Decoración de los costados ── */
+@media (min-width: 96rem) {
+  [data-tema="softsignal"] .dec-lado,
+  [data-tema="void"] .dec-lado {
+    position: fixed;
+    top: 110px;
+    z-index: 10;
+    width: 176px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  .dec-izquierda {
+    left: 28px;
+  }
+
+  .dec-derecha {
+    right: 28px;
+  }
+}
+
+[data-tema="softsignal"] .dec-rotulo {
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  opacity: 0.75;
+}
+
+[data-tema="softsignal"] .dec-centro {
+  text-align: center;
+}
+
+[data-tema="softsignal"] .dec-ss-aparato {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--ss-carcasa);
+  border: 2px solid var(--ss-borde);
+  border-radius: 16px;
+  color: var(--foreground);
+  box-shadow:
+    inset 2px 2px 0 var(--ss-brillo),
+    inset -3px -3px 0 var(--ss-hundido),
+    0 12px 28px rgb(0 0 0 / 0.35);
+}
+
+[data-tema="softsignal"] .dec-ss-asa {
+  align-self: center;
+  width: 64px;
+  height: 36px;
+  margin-bottom: -18px;
+  border: 4px solid var(--ss-borde);
+  border-bottom: 0;
+  border-radius: 36px 36px 0 0;
+}
+
+[data-tema="softsignal"] .dec-ss-colgante {
+  border-radius: 36px;
+  padding: 14px;
+}
+
+[data-tema="softsignal"] .dec-ss-lcd {
+  background: var(--ss-lcd);
+  border: 3px solid var(--ss-lcd-borde);
+  border-radius: 8px;
+  box-shadow: inset 0 0 16px rgb(0 0 0 / 0.6);
+  color: var(--ss-lcd-texto);
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 17px;
+  line-height: 1.1;
+  text-shadow: var(--ss-resplandor);
+  text-decoration: none;
+  padding: 10px;
+}
+
+[data-tema="softsignal"] .dec-ss-senal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 140px;
+  border-radius: 26px 26px 8px 8px;
+}
+
+[data-tema="softsignal"] .dec-tenue,
+[data-tema="softsignal"] .dec-nota-meta {
+  color: var(--ss-lcd-tenue);
+}
+
+.dec-nota {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dec-ondas {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 28px;
+}
+
+.dec-ondas span {
+  width: 6px;
+  background: currentColor;
+}
+
+.dec-conteos {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  margin: 0;
+}
+
+.dec-conteos dd {
+  margin: 0;
+  text-align: right;
+}
+
+[data-tema="softsignal"] .dec-calendario {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  min-height: 120px;
+  font-size: 11px;
+  text-align: center;
+}
+
+[data-tema="softsignal"] .dec-hoy {
+  background: var(--ss-rosa);
+  color: var(--ss-rosa-texto);
+  border-radius: 3px;
+}
+
+[data-tema="softsignal"] .dec-ss-sticker {
+  align-self: center;
+  transform: rotate(-8deg);
+  padding: 8px 12px;
+  background: var(--ss-rosa);
+  color: var(--ss-rosa-texto);
+  border: 2px solid var(--foreground);
+  box-shadow: 3px 3px 0 var(--foreground);
+  font-family: var(--fuente-rotulo, var(--font-silkscreen), monospace);
+  font-size: 12px;
+}
+
+/* ═══════════════════════════════ VOID ═══════════════════════════════ */
+
+[data-tema="void"] {
+  --vd-brillo-fondo: rgb(255 95 210 / 0.18);
+  --vd-brillo-fondo-2: rgb(140 107 255 / 0.18);
+  --vd-puntos: color-mix(in srgb, var(--vd-lila) 35%, transparent);
+  --vd-cuadro-a: #7a5ce0;
+  --vd-cuadro-b: #ffffff;
+  --vd-barra-a: #b79cff;
+  --vd-barra-b: #f3a2e3;
+  --vd-barra-texto: #2a1b47;
+  --vd-lila: #7a5ce0;
+  --vd-rosa: #b0187a;
+  --vd-rosa-texto: #ffffff;
+  --vd-resplandor: 4px 4px 0 color-mix(in srgb, var(--vd-lila) 35%, transparent);
+  --vd-resplandor-rosa: 0 0 0 3px color-mix(in srgb, var(--vd-rosa) 20%, transparent);
+  --vd-cromo-a: #ffffff;
+  --vd-cromo-b: #ff7ad9;
+  --vd-cromo-c: #8c6bff;
+  --vd-cromo-borde: #3b1f6e;
+  --vd-digital: #3dff8a;
+  --vd-tareas-a: #e6daff;
+  --vd-tareas-b: #cdb8ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) [data-tema="void"] {
+    --vd-brillo-fondo: rgb(140 90 255 / 0.28);
+    --vd-brillo-fondo-2: rgb(255 95 210 / 0.14);
+    --vd-puntos: rgb(255 255 255 / 0.35);
+    --vd-cuadro-a: #000000;
+    --vd-cuadro-b: #e9e2ff;
+    --vd-barra-a: #3a2178;
+    --vd-barra-b: #8c4fe0;
+    --vd-barra-texto: #f4eeff;
+    --vd-lila: #9b7bff;
+    --vd-rosa: #ff5fd2;
+    --vd-rosa-texto: #1b0716;
+    --vd-resplandor: 0 0 22px color-mix(in srgb, var(--vd-lila) 28%, transparent);
+    --vd-resplandor-rosa: 0 0 14px var(--vd-rosa);
+    --vd-cromo-a: #ffd6f5;
+    --vd-cromo-b: #ff5fd2;
+    --vd-cromo-c: #9b7bff;
+    --vd-cromo-borde: #2a0f3a;
+    --vd-tareas-a: #2a1a52;
+    --vd-tareas-b: #160d30;
+  }
+}
+
+:root[data-modo="oscuro"] [data-tema="void"] {
+  --vd-brillo-fondo: rgb(140 90 255 / 0.28);
+  --vd-brillo-fondo-2: rgb(255 95 210 / 0.14);
+  --vd-puntos: rgb(255 255 255 / 0.35);
+  --vd-cuadro-a: #000000;
+  --vd-cuadro-b: #e9e2ff;
+  --vd-barra-a: #3a2178;
+  --vd-barra-b: #8c4fe0;
+  --vd-barra-texto: #f4eeff;
+  --vd-lila: #9b7bff;
+  --vd-rosa: #ff5fd2;
+  --vd-rosa-texto: #1b0716;
+  --vd-resplandor: 0 0 22px color-mix(in srgb, var(--vd-lila) 28%, transparent);
+  --vd-resplandor-rosa: 0 0 14px var(--vd-rosa);
+  --vd-cromo-a: #ffd6f5;
+  --vd-cromo-b: #ff5fd2;
+  --vd-cromo-c: #9b7bff;
+  --vd-cromo-borde: #2a0f3a;
+  --vd-tareas-a: #2a1a52;
+  --vd-tareas-b: #160d30;
+}
+
+/* Fondo: cielo con brillos difusos y una lluvia de estrellitas. */
+[data-tema="void"].tema-pagina {
+  position: relative;
+  background-image:
+    radial-gradient(circle at 75% 12%, var(--vd-brillo-fondo), transparent 45%),
+    radial-gradient(circle at 12% 88%, var(--vd-brillo-fondo-2), transparent 40%),
+    radial-gradient(var(--vd-puntos) 1px, transparent 1.5px);
+  background-size: auto, auto, 46px 46px;
+  background-attachment: fixed;
+}
+
+/* Franjas de cuadros a los costados (desde tablet). */
+@media (min-width: 48rem) {
+  [data-tema="void"].tema-pagina::before,
+  [data-tema="void"].tema-pagina::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 0;
+    width: 14px;
+    background: repeating-conic-gradient(var(--vd-cuadro-a) 0 25%, var(--vd-cuadro-b) 0 50%) 0 0 / 14px
+      14px;
+    pointer-events: none;
+  }
+
+  [data-tema="void"].tema-pagina::before {
+    left: 0;
+  }
+
+  [data-tema="void"].tema-pagina::after {
+    right: 0;
+  }
+}
+
+/* Barra superior: una ventana con su tira de título degradé arriba. */
+[data-tema="void"] .tema-barra {
+  background:
+    linear-gradient(90deg, var(--vd-barra-a), var(--vd-barra-b)) top / 100% 6px no-repeat,
+    var(--card);
+  border-bottom: 2px solid var(--vd-lila);
+  box-shadow: var(--vd-resplandor);
+}
+
+[data-tema="void"] .tema-marca,
+[data-tema="void"] .tema-titulo,
+.dec-vd-cromo {
+  font-family: var(--fuente-titulo, var(--font-rubik), sans-serif);
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: lowercase;
+  background: linear-gradient(180deg, var(--vd-cromo-a) 10%, var(--vd-cromo-b) 55%, var(--vd-cromo-c) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--vd-cromo-borde);
+  filter: drop-shadow(2px 2px 0 var(--vd-cromo-borde));
+}
+
+[data-tema="void"] .tema-marca {
+  font-size: 1.45rem;
+}
+
+[data-tema="void"] .tema-titulo {
+  font-size: 3.4rem;
+  line-height: 1;
+  -webkit-text-stroke-width: 1.5px;
+  filter: drop-shadow(2px 3px 0 var(--vd-cromo-borde));
+}
+
+/* Secciones: texto pixelado en mayúsculas; la activa brilla en rosa. */
+[data-tema="void"] .tema-nav-link {
+  background: transparent;
+  border-color: transparent;
+  color: var(--foreground);
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-tema="void"] .tema-nav-link[aria-current="page"] {
+  color: var(--vd-rosa);
+  text-shadow: 0 0 10px var(--vd-rosa);
+}
+
+[data-tema="void"] .tema-crear {
+  background: var(--vd-rosa);
+  color: var(--vd-rosa-texto);
+  border-color: var(--vd-rosa);
+  border-radius: 0;
+  box-shadow: var(--vd-resplandor-rosa);
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+[data-tema="void"] .tema-nav-inferior {
+  background: var(--card);
+  border-top: 2px solid var(--vd-lila);
+  box-shadow: var(--vd-resplandor);
+}
+
+/* El contenido vive en la ventana principal, con su barra de título. */
+[data-tema="void"] .tema-contenido {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding: 0 16px 24px;
+  background: var(--card);
+  border: 2px solid var(--vd-lila);
+  box-shadow: var(--vd-resplandor);
+}
+
+[data-tema="void"] .tema-contenido::before {
+  content: "✦ cuarto_propio.exe";
+  display: flex;
+  align-items: center;
+  height: 26px;
+  margin: 0 -16px 20px;
+  padding: 0 10px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='14'%3E%3Cg fill='none' stroke='%23f4eeff' stroke-width='1.2'%3E%3Crect x='.5' y='.5' width='13' height='13'/%3E%3Crect x='19.5' y='.5' width='13' height='13'/%3E%3Crect x='38.5' y='.5' width='13' height='13'/%3E%3Cpath d='M3 10h8M22 3h8v8h-8zM41 3l8 8M49 3l-8 8'/%3E%3C/g%3E%3C/svg%3E")
+      right 6px center / 52px 14px no-repeat,
+    linear-gradient(90deg, var(--vd-barra-a), var(--vd-barra-b));
+  color: var(--vd-barra-texto);
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+@media (min-width: 40rem) {
+  [data-tema="void"] .tema-contenido {
+    padding: 0 28px 32px;
+  }
+
+  [data-tema="void"] .tema-contenido::before {
+    margin: 0 -28px 24px;
+  }
+}
+
+/* Tarjetas: mini ventanas con una tira de título. */
+[data-tema="void"] .tema-panel {
+  border-width: 1px;
+  border-color: var(--vd-lila);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, var(--vd-barra-a), var(--vd-barra-b)) top / 100% 8px no-repeat,
+    var(--card);
+  padding-top: calc(8px + 1rem);
+  box-shadow: var(--vd-resplandor);
+}
+
+/* Fechas: contador digital verde sobre negro. */
+[data-tema="void"] .tema-lcd {
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 56px;
+  box-sizing: border-box;
+  background: #000000;
+  border: 1px solid var(--vd-lila);
+  color: var(--vd-digital);
+}
+
+[data-tema="void"] .tema-lcd > * {
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  color: inherit;
+}
+
+[data-tema="void"] .tema-campo {
+  border-width: 1px;
+  border-color: var(--vd-lila);
+  border-radius: 0;
+  background: var(--background);
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 1.3rem;
+}
+
+[data-tema="void"] .tema-chip {
+  border-width: 1px;
+  border-color: var(--vd-lila);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--foreground);
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
+}
+
+[data-tema="void"] .tema-chip-activo {
+  background: var(--vd-rosa);
+  border-color: var(--vd-rosa);
+  color: var(--vd-rosa-texto);
+  box-shadow: var(--vd-resplandor-rosa);
+}
+
+/* ── Decoración de los costados y barra de tareas ── */
+.dec-vd-ventana {
+  background: var(--card);
+  border: 2px solid var(--vd-lila);
+  box-shadow: var(--vd-resplandor);
+  color: var(--foreground);
+}
+
+.dec-vd-barra {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  background: linear-gradient(90deg, var(--vd-barra-a), var(--vd-barra-b));
+  color: var(--vd-barra-texto);
+  font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.dec-vd-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  font-size: 12px;
+}
+
+.dec-vd-estado {
+  flex-direction: row;
+  align-items: center;
+  color: var(--vd-rosa);
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.dec-vd-digital {
+  align-self: flex-start;
+  padding: 2px 8px;
+  background: #000000;
+  border: 1px solid var(--vd-lila);
+  color: var(--vd-digital);
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 26px;
+  letter-spacing: 3px;
+}
+
+.dec-vd-conteos {
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 17px;
+}
+
+.dec-vd-reproductor {
+  background: #000000;
+  color: #ede4ff;
+  font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.dec-vd-reproductor .dec-nota-meta {
+  color: var(--vd-digital);
+}
+
+.dec-vd-cromo {
+  align-self: center;
+  font-size: 48px;
+  transform: rotate(-6deg);
+}
+
+.dec-vd-cromo-chico {
+  font-size: 36px;
+  transform: rotate(5deg);
+}
+
+.dec-vd-tareas {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  [data-tema="void"] .tema-contenido {
+    margin-bottom: 48px;
+  }
+
+  [data-tema="void"] .dec-vd-tareas {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 22px;
+    background: linear-gradient(180deg, var(--vd-tareas-a), var(--vd-tareas-b));
+    border-top: 2px solid var(--vd-lila);
+  }
+
+  .dec-vd-tareas a {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+    border: 1px solid var(--vd-lila);
+    color: var(--foreground);
+    font-family: var(--fuente-rotulo, var(--font-pixelify), monospace);
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .dec-vd-tareas a:hover {
+    background: rgb(255 255 255 / 0.12);
+  }
+
+  .dec-vd-tareas .dec-vd-inicio {
+    border-width: 2px;
+    font-size: 14px;
+  }
+
+  .dec-vd-reloj {
+    margin-left: auto;
+    color: var(--foreground);
+    font-family: var(--fuente-rotulo, var(--font-vt323), monospace);
+    font-size: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tema="void"].tema-pagina {
+    background-attachment: scroll;
+  }
+}

@@ -1,6 +1,18 @@
-import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { Inter, Lora, Silkscreen } from "next/font/google";
+import {
+  Caveat,
+  IBM_Plex_Mono,
+  Inter,
+  Lora,
+  Nunito,
+  Pixelify_Sans,
+  Rubik,
+  Silkscreen,
+  Special_Elite,
+  VT323,
+} from "next/font/google";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SCRIPT_MODO } from "@/lib/temas/modo";
@@ -55,10 +67,102 @@ const silkscreen = Silkscreen({
   fallback: ["monospace"],
 });
 
+/*
+ * Las que se pueden elegir en Personalización → Tipografía
+ * (src/lib/temas/fuentes.ts). Sin precarga: casi nadie las usa a la vez, y
+ * el navegador solo baja una si el tema activo la pide.
+ */
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  fallback: ["cursive"],
+});
+
+const specialElite = Special_Elite({
+  variable: "--font-special-elite",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
+  fallback: ["Courier New", "monospace"],
+});
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
+});
+
+// Las de los temas Softsignal y Void (src/app/[locale]/temas.css): letra
+// mono de máquina, la de las pantallas LCD, la pixelada redonda de las
+// ventanitas Y2K y la itálica gruesa de los títulos cromados.
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
+  fallback: ["Courier New", "monospace"],
+});
+
+const vt323 = VT323({
+  variable: "--font-vt323",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  preload: false,
+  fallback: ["monospace"],
+});
+
+const pixelify = Pixelify_Sans({
+  variable: "--font-pixelify",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  fallback: ["monospace"],
+});
+
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin"],
+  weight: "900",
+  style: "italic",
+  display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
+});
+
 export const metadata: Metadata = {
+  // Para que la imagen de `opengraph-image.jpg` salga con URL absoluta al
+  // compartir. En Vercel toma el dominio de producción; en local, localhost.
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : "http://localhost:3000"),
+  ),
   title: "Cuarto Propio",
   description: "Diario, listas, vitrina y audio — tu espacio personal.",
+  // iOS no lee los íconos del manifest: necesita su propio apple-touch-icon
+  // y la marca de "app web" para abrirse a pantalla completa al instalarla.
+  icons: { apple: "/icons/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: "Cuarto Propio", statusBarStyle: "default" },
 };
+
+/** El color de la barra del sistema en el celular: el morado de la barra de
+ * la app, para que se vean como una sola pieza. */
+export const viewport: Viewport = {
+  themeColor: "#5B3F73",
+};
+
+/** Un prerender por idioma de las páginas que no dependen de la sesión. */
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export default async function LocaleLayout({
   children,
@@ -72,11 +176,15 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  // Fija el idioma para esta request sin leer headers: así las páginas
+  // públicas (landing, términos, privacidad, recuperar) se prerenderizan.
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "comun" });
 
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${lora.variable} ${silkscreen.variable} h-full antialiased`}
+      className={`${inter.variable} ${lora.variable} ${silkscreen.variable} ${caveat.variable} ${specialElite.variable} ${nunito.variable} ${plexMono.variable} ${vt323.variable} ${pixelify.variable} ${rubik.variable} h-full antialiased`}
       // El script de abajo le escribe `data-modo` a este mismo elemento antes
       // de que React hidrate: sin esto React lo tomaría por un desajuste.
       suppressHydrationWarning
@@ -88,6 +196,15 @@ export default async function LocaleLayout({
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_MODO }} />
       </head>
       <body className="min-h-full flex flex-col">
+        {/* Para teclado y lector de pantalla: saltar la barra y llegar
+            directo a lo de esta página. Cada pantalla marca su <main> con
+            `id="contenido"`. */}
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:border-2 focus:border-ink focus:bg-card focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-ink"
+        >
+          {t("saltarContenido")}
+        </a>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

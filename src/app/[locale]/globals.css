@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./temas.css";
 @plugin "@tailwindcss/typography";
 
 /*
@@ -26,6 +27,20 @@
   --primary-pink: #f0aec4;
   --secondary-turquoise: #74c7c3;
   --secondary-purple: #5b3f73;
+
+  /* Lenguaje de forma y tipografía del tema. Estos son los valores del tema
+     por defecto (Retro); el tema elegido en Personalización los pisa con un
+     <style> que inyecta el layout de la app (src/lib/temas/css.ts). Los
+     componentes nunca usan valores sueltos: `border-(length:--borde)`,
+     `rounded-theme`, `shadow-marco`, `font-sans`, `font-diario`. */
+  --borde: 2px;
+  --borde-grueso: 3px;
+  --radio: 0px;
+  --sombra-sm: 3px 3px 0 var(--ink);
+  --sombra: 4px 4px 0 var(--ink);
+  --sombra-lg: 8px 8px 0 var(--ink);
+  --fuente-interfaz: var(--font-inter);
+  --fuente-diario: var(--font-lora);
 }
 
 @theme inline {
@@ -40,10 +55,13 @@
   --color-primary-pink: var(--primary-pink);
   --color-secondary-turquoise: var(--secondary-turquoise);
   --color-secondary-purple: var(--secondary-purple);
-  --font-sans: var(--font-inter);
-  --font-diario: var(--font-lora);
-  --font-pixel: var(--font-silkscreen);
-  --radius-theme: 6px;
+  --font-sans: var(--fuente-interfaz);
+  --font-diario: var(--fuente-diario);
+  --font-pixel: var(--fuente-rotulo, var(--font-silkscreen));
+  --radius-theme: var(--radio);
+  --shadow-marco-sm: var(--sombra-sm);
+  --shadow-marco: var(--sombra);
+  --shadow-marco-lg: var(--sombra-lg);
 }
 
 /*
@@ -88,7 +106,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--fuente-interfaz), system-ui, sans-serif;
 }
 
 /* La ventanita entra con un salto corto, como una ventana que se abre de
@@ -127,6 +145,29 @@ body {
 @keyframes panel-entra {
   from {
     transform: translateX(100%);
+  }
+}
+
+/* La ventanita de "Crear": en el celular sube desde abajo como una hoja (el
+   pulgar ya está ahí); desde tablet se abre al centro con el mismo salto
+   corto que las otras ventanitas. */
+.hoja-crear[open] {
+  animation: hoja-sube 180ms ease-out;
+}
+
+.hoja-crear[open]::backdrop {
+  animation: ventana-velo 180ms ease-out;
+}
+
+@media (min-width: 48rem) {
+  .hoja-crear[open] {
+    animation: ventana-abre 140ms ease-out;
+  }
+}
+
+@keyframes hoja-sube {
+  from {
+    transform: translateY(100%);
   }
 }
 
@@ -189,7 +230,9 @@ body {
   .ventana-dialogo[open],
   .ventana-dialogo[open]::backdrop,
   .panel-lateral[open],
-  .panel-lateral[open]::backdrop {
+  .panel-lateral[open]::backdrop,
+  .hoja-crear[open],
+  .hoja-crear[open]::backdrop {
     animation: none;
   }
 
@@ -212,7 +255,7 @@ body {
   --tw-prose-bullets: var(--secondary-turquoise);
   --tw-prose-counters: var(--secondary-turquoise);
   --tw-prose-hr: var(--ink);
-  font-family: var(--font-diario), Georgia, serif;
+  font-family: var(--fuente-diario), Georgia, serif;
 }
 
 .diario-prose blockquote {
@@ -220,7 +263,87 @@ body {
   border-left-width: 4px;
 }
 
+/* Fotos dentro de una entrada: del ancho del texto como máximo, con el
+   marco de la app. `width`/`height` del HTML reservan el lugar antes de que
+   carguen; `height: auto` mantiene la proporción al achicarse. */
+.diario-prose img.imagen-diario {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25em 0;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  background: var(--card);
+}
+
+.diario-prose .enlace-imagen-diario {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  cursor: zoom-in;
+}
+
+/* En el editor: marcada al seleccionarla (para borrarla con la tecla). */
+.diario-prose img.imagen-diario.ProseMirror-selectednode {
+  outline: 3px solid var(--secondary-turquoise);
+  outline-offset: 2px;
+}
+
 .diario-prose mark {
   border-radius: 2px;
   padding: 0 2px;
+}
+
+/*
+ * Filas de chips que en el celular se deslizan de lado (filtros de
+ * categoría y de hashtag): el borde derecho se desvanece para que se note
+ * que hay más. Donde el navegador sabe atar una animación al scroll, el
+ * desvanecido se va al llegar al final, así el último chip se ve entero.
+ */
+@property --fila-fundido {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 2.5rem;
+}
+
+@keyframes fila-deslizable-fin {
+  0%,
+  85% {
+    --fila-fundido: 2.5rem;
+  }
+  100% {
+    --fila-fundido: 0rem;
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .fila-deslizable {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--fila-fundido)), transparent);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .fila-deslizable {
+      animation: fila-deslizable-fin linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
+}
+
+/*
+ * El panel de marca de las pantallas de acceso. En claro es el morado de la
+ * barra; en oscuro ese "morado" es un lila claro (#c9a8e0, el acento que se
+ * lee sobre fondo oscuro) y el panel encandilaba al lado del formulario. En
+ * oscuro pasa a ser un morado profundo con el texto claro de la página.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) .acceso-panel {
+    background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
+    color: var(--foreground);
+  }
+}
+
+:root[data-modo="oscuro"] .acceso-panel {
+  background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
+  color: var(--foreground);
 }

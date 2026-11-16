@@ -48,7 +48,7 @@ export function EsqueletoEntradaForm({ conTexto }: { conTexto: boolean }) {
           <Hueso className="h-8 w-8" />
         </div>
 
-        <div className="rounded-theme border-2 border-ink bg-card px-4 py-3">
+        <div className="rounded-theme border-(length:--borde) border-ink bg-card px-4 py-3">
           <div className="flex min-h-60 flex-col gap-2.5 pt-1">
             {conTexto ? (
               RENGLONES.map((ancho, indice) => <Hueso key={indice} className={`h-4 ${ancho}`} />)

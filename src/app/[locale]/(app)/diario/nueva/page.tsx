@@ -20,23 +20,23 @@ export default async function NuevaEntradaPage({
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <Link
         href="/diario"
-        className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+        className="flex h-10 w-fit items-center gap-2 text-sm font-semibold text-muted/80 transition-colors hover:text-secondary-purple"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
-        {t("volver").toUpperCase()}
+        {t("volver")}
       </Link>
 
-      <div className="divide-y-2 divide-ink border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
+      <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
         <div className="flex items-center justify-between gap-4 p-5">
           <h1 className="font-diario text-xl font-bold text-secondary-purple">{t("queEstasPensando")}</h1>
           <button
             type="submit"
             form={formId}
-            className="border-2 border-ink bg-secondary-purple px-4 py-2 font-pixel text-xs tracking-wide text-background shadow-[3px_3px_0_var(--ink)] transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
           >
-            {t("guardar").toUpperCase()}
+            {t("guardar")}
           </button>
         </div>
 

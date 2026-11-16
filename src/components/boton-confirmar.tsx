@@ -51,7 +51,7 @@ export function BotonConfirmar({
             <button
               type="button"
               onClick={() => setAbierto(false)}
-              className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
             >
               {t("cancelar").toUpperCase()}
             </button>
@@ -61,7 +61,7 @@ export function BotonConfirmar({
                 setAbierto(false);
                 onConfirmar();
               }}
-              className="border-2 border-ink bg-primary-pink px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+              className="border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
               {textoConfirmar.toUpperCase()}
             </button>

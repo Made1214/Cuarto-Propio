@@ -3,12 +3,13 @@
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/core";
 import { useTranslations } from "next-intl";
-import { useReducer, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import { DialogoEnlace } from "@/components/dialogo-enlace";
 import {
   IconoCita,
   IconoCursiva,
   IconoEnlace,
+  IconoImagen,
   IconoLista,
   IconoListaNumerada,
   IconoNegrita,
@@ -16,7 +17,13 @@ import {
   IconoTachado,
   IconoTitulo,
 } from "@/components/editor-iconos";
+import { FORMATOS_ACEPTADOS, TAMANO_MAXIMO_BYTES } from "@/lib/imagenes/limites";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
+
+type ErrorImagen = "formato" | "tamano" | "sesion" | "fallo";
+
+/** Lo que devuelve `/api/diario/imagen` al subir. */
+type ImagenSubida = { src: string; completa: string; ancho: number; alto: number };
 
 const CONTENIDO_VACIO: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
 const COLOR_TEXTO_DEFECTO = "#171717";
@@ -39,6 +46,9 @@ export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorP
   // hasta escribir. onTransaction dispara con cualquier cambio de estado,
   // incluido ese.
   const [, avisarSeleccion] = useReducer((tick: number) => tick + 1, 0);
+  // Pegar o soltar una foto en el texto la sube igual que el botón. El
+  // editor se crea una sola vez, así que mira la función por una ref.
+  const subirRef = useRef<(archivo: File) => void>(() => {});
 
   const editor = useEditor({
     extensions: tiptapExtensions,
@@ -51,6 +61,21 @@ export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorP
     },
     onTransaction: () => avisarSeleccion(),
     editorProps: {
+      handlePaste: (_vista, evento) => {
+        const archivo = [...(evento.clipboardData?.files ?? [])].find((f) => f.type.startsWith("image/"));
+        if (!archivo) return false;
+        subirRef.current(archivo);
+        return true;
+      },
+      handleDrop: (_vista, evento) => {
+        const archivo = [...((evento as DragEvent).dataTransfer?.files ?? [])].find((f) =>
+          f.type.startsWith("image/"),
+        );
+        if (!archivo) return false;
+        evento.preventDefault();
+        subirRef.current(archivo);
+        return true;
+      },
       attributes: {
         class: "diario-prose prose max-w-none min-h-[240px] focus:outline-none",
       },
@@ -59,8 +84,8 @@ export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorP
 
   return (
     <div className="flex flex-col gap-2">
-      <Barra editor={editor} />
-      <div className="rounded-theme border-2 border-ink bg-card px-4 py-3">
+      <Barra editor={editor} subirRef={subirRef} />
+      <div className="rounded-theme border-(length:--borde) border-ink bg-card px-4 py-3">
         <EditorContent editor={editor} />
       </div>
       <input type="hidden" name={name} value={JSON.stringify(json)} />
@@ -68,9 +93,67 @@ export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorP
   );
 }
 
-function Barra({ editor }: { editor: Editor | null }) {
+function Barra({
+  editor,
+  subirRef,
+}: {
+  editor: Editor | null;
+  subirRef: React.RefObject<(archivo: File) => void>;
+}) {
   const t = useTranslations("editor");
   const [enlaceAbierto, setEnlaceAbierto] = useState(false);
+  const archivoRef = useRef<HTMLInputElement>(null);
+  const [subiendo, setSubiendo] = useState(false);
+  const [errorImagen, setErrorImagen] = useState<ErrorImagen | null>(null);
+  /** La foto que falló, para reintentar sin volver a elegirla
+   * (CLAUDE.md → Confiabilidad: reintentar sin perder el resto). */
+  const [pendiente, setPendiente] = useState<File | null>(null);
+
+  /**
+   * Sube la foto por el pipeline único (miniatura + completa con sharp) y la
+   * inserta donde está el cursor. Lo escrito no se toca si algo falla: queda
+   * el aviso con "Reintentar".
+   */
+  async function subir(archivo: File) {
+    if (!editor) return;
+    setErrorImagen(null);
+    if (archivo.size > TAMANO_MAXIMO_BYTES) {
+      setPendiente(null);
+      setErrorImagen("tamano");
+      return;
+    }
+    setSubiendo(true);
+    try {
+      const cuerpo = new FormData();
+      cuerpo.append("archivo", archivo);
+      const respuesta = await fetch("/api/diario/imagen", { method: "POST", body: cuerpo });
+      if (!respuesta.ok) {
+        const datos = (await respuesta.json().catch(() => ({}))) as { error?: ErrorImagen };
+        const codigo = datos.error ?? "fallo";
+        setPendiente(codigo === "formato" ? null : archivo);
+        setErrorImagen(codigo);
+        return;
+      }
+      const imagen = (await respuesta.json()) as ImagenSubida;
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "image",
+          attrs: { src: imagen.src, completa: imagen.completa, ancho: imagen.ancho, alto: imagen.alto },
+        })
+        .run();
+      setPendiente(null);
+    } catch {
+      setPendiente(archivo);
+      setErrorImagen("fallo");
+    } finally {
+      setSubiendo(false);
+    }
+  }
+  // Para pegar y soltar (ver `TiptapEditor`).
+  // eslint-disable-next-line react-hooks/refs
+  subirRef.current = (archivo) => void subir(archivo);
 
   if (!editor) return null;
 
@@ -160,7 +243,7 @@ function Barra({ editor }: { editor: Editor | null }) {
             boton.accion();
           }}
           aria-pressed={boton.activo}
-          className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink px-2 transition-colors ${
+          className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink px-2 transition-colors ${
             boton.activo
               ? "bg-secondary-purple text-background"
               : "bg-card text-ink hover:bg-secondary-turquoise/25"
@@ -178,7 +261,7 @@ function Barra({ editor }: { editor: Editor | null }) {
           setEnlaceAbierto(true);
         }}
         aria-pressed={editor.isActive("link")}
-        className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink px-2 transition-colors ${
+        className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink px-2 transition-colors ${
           editor.isActive("link")
             ? "bg-secondary-purple text-background"
             : "bg-card text-ink hover:bg-secondary-turquoise/25"
@@ -187,11 +270,34 @@ function Barra({ editor }: { editor: Editor | null }) {
         <IconoEnlace />
       </button>
 
+      <button
+        type="button"
+        title={t("imagen")}
+        onMouseDown={(evento) => evento.preventDefault()}
+        onClick={() => archivoRef.current?.click()}
+        disabled={subiendo}
+        className="flex h-8 items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 disabled:opacity-60"
+      >
+        <IconoImagen />
+        {subiendo ? t("subiendoImagen") : t("imagen")}
+      </button>
+      <input
+        ref={archivoRef}
+        type="file"
+        accept={FORMATOS_ACEPTADOS}
+        className="hidden"
+        onChange={(evento) => {
+          const archivo = evento.target.files?.[0];
+          evento.target.value = "";
+          if (archivo) void subir(archivo);
+        }}
+      />
+
       <span className="mx-1 h-5 w-0.5 bg-ink/25" aria-hidden="true" />
 
       <label
         title={t("colorTexto")}
-        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-2 border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
       >
         <span aria-hidden="true" style={{ color: colorTexto }}>
           A
@@ -212,14 +318,14 @@ function Barra({ editor }: { editor: Editor | null }) {
           evento.preventDefault();
           editor.chain().focus().unsetColor().run();
         }}
-        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
       >
         <IconoQuitar />
       </button>
 
       <label
         title={t("resaltar")}
-        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-2 border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
       >
         <span aria-hidden="true" className="rounded px-1" style={{ backgroundColor: colorResaltado }}>
           A
@@ -242,10 +348,39 @@ function Barra({ editor }: { editor: Editor | null }) {
           evento.preventDefault();
           editor.chain().focus().unsetHighlight().run();
         }}
-        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-2 border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
+        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
       >
         <IconoQuitar />
       </button>
+
+      {errorImagen ? (
+        <div
+          role="alert"
+          className="flex w-full flex-wrap items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-3 py-2 text-ink-strong"
+        >
+          <span className="min-w-0 flex-1 text-sm">{t(`errorImagen.${errorImagen}`)}</span>
+          {pendiente ? (
+            <button
+              type="button"
+              onClick={() => void subir(pendiente)}
+              disabled={subiendo}
+              className="flex h-9 items-center border-(length:--borde) border-ink rounded-theme bg-background px-3 text-[13px] font-semibold text-ink disabled:opacity-60"
+            >
+              {t("reintentar")}
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => {
+              setErrorImagen(null);
+              setPendiente(null);
+            }}
+            className="flex h-9 items-center px-2 text-[13px] font-semibold underline-offset-2 hover:underline"
+          >
+            {t("descartar")}
+          </button>
+        </div>
+      ) : null}
 
       <DialogoEnlace
         abierto={enlaceAbierto}

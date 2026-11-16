@@ -1,6 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import { ArribaAlRecargar, CargarMas, FinDeLista } from "@/components/cargar-mas";
-import { FiltroCategoria } from "@/components/filtro-categoria";
+import {
+  CLASE_CHIP,
+  CLASE_CHIP_ACTIVO,
+  CLASE_CHIP_INACTIVO,
+  FiltroCategoria,
+} from "@/components/filtro-categoria";
 import { Link } from "@/i18n/navigation";
 import { listarConFiltroCategoria } from "@/lib/categorias/filtro";
 import { listarHashtags, listarImagenes, TAMANO_PAGINA_VITRINA } from "@/lib/imagenes/queries";
@@ -157,7 +162,7 @@ export default async function VitrinaPage({
             <IconoVitrina />
           </span>
           <div>
-            <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
         </div>
@@ -165,29 +170,24 @@ export default async function VitrinaPage({
         <ExhibirPiezas />
       </div>
 
-      {/* Los hashtags son la etiqueta fina de la Vitrina y van como chips a la
-          vista (suelen ser pocos y se tocan seguido); la categoría, que es
-          compartida con los otros módulos y puede crecer mucho, va en un
-          desplegable — igual que en Diario y Listas. */}
-      {categorias.length > 0 || hashtags.length > 0 ? (
-        <div className="flex flex-wrap items-start gap-3">
-          {categorias.length > 0 ? (
-            <FiltroCategoria
-              pathname="/vitrina"
-              categorias={categorias}
-              categoriaActualId={categoria ?? null}
-              conservar={soloHashtag}
-              etiquetaTodas={t("todasLasCategorias")}
-            />
-          ) : null}
+      {/* Dos filas de chips con el mismo aspecto: la categoría (compartida
+          con los otros módulos) y debajo los hashtags, la etiqueta fina
+          propia de la Vitrina. */}
+      <FiltroCategoria
+        pathname="/vitrina"
+        categorias={categorias}
+        categoriaActualId={categoria ?? null}
+        conservar={soloHashtag}
+      />
 
-          {hashtags.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-1.5">
-              {hashtags.map((etiqueta) => {
-                const activo = etiqueta.nombre === hashtag;
-                return (
+      {hashtags.length > 0 ? (
+        <nav aria-label={t("filtrarHashtag")} className="tema-fila-chips -mx-5 -mt-3 sm:mx-0">
+          <ul className="fila-deslizable flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+            {hashtags.map((etiqueta) => {
+              const activo = etiqueta.nombre === hashtag;
+              return (
+                <li key={etiqueta.nombre}>
                   <Link
-                    key={etiqueta.nombre}
                     // Tocar el hashtag ya activo lo apaga: el chip es el
                     // interruptor, no hay que buscar otro lugar para quitarlo.
                     href={{
@@ -196,38 +196,34 @@ export default async function VitrinaPage({
                         ? soloCategoria
                         : { ...soloCategoria, hashtag: etiqueta.nombre },
                     }}
-                    className={`flex items-center gap-1.5 border-2 px-2.5 py-1.5 font-pixel text-xs tracking-wide transition-colors ${
-                      activo
-                        ? "border-ink-strong bg-secondary-turquoise text-ink-strong"
-                        : "border-ink/30 text-ink hover:border-ink hover:bg-secondary-turquoise/20"
-                    }`}
+                    aria-current={activo ? "page" : undefined}
+                    className={`${CLASE_CHIP} ${activo ? CLASE_CHIP_ACTIVO : CLASE_CHIP_INACTIVO}`}
                   >
                     #{etiqueta.nombre}
                     <span className="tabular-nums opacity-60">{etiqueta.cantidad}</span>
+                    {activo ? <span aria-hidden="true">✕</span> : null}
                   </Link>
-                );
-              })}
-            </div>
-          ) : null}
-        </div>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       ) : null}
 
       {hayFiltro ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-pixel text-xs text-muted/70 tabular-nums">
+        <p className="-mt-2 text-sm text-muted/80">
+          <span className="font-semibold tabular-nums">
             {t("resultados", { cantidad: pagina.total ?? imagenes.length })}
           </span>
-          <Link
-            href="/vitrina"
-            className="border-2 border-ink bg-card px-2.5 py-1 font-pixel text-[10px] tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
-          >
-            {t("limpiarFiltros").toUpperCase()}
+          {" · "}
+          <Link href="/vitrina" className="font-semibold text-secondary-purple underline-offset-2 hover:underline">
+            {t("limpiarFiltros")}
           </Link>
-        </div>
+        </p>
       ) : null}
 
       {imagenes.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
           <span className="text-secondary-purple">
             <IconoVitrina />
           </span>
@@ -235,7 +231,7 @@ export default async function VitrinaPage({
           {hayFiltro ? (
             <Link
               href="/vitrina"
-              className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
             >
               {t("limpiarFiltros").toUpperCase()}
             </Link>

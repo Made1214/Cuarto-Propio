@@ -18,24 +18,6 @@ export function IconoAudio() {
   );
 }
 
-export function IconoMicrofono() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="9" y="2" width="6" height="11" rx="3" />
-      <path d="M5 11a7 7 0 0 0 14 0M12 18v4" />
-    </svg>
-  );
-}
-
-/** Cuadrado lleno: el "detener" de toda grabadora. */
-export function IconoDetener() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <rect x="5" y="5" width="14" height="14" />
-    </svg>
-  );
-}
-
 export function IconoReintentar() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

@@ -61,6 +61,7 @@ Extiende la tabla de usuarios de Supabase Auth con datos propios del producto. T
 | `foto_perfil_path` | Miniatura de tu foto de perfil en Storage (la que se ve en el avatar) |
 | `foto_perfil_completa_path` | Versión completa de esa misma foto |
 | `tema_activo_id` | Qué fila de `temas` está activa ahora |
+| `bienvenida_vista_en` | Cuándo cerraste el mensaje de bienvenida (`NULL` = todavía no lo viste) |
 
 Se crea sola la primera vez que te registrás (ver "Lo que la base hace sola" más abajo).
 
@@ -134,10 +135,23 @@ Guarda tu personalización visual. Hoy solo se usa el color básico; el resto (c
 | Columna | Qué guarda |
 | --- | --- |
 | `nombre` | Nombre del tema ("Mi tema") |
-| `colores` | Paleta de colores, como JSON |
+| `colores` | Colores propios, guardados **por tema** y por modo: `{ temas: { retro: { claro: {…}, oscuro: {…} }, void: {…} } }`. Solo los seis que se eligen a mano; el resto se calcula |
 | `cursor` | Cursor del mouse elegido |
 | `iconos` | Set de iconos, como JSON |
-| `tipografia` | Tipografía elegida |
+| `tipografia` | Letras elegidas, también **por tema**: texto con JSON `{ temas: { retro: { diario, interfaz } } }` |
+
+### `intentos_login`
+
+Cuenta los fallos de login seguidos por correo, para bloquear 15 minutos una cuenta tras 5 contraseñas equivocadas (además de los límites por IP que ya trae Supabase Auth). Es la única tabla sin `usuario_id`: los intentos pasan **antes** de que haya sesión.
+
+| Columna | Qué guarda |
+| --- | --- |
+| `email` | El correo intentado, en minúsculas |
+| `fallidos` | Cuántos fallos seguidos lleva |
+| `bloqueado_hasta` | Hasta cuándo está bloqueada (`NULL` = no lo está) |
+| `actualizado_en` | El último intento: un fallo de hace más de 15 minutos ya no cuenta como "seguido" |
+
+Tiene RLS activo y **ninguna** política: nadie la lee ni la escribe directo. Solo se toca con tres funciones `security definer`: `login_bloqueado_hasta(email)` y `registrar_fallo_login(email)` (las llama el login antes y después de intentar) y `limpiar_intentos_login()` (tras entrar bien, solo con sesión y solo sobre el correo propio — así nadie puede borrar el bloqueo de otra cuenta).
 
 ## Seguridad: Row Level Security
 
@@ -179,6 +193,10 @@ using (bucket_id = 'imagenes' and (storage.foldername(name))[1] = auth.uid()::te
 ```
 
 En la práctica esto obliga a que **todo archivo se guarde dentro de una carpeta con tu `usuario_id`** (por ejemplo `af3.../foto-1.webp`) —si se subiera fuera de esa carpeta, nadie podría leerlo, ni vos.
+
+### Imágenes del Diario
+
+Las fotos dentro de una entrada no tienen tabla propia: viven en el JSON de `entradas.contenido` (nodos `image`) y sus archivos en el bucket `imagenes`, carpeta `usuario_id/diario/`, con el mismo pipeline de la Vitrina (miniatura + completa). El JSON guarda una URL estable de la app (`/api/diario/imagen?ruta=…`), no la URL firmada de Storage, que vence: esa ruta comprueba que el archivo sea de quien lo pide, firma en el momento y redirige. Al editar una entrada se borran de Storage las fotos que se quitaron, y al borrar la entrada, todas las suyas.
 
 ## Lo que la base hace sola
 
@@ -225,7 +243,12 @@ El primero, `0001_esquema_completo.sql`, crea las 8 tablas (con `categoria_id` e
 | `0006_listas_con_casillas.sql` | La casilla deja de ser por ítem: ahora la lista entera es de notas o de casillas (`listas.con_casillas`) |
 | `0007_codigo_imagenes.sql` | `imagenes.codigo`, el código corto de las URLs de la Vitrina |
 | `0008_perfil_foto.sql` | `perfiles.foto_perfil_completa_path`: la segunda versión de la foto de perfil, la que faltaba para no dejar archivos sueltos |
+| `0009_intentos_login.sql` | Tabla `intentos_login` y sus tres funciones: bloqueo de 15 minutos tras 5 fallos de login seguidos |
+| `0010_bienvenida_y_storage.sql` | `perfiles.bienvenida_vista_en` (el mensaje de bienvenida sale una sola vez por cuenta) y la función `uso_storage()`, que suma lo que ocupan tus fotos y audios para el medidor del perfil y el aviso de espacio |
+| `0011_endurecer_funciones.sql` | Ajustes que pidió el revisor de seguridad de Supabase: las funciones que solo sirven con sesión dejan de poder llamarse sin sesión, la función del trigger de perfiles deja de estar expuesta por la API y `set_updated_at` fija su `search_path` |
 
-Cada cambio de esquema nuevo (por ejemplo al construir Audio o Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
+Las migraciones 0001–0011 están aplicadas en el proyecto de Supabase "Cuarto Propio" (0009–0011 se aplicaron con el conector de Supabase el 2026-11-15). Si en otro proyecto 0009 o 0010 todavía no están aplicadas, la app sigue funcionando: el login entra sin el bloqueo propio, y la bienvenida y el medidor de espacio simplemente no aparecen.
+
+Cada cambio de esquema nuevo (por ejemplo al construir Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
 
 Para aplicarlo en un proyecto de Supabase nuevo: con la Supabase CLI, `supabase db push`; o pegando el archivo en el SQL Editor del dashboard. El detalle de setup completo está en el `README.md` del repositorio.

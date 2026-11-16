@@ -3,7 +3,26 @@
     "diario": "Diario",
     "listas": "Listas",
     "vitrina": "Vitrina",
-    "audio": "Audio"
+    "audio": "Audio",
+    "secciones": "Secciones",
+    "crear": "Crear",
+    "crearTitulo": "¿Qué quieres guardar hoy?",
+    "crearAyuda": "Elige y empiezas enseguida.",
+    "crearAyudaTeclas": "También puedes usar las teclas 1 a 4.",
+    "escribir": "Escribir",
+    "escribirAyuda": "Una entrada en tu diario",
+    "exhibir": "Exhibir",
+    "exhibirAyuda": "Fotos o arte en tu vitrina",
+    "grabar": "Grabar",
+    "grabarAyuda": "Una nota de voz, hasta 10 min",
+    "nuevaLista": "Nueva lista",
+    "nuevaListaAyuda": "Libros, ideas, pendientes…",
+    "cerrar": "Cerrar",
+    "filtrarCategoria": "Filtrar por categoría",
+    "todas": "Todas",
+    "avisoStorage": "Tu espacio está al {porcentaje} %: {usado} de {limite}. Cuando se llene no vas a poder subir más fotos ni audios.",
+    "avisoStorageLleno": "Tu espacio está lleno ({usado} de {limite}). Para subir más fotos o audios hay que liberar espacio o pasar a un plan con más almacenamiento.",
+    "personalizar": "Personalizar mi cuarto"
   },
   "perfil": {
     "titulo": "Perfil",
@@ -35,7 +54,14 @@
     "proximamente": "Pronto",
     "cerrarSesion": "Cerrar sesión",
     "errorFormato": "Formato no soportado. Sube un JPG, PNG o WebP.",
-    "errorSesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo."
+    "errorSesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo.",
+    "terminos": "Términos de uso",
+    "privacidad": "Privacidad",
+    "espacioUsado": "Espacio usado",
+    "espacioDe": "{usado} de {limite}",
+    "espacioAyuda": "Fotos y audios. Te avisaremos antes de que se llene.",
+    "abrirPersonalizacion": "Personalizar",
+    "personalizacionAyudaCorta": "Tema, colores, letras, cursor e iconos"
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -44,25 +70,68 @@
     "password": "Contraseña",
     "entrar": "Entrar",
     "error": "No se pudo iniciar sesión. Revisa tus datos e intenta de nuevo.",
-    "modulos": {
-      "titulo": "Lo que te espera adentro",
-      "diario": {
-        "titulo": "Diario",
-        "descripcion": "Lo que piensas, con formato."
-      },
-      "listas": {
-        "titulo": "Listas",
-        "descripcion": "Libros, ideas, pendientes."
-      },
-      "vitrina": {
-        "titulo": "Vitrina",
-        "descripcion": "Tu arte, en exhibición."
-      },
-      "audio": {
-        "titulo": "Audio",
-        "descripcion": "Lo que prefieres decir en voz alta."
-      }
-    }
+    "lema": "Tu espacio para escribir, coleccionar y archivar la vida cotidiana.",
+    "modulo": {
+      "diario": "Diario",
+      "diarioAyuda": "Lo que piensas, con formato.",
+      "listas": "Listas",
+      "listasAyuda": "Libros, ideas, pendientes.",
+      "vitrina": "Vitrina",
+      "vitrinaAyuda": "Tu arte, en exhibición.",
+      "audio": "Audio",
+      "audioAyuda": "Lo que prefieres decir en voz alta."
+    },
+    "privado": "Privado: lo que guardas aquí solo lo ves tú.",
+    "acceso": "Acceso",
+    "tabEntrar": "Entrar",
+    "tabCrear": "Crear cuenta",
+    "saludoEntrar": "Qué bueno verte de nuevo",
+    "saludoCrear": "Bienvenida a tu cuarto",
+    "olvide": "¿Olvidaste tu contraseña?",
+    "mostrar": "Mostrar contraseña",
+    "ocultar": "Ocultar contraseña",
+    "requisitos": "Requisitos de la contraseña",
+    "reqLargo": "Al menos 8 caracteres",
+    "reqLetra": "Una letra",
+    "reqNumero": "Un número",
+    "cumplido": "(cumplido)",
+    "pendiente": "(pendiente)",
+    "crear": "Crear mi cuarto",
+    "registroAyuda": "Te enviaremos un correo para confirmar tu cuenta antes de entrar.",
+    "registroEnviado": "¡Listo! Si el correo es válido, te va a llegar un enlace para confirmar tu cuenta. Ábrelo y entras directo a tu diario.",
+    "contrasenaDebil": "La contraseña no cumple los requisitos.",
+    "mismaContrasena": "Elige una contraseña distinta de la anterior.",
+    "errorRegistro": "No se pudo crear la cuenta. Prueba de nuevo en un rato.",
+    "confirmarCorreo": "Antes de entrar, confirma tu cuenta desde el enlace que te enviamos por correo.",
+    "demasiadosIntentos": "Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.",
+    "enlaceVencido": "El enlace venció o ya se usó. Pide uno nuevo.",
+    "recuperarTitulo": "Recupera tu contraseña",
+    "recuperarAyuda": "Escribe tu correo y te enviaremos un enlace para elegir una nueva.",
+    "enviarEnlace": "Enviar enlace",
+    "recuperarEnviado": "Si hay una cuenta con ese correo, te va a llegar un enlace en unos minutos.",
+    "volverEntrar": "Volver a entrar",
+    "restablecerTitulo": "Elige una contraseña nueva",
+    "contrasenaNueva": "Contraseña nueva",
+    "guardarContrasena": "Guardar y entrar",
+    "pedirOtro": "Pedir otro enlace",
+    "errorRestablecer": "No se pudo cambiar la contraseña. Prueba de nuevo.",
+    "cuentaBloqueada": "Demasiados intentos fallidos. Por seguridad, espera {minutos, plural, one {# minuto} other {# minutos}} antes de volver a probar.",
+    "legal": "Al crear tu cuenta aceptas los <terminos>términos de uso</terminos> y la <privacidad>política de privacidad</privacidad>.",
+    "terminos": "Términos de uso",
+    "privacidad": "Privacidad",
+    "documentos": "Documentos",
+    "cambiarIdioma": "Cambiar idioma / Switch language",
+    "modoClaroOscuro": "Alternar modo claro u oscuro",
+    "volverInicio": "Cuarto Propio, volver al inicio",
+    "entrando": "Entrando…",
+    "creando": "Creando tu cuarto…",
+    "enviando": "Enviando…",
+    "guardando": "Guardando…",
+    "temaElegido": "Tu cuarto va a empezar con el tema {tema}.",
+    "metaEntrar": "Iniciar sesión",
+    "metaCrear": "Crear cuenta",
+    "metaRecuperar": "Recuperar contraseña",
+    "metaRestablecer": "Nueva contraseña"
   },
   "diario": {
     "titulo": "Diario",
@@ -82,7 +151,7 @@
     "tituloDemasiadoLargo": "El título no puede pasar de {maximo} caracteres.",
     "limpiarFiltros": "Limpiar filtros",
     "resultados": "{cantidad, plural, =0 {sin entradas} one {# entrada} other {# entradas}}",
-    "borradorEncontrado": "Tienes un borrador sin guardar del {fecha}.",
+    "borradorEncontrado": "Tienes un borrador sin guardar de {hace} ({fecha}).",
     "restaurarBorrador": "Restaurar",
     "descartarBorrador": "Descartar",
     "categoriaPlaceholder": "Categoría (opcional)",
@@ -90,7 +159,11 @@
     "editar": "Editar",
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta entrada? No se puede deshacer.",
-    "volver": "Volver al diario"
+    "volver": "Volver al diario",
+    "nueva": "Nueva",
+    "conLaPalabra": "con «{palabra}»",
+    "campoTitulo": "Título",
+    "borradorGuardado": "Borrador guardado en este dispositivo · {hora}"
   },
   "dialogos": {
     "cerrar": "Cerrar",
@@ -121,7 +194,17 @@
     "colorTexto": "Color de texto",
     "quitarColorTexto": "Quitar color de texto",
     "resaltar": "Resaltar texto",
-    "quitarResaltado": "Quitar resaltado"
+    "quitarResaltado": "Quitar resaltado",
+    "imagen": "Imagen",
+    "subiendoImagen": "Subiendo…",
+    "reintentar": "Reintentar",
+    "descartar": "Descartar",
+    "errorImagen": {
+      "formato": "Ese archivo no es una imagen JPG, PNG o WebP.",
+      "tamano": "La imagen pesa más de 25 MB.",
+      "sesion": "Se venció la sesión. Vuelve a entrar y reintenta; lo que escribiste queda guardado como borrador.",
+      "fallo": "No se pudo subir la imagen. Lo que escribiste sigue acá: prueba de nuevo."
+    }
   },
   "listas": {
     "titulo": "Listas",
@@ -142,7 +225,7 @@
     "bajarItem": "Bajar ítem",
     "todasLasCategorias": "Todas las categorías",
     "sinItemsAun": "Todavía no hay ítems. Agrega el primero.",
-    "itemPlaceholder": "Agregar un ítem...",
+    "itemPlaceholder": "Agregar ítem y Enter",
     "agregarItem": "Agregar ítem",
     "eliminarItem": "Eliminar ítem",
     "eliminarItemConfirmar": "¿Eliminar este ítem? No se puede deshacer.",
@@ -150,7 +233,13 @@
     "cancelar": "Cancelar",
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta lista? No se puede deshacer.",
-    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo."
+    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo.",
+    "progresoTexto": "{hechos} de {total} hechos",
+    "agregar": "Agregar",
+    "cantidadItems": "{total, plural, =0 {Sin ítems} one {# ítem} other {# ítems}}",
+    "abrirLista": "Abrir lista",
+    "plegarLista": "Plegar lista",
+    "eliminarLista": "Eliminar lista"
   },
   "vitrina": {
     "titulo": "Vitrina",
@@ -195,7 +284,8 @@
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta pieza? No se puede deshacer.",
     "volver": "Volver a la vitrina",
-    "volverPieza": "Volver a la pieza"
+    "volverPieza": "Volver a la pieza",
+    "filtrarHashtag": "Filtrar por hashtag"
   },
   "audio": {
     "titulo": "Audio",
@@ -229,7 +319,11 @@
     "nuevaCategoriaPlaceholder": "Nueva categoría…",
     "eliminar": "Eliminar",
     "eliminarConfirmar": "¿Eliminar esta nota de audio? No se puede deshacer.",
-    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo."
+    "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo.",
+    "grabadora": "Grabadora",
+    "tocaParaGrabar": "Toca para grabar",
+    "tocaParaDetener": "toca el cuadrado para detener",
+    "ayudaGrabar": "Hasta {minutos} minutos. Al terminar se guarda sola; el título lo pones después (o queda la fecha y hora)."
   },
   "paginacion": {
     "cargarMas": "Cargar más",
@@ -253,5 +347,384 @@
     "appActualizadaBarra": "Hay novedades",
     "appActualizadaTitulo": "Tu cuarto se renovó",
     "recargar": "Recargar"
+  },
+  "legal": {
+    "documentos": "Documentos",
+    "actualizado": "Última actualización: 15 de noviembre de 2026",
+    "terminos": {
+      "titulo": "Términos de uso",
+      "intro": "Cuarto Propio es un espacio personal para escribir, coleccionar y archivar tu vida cotidiana. Al usarlo aceptas estas condiciones, escritas en lenguaje simple.",
+      "secciones": [
+        {
+          "titulo": "Tu cuenta",
+          "texto": "Para entrar necesitas un correo verificado y una contraseña. Cuida tu contraseña: lo que pase dentro de tu cuenta es tu responsabilidad."
+        },
+        {
+          "titulo": "Tu contenido es tuyo",
+          "texto": "Todo lo que escribes, subes o grabas sigue siendo tuyo. Solo nos das permiso para guardarlo y mostrártelo a ti, incluido preparar versiones más livianas de tus fotos para que carguen rápido. No lo publicamos ni lo compartimos con nadie."
+        },
+        {
+          "titulo": "Uso aceptable",
+          "texto": "Guarda solo contenido propio o que tengas derecho a guardar. No uses Cuarto Propio para nada ilegal, no intentes entrar a cuentas ajenas ni sobrecargar el servicio."
+        },
+        {
+          "titulo": "Límites del servicio",
+          "texto": "Es un proyecto personal en su primera etapa y funciona sobre planes gratuitos: puede tener caídas ocasionales y un límite de espacio (te avisaremos cuando te acerques). Las fotos pueden pesar hasta 25 MB y los audios hasta 50 MB o 10 minutos.\nNo hay papelera: borrar es permanente. Todavía no hay exportación de datos."
+        },
+        {
+          "titulo": "Sin garantías",
+          "texto": "El servicio se ofrece tal como está. Haz tus propios respaldos de lo que sea importante para ti."
+        },
+        {
+          "titulo": "Cerrar tu cuenta",
+          "texto": "Puedes pedir que se borre tu cuenta y todo su contenido escribiendo a [CORREO DE CONTACTO]."
+        },
+        {
+          "titulo": "Cambios",
+          "texto": "Si estos términos cambian, se actualiza la fecha de arriba. Los cambios importantes se avisan dentro de la app."
+        }
+      ]
+    },
+    "privacidad": {
+      "titulo": "Privacidad",
+      "intro": "Lo que guardas aquí es personal e íntimo. Esta página explica qué guardamos, dónde y para qué. En corto: solo para que tú lo veas.",
+      "secciones": [
+        {
+          "titulo": "Qué guardamos",
+          "texto": "Tu correo y tu contraseña (cifrada, la gestiona Supabase Auth). Tu nombre y foto de perfil, si los agregas. Tus entradas del diario, listas, fotos (en miniatura y completa), notas de voz, categorías y hashtags."
+        },
+        {
+          "titulo": "Qué queda en tu dispositivo",
+          "texto": "El borrador del diario mientras escribes y tu preferencia de modo claro u oscuro se guardan en el navegador. Usamos solo las cookies necesarias para mantener tu sesión abierta."
+        },
+        {
+          "titulo": "Para qué lo usamos",
+          "texto": "Solo para mostrarte tu propio contenido. Nunca para entrenar inteligencia artificial, ni para analítica de terceros, ni para publicidad. No vendemos ni compartimos tus datos."
+        },
+        {
+          "titulo": "Dónde vive",
+          "texto": "En Supabase (base de datos, archivos y autenticación) y en Vercel (donde corre la app). Todo viaja cifrado por HTTPS, y cada registro está protegido para que solo tu cuenta pueda leerlo."
+        },
+        {
+          "titulo": "Correos",
+          "texto": "Solo te escribimos por tu cuenta: para confirmar el registro y para recuperar la contraseña."
+        },
+        {
+          "titulo": "Cuánto tiempo",
+          "texto": "Mientras tengas la cuenta. Lo que borras se borra de forma permanente; las copias de respaldo automáticas de la base de datos se renuevan solas según los plazos del proveedor."
+        },
+        {
+          "titulo": "Tus derechos",
+          "texto": "Puedes ver, corregir y borrar tu contenido desde la app. Para borrar la cuenta entera, escribe a [CORREO DE CONTACTO]."
+        }
+      ]
+    }
+  },
+  "bienvenida": {
+    "barra": "BIENVENIDA",
+    "titulo": "Este es tu cuarto propio",
+    "texto": "Un lugar solo tuyo para escribir, coleccionar y archivar tu vida cotidiana. Nadie más ve lo que guardas aquí.",
+    "diario": "Diario: escribe",
+    "listas": "Listas: colecciona",
+    "vitrina": "Vitrina: exhibe tu arte",
+    "audio": "Audio: cuéntalo en voz alta",
+    "consejo": "Para empezar cualquier cosa, toca «Crear». Tu foto, tu nombre y el modo claro u oscuro están en tu perfil, arriba a la derecha.",
+    "empezar": "Empezar"
+  },
+  "personalizacion": {
+    "titulo": "Personalización",
+    "subtitulo": "Haz que tu cuarto se vea como tú. Cada cambio se guarda solo y se ve en el acto.",
+    "activo": "en uso",
+    "error": "No se pudo guardar el cambio. Prueba de nuevo.",
+    "subiendo": "Subiendo…",
+    "modo": {
+      "claro": "claro",
+      "oscuro": "oscuro"
+    },
+    "tema": {
+      "titulo": "Tema",
+      "ayuda": "El aspecto general: forma de las cajas, bordes, sombras y colores de base. Cada tema guarda sus propios colores y letras: al volver a uno, lo encuentras como lo dejaste.",
+      "retro": "Ventanas de escritorio Y2K: bordes gruesos, esquinas rectas y sombra sólida.",
+      "whimsical": "Suave y cálido, estilo blogspot: esquinas redondeadas, bordes finos y sombra difusa.",
+      "proximamente": "Próximamente: {nombres}.",
+      "softsignal": "Aparato retro: carcasa de plástico, teclas con lucecita y pantallas LCD verdes.",
+      "void": "Y2K emo: ventanitas de los 2000, estrellas, brillos y títulos cromados."
+    },
+    "colores": {
+      "titulo": "Colores",
+      "ayuda": "Estás cambiando los colores del modo {modo} (el que ves ahora). Los cambios se ven en vivo; se guardan al tocar «Guardar colores».",
+      "guardar": "Guardar colores",
+      "restablecer": "Volver a los del tema",
+      "secundarioMorado": "Acento",
+      "secundarioMoradoUso": "Barra superior, títulos y botones principales",
+      "primarioVerde": "Verde",
+      "primarioVerdeUso": "Botones de guardar y crear",
+      "primarioRosa": "Rosado",
+      "primarioRosaUso": "Botones de escribir y avisos",
+      "secundarioTurquesa": "Turquesa",
+      "secundarioTurquesaUso": "Exhibir, hashtags e imágenes",
+      "fondo": "Fondo",
+      "fondoUso": "El fondo de todas las pantallas",
+      "texto": "Texto",
+      "textoUso": "El color de las letras"
+    },
+    "contraste": {
+      "titulo": "Ojo: algunas combinaciones van a costar leerse.",
+      "texto": "El texto sobre el fondo",
+      "tarjeta": "El texto sobre las tarjetas",
+      "acento": "Los títulos (acento) sobre el fondo",
+      "barra": "Las letras de la barra superior sobre el acento",
+      "botonVerde": "El texto de los botones verdes",
+      "botonRosa": "El texto de los botones rosados",
+      "botonTurquesa": "El texto de los botones turquesa",
+      "minimo": "lo recomendado es {minimo}:1",
+      "revisar": "Revisar colores",
+      "guardarIgual": "Guardar igual"
+    },
+    "tipografia": {
+      "titulo": "Tipografía",
+      "restablecer": "Volver a las letras del tema",
+      "ayuda": "La letra de lo que escribes va por separado de la de los menús y botones, para que una letra decorativa nunca vuelva ilegible un botón.",
+      "diario": "Para lo que escribes",
+      "interfaz": "Para menús y botones",
+      "muestraDiario": "Hoy llovió y escribí con calma.",
+      "muestraInterfaz": "Diario · Listas · Crear"
+    },
+    "cursor": {
+      "titulo": "Cursor",
+      "ayuda": "El puntero del mouse en toda la app (en el celular no se ve). Pasa el mouse por cada opción para probarla.",
+      "sistema": "Sistema",
+      "flecha": "Flecha",
+      "corazon": "Corazón",
+      "estrella": "Estrella",
+      "lapiz": "Lápiz",
+      "propio": "El tuyo",
+      "subir": "Subir mi propio cursor",
+      "formatos": "PNG, WebP, JPG, GIF o SVG, hasta 2 MB. Se reduce a 32 px."
+    },
+    "iconos": {
+      "titulo": "Iconos",
+      "ayuda": "Los dibujos de las secciones en la barra de navegación y en «Crear».",
+      "trazo": "Trazo",
+      "pixel": "Pixel",
+      "propios": "O usa tus propias imágenes, sección por sección:",
+      "subir": "Subir imagen",
+      "cambiar": "Cambiar",
+      "quitar": "Quitar"
+    },
+    "errorSubida": {
+      "formato": "Ese archivo no es una imagen que podamos usar (PNG, WebP, JPG, GIF o SVG).",
+      "tamano": "La imagen pesa demasiado (máximo 2 MB).",
+      "sesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo.",
+      "fallo": "No se pudo subir la imagen. Prueba de nuevo."
+    }
+  },
+  "decoracion": {
+    "panelIzquierdo": "Tu cuarto en números",
+    "panelDerecho": "Lo último",
+    "senal": "SEÑAL",
+    "frecuencia": "FRECUENCIA PERSONAL",
+    "ahoraSuena": "Ahora suena",
+    "tuCuarto": "Tu cuarto",
+    "entradas": "entradas",
+    "piezas": "piezas",
+    "notas": "notas",
+    "listas": "listas",
+    "audio": "audio",
+    "sinNotas": "Todavía no grabaste nada",
+    "notaSinTitulo": "Nota sin título",
+    "archivo": "ARCHIVO",
+    "estado": "Estado",
+    "escribiendo": "escribiendo en tu cuarto",
+    "brillo": "brillo",
+    "angel": "¿ángel?",
+    "barraTareas": "Barra de tareas",
+    "inicio": "inicio",
+    "dias": [
+      "L",
+      "M",
+      "M",
+      "J",
+      "V",
+      "S",
+      "D"
+    ]
+  },
+  "landing": {
+    "nav": {
+      "login": "Iniciar sesión",
+      "signup": "Crear cuenta",
+      "loginCorto": "Entrar"
+    },
+    "hero": {
+      "badge": "Un refugio digital privado • Sin algoritmos ni likes",
+      "title": "Un cuarto propio para escribir, guardar y habitar tu vida cotidiana.",
+      "subtitle": "Todo lo que hoy tienes repartido entre notas sueltas, tableros, fotos y audios, reunido en un solo rincón íntimo que se ve exactamente como tú quieras.",
+      "ctaPrimary": "Crear mi cuarto — es gratis",
+      "ctaSecondary": "Ya tengo llave (Iniciar sesión)",
+      "note": "Instalable en tu celular • Español e Inglés • 100% privado",
+      "win1Title": "diario_noviembre.txt",
+      "win1Date": "Domingo, 18:40",
+      "win1Tag": "#tardes-de-lluvia",
+      "win1Body": "\"Hoy volví a escuchar ese disco viejo mientras tomaba té de manzanilla. Qué alivio tener un lugar donde nadie me lee...\"",
+      "win2Title": "nota_de_voz_04.wav",
+      "win2Desc": "Pensamientos antes de dormir",
+      "win3Caption": "Mi escritorio hoy ✿",
+      "restore": "↺ Reabrir ventanitas"
+    },
+    "problem": {
+      "title": "Tus notas en una app, tus fotos en otra, tus audios perdidos en un chat…",
+      "subtitle": "Tu vida cotidiana no vive en compartimentos estancos. Reunimos tus palabras, tus listas, tus fotos y tu voz en una sola habitación tranquila.",
+      "item1": "Notas sueltas",
+      "item2": "Tableros y listas",
+      "item3": "Fotos sin publicar",
+      "item4": "Notas de voz",
+      "together": "Todo guardado bajo tu propia llave en Cuarto Propio"
+    },
+    "mod1": {
+      "pill": "01 • Diario estilo blog personal",
+      "title": "Escribe como en aquellos blogs de antes, pero solo para ti.",
+      "desc": "Un editor cálido con negritas, títulos, colores e imágenes. Organiza tus entradas por categorías, búscalas por palabra y reléelas en orden cronológico.",
+      "winTitle": "Cuaderno Personal — Vista cronológica",
+      "catAll": "Todas",
+      "cat1": "Sueños",
+      "cat2": "Lecturas",
+      "cat3": "Días lentos",
+      "entry1Title": "Pan tostado con mermelada de higo",
+      "entry1Text": "Hoy no hice nada extraordinario y aun así sentí que el día valió la pena. Anoté tres frases de Virginia Woolf en el margen.",
+      "entry2Title": "La biblioteca junto al mar",
+      "entry2Text": "Soñé que las estanterías tenían ventanas pequeñas por donde entraba olor a sal y papel antiguo.",
+      "entry3Title": "Notas sobre \"Un cuarto propio\"",
+      "entry3Text": "\"Cerrar la puerta significa apartar el ruido de afuera para escuchar por fin lo que una misma piensa.\""
+    },
+    "mod2": {
+      "pill": "02 • Listas y tableros sin presión",
+      "title": "Guarda tus caprichos, lecturas y proyectos pendientes.",
+      "desc": "Tableros visuales con checklists para \"Libros leídos\", \"Películas para un domingo\", \"Disfraces que quiero hacer\" o las recetas de tu abuela. Sin métricas de rendimiento.",
+      "winTitle": "Mis_Listas.exe — Tableros íntimos",
+      "board1": "📚 Libros leídos este año",
+      "book3": "El libro de la almohada",
+      "board2": "🧵 Disfraces que quiero hacer",
+      "costume1": "Hada de bosque con tul verde",
+      "costume2": "Bibliotecaria victoriana",
+      "placeholder": "Añadir idea..."
+    },
+    "mod3": {
+      "pill": "03 • Vitrina de piezas propias",
+      "title": "Tu propia galería privada para exhibir tus fotos y arte.",
+      "desc": "Aquí tus fotos y dibujos se llaman <b>piezas</b>, y guardarlas en tu muro se llama <b>exhibir</b>. Organízalas en cuadrícula masonry y fíltralas por hashtag.",
+      "winTitle": "Vitrina — 4 piezas exhibidas",
+      "tagAll": "#todas",
+      "p1": "Botánica en cuaderno",
+      "p2": "Sombras en la pared",
+      "p3": "Recortes y boletos",
+      "p4": "Autorretrato rápido"
+    },
+    "mod4": {
+      "pill": "04 • Audio & Reverse Journaling",
+      "title": "Cuando no tengas ganas de escribir, simplemente háblale a tu cuarto.",
+      "desc": "Graba notas de voz de hasta 10 minutos para desahogarte, contar un sueño recién despierta o guardar el sonido de la lluvia en tu ventana.",
+      "winTitle": "Grabadora íntima — Hasta 10:00 min",
+      "trackTitle": "\"Volviendo a casa caminando bajo las farolas\"",
+      "trackMeta": "13 Nov • Nota de voz privada • 06:18",
+      "statusIdle": "Pulsa ▶ para escuchar cómo se siente hablar en voz alta contigo misma.",
+      "statusPlaying": "Reproduciendo muestra ambiental suave… (sintetizador Web Audio)"
+    },
+    "mod5": {
+      "pill": "05 • Personalización total",
+      "title": "Tu cuarto cambia contigo. Pruébalo aquí mismo.",
+      "desc": "Estos son los temas que vas a encontrar en Personalización. La maqueta va pasando por cada uno; toca el que quieras probar y cambia la letra, el color de acento y el cursor."
+    },
+    "privacy": {
+      "title": "Es tuyo. No es una red social. No vendemos ni entrenamos con tu contenido.",
+      "desc": "En Cuarto Propio no hay seguidores, ni muros públicos, ni anuncios, ni algoritmos pidiéndote que publiques más. Todo lo que escribes, dibujas, fotografías o grabas se queda bajo tu llave.",
+      "p1": "✦ Sin publicidad ni rastreo",
+      "p2": "✦ Cero entrenamiento de IA",
+      "p3": "✦ Gratis para uso personal"
+    },
+    "ctaFinal": {
+      "title": "Abre la puerta de tu cuarto propio.",
+      "subtitle": "Empieza hoy en menos de un minuto. Instálalo en tu teléfono como app y llévalo siempre contigo.",
+      "primary": "Crear cuenta gratis",
+      "secondary": "Iniciar sesión"
+    },
+    "footer": {
+      "tagline": "Un refugio digital íntimo",
+      "terms": "Términos de uso",
+      "privacy": "Política de privacidad"
+    },
+    "marca": "Cuarto Propio",
+    "inicio": "Cuarto Propio, inicio",
+    "altMarca": "Logo de Cuarto Propio",
+    "altLogo": "Ilustración de Cuarto Propio: una muchacha con audífonos escribe en su diario sobre una alfombra verde, junto a un gato dormido, discos y casetes.",
+    "otroIdioma": "English",
+    "idiomaBoton": "ES / EN",
+    "idiomaPie": "🌐 Español / English",
+    "cambiarIdioma": "Cambiar idioma / Switch language",
+    "modoClaroOscuro": "Alternar modo claro u oscuro",
+    "cerrarVentana": "Cerrar ventana",
+    "reproducir": "Reproducir o pausar muestra",
+    "ideas": "Ideas",
+    "rec": "● REC",
+    "masonry": "✦ masonry",
+    "probador": {
+      "temas": {
+        "retro": "Ventanas de escritorio de los 98: bordes gruesos, esquinas rectas y sombra dura. El tema con el que empieza la app.",
+        "whimsical": "Pastel y cálido, inspirado en los blogs de antes: bordes suaves, sombra difusa y letra literaria.",
+        "softsignal": "Un aparato retro de plástico: carcasa crema, teclas con lucecita y fechas en pantallas LCD verdes.",
+        "void": "Y2K emo: ventanitas de los 2000, estrellas, brillos rosa fuerte y títulos cromados.",
+        "fairy": "Pastel soñado, cursiva y brillos. Todavía lo estamos diseñando."
+      },
+      "pronto": "pronto",
+      "asiSeVeria": "Así se vería tu cuarto en tema {tema}",
+      "maquetaAlt": "Vista previa de la app con el tema {tema}: la barra de navegación, el título Diario y dos entradas",
+      "temasGrupo": "Elegir tema",
+      "letra": "Letra",
+      "acento": "Acento",
+      "cursor": "Cursor",
+      "modo": "Modo",
+      "delTema": "Del tema",
+      "cursorNormal": "Normal",
+      "cursorAyuda": "Pasa el mouse por la maqueta",
+      "cursores": {
+        "corazon": "Cursor de corazón",
+        "estrella": "Cursor de estrella",
+        "lapiz": "Cursor de lápiz"
+      },
+      "acentos": {
+        "0": "Acento frambuesa",
+        "1": "Acento verde bosque",
+        "2": "Acento azul",
+        "3": "Acento naranja"
+      },
+      "cta": "Crear mi cuarto con {tema}",
+      "ctaNota": "Tu cuenta empieza con este tema. Lo cambias cuando quieras.",
+      "maqueta": {
+        "diario": "Diario",
+        "listas": "Listas",
+        "vitrina": "Vitrina",
+        "audio": "Audio",
+        "todas": "Todas",
+        "cat1": "Días lentos",
+        "cat2": "Lecturas",
+        "dia1": "vie",
+        "dia2": "mar",
+        "titulo1": "Pan tostado con mermelada de higo",
+        "texto1": "Hoy no hice nada extraordinario y aun así sentí que el día valió la pena.",
+        "titulo2": "Notas sobre «Un cuarto propio»",
+        "texto2": "Cerrar la puerta para escuchar por fin lo que una misma piensa.",
+        "inicial": "V"
+      }
+    }
+  },
+  "comun": {
+    "saltarContenido": "Saltar al contenido"
+  },
+  "noEncontrado": {
+    "meta": "Página no encontrada",
+    "titulo": "Esta puerta no lleva a ningún cuarto",
+    "texto": "La página que buscas no existe o cambió de lugar. Quizá el enlace estaba incompleto.",
+    "inicio": "Volver al inicio",
+    "diario": "Ir a mi diario"
   }
 }

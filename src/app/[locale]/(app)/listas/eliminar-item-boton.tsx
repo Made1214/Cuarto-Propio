@@ -16,7 +16,7 @@ export function EliminarItemBoton({ onEliminar }: { onEliminar: () => void }) {
       textoConfirmar={t("eliminar")}
       etiqueta={t("eliminarItem")}
       onConfirmar={onEliminar}
-      className="flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink focus-visible:bg-primary-pink/30 focus-visible:text-ink"
+      className="flex h-7 w-7 shrink-0 items-center pointer-coarse:h-11 pointer-coarse:w-11 justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink focus-visible:bg-primary-pink/30 focus-visible:text-ink"
     >
       <IconoEliminar />
     </BotonConfirmar>

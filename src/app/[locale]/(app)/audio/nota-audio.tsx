@@ -55,7 +55,7 @@ export function NotaAudio({
   });
 
   return (
-    <div className="flex flex-col gap-3 border-2 border-ink bg-card p-4 shadow-[5px_5px_0_var(--ink)]">
+    <div className="tema-panel flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
       <div className="flex items-center gap-1">
         <input
           ref={tituloRef}
@@ -87,7 +87,7 @@ export function NotaAudio({
           onKeyDown={(evento) => {
             if (evento.key === "Enter") evento.currentTarget.blur();
           }}
-          className="min-w-0 flex-1 border-b-2 border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none placeholder:text-muted/50 focus:border-ink"
+          className="min-w-0 flex-1 border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none placeholder:text-muted/50 focus:border-ink"
         />
 
         {nota.duracionSegundos ? (
@@ -128,7 +128,7 @@ export function NotaAudio({
           {t("sinReproductor")}
         </audio>
       ) : (
-        <p className="border-2 border-dashed border-ink/40 px-3 py-4 text-center font-pixel text-[10px] text-muted/60">
+        <p className="border-(length:--borde) border-dashed border-ink/40 px-3 py-4 text-center font-pixel text-[10px] text-muted/60">
           {t("noSePudoCargar").toUpperCase()}
         </p>
       )}

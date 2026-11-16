@@ -63,6 +63,9 @@ export function EntradaForm({
   const [remonte, setRemonte] = useState(0);
 
   const [borrador, setBorrador] = useState<Borrador | null>(null);
+  /** Cuándo se guardó por última vez el borrador local: se muestra para que
+   * se vea que lo escrito no se pierde aunque se cierre el navegador. */
+  const [guardadoEn, setGuardadoEn] = useState<Date | null>(null);
   const enviando = useRef(false);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
@@ -81,10 +84,10 @@ export function EntradaForm({
 
   useEffect(() => {
     if (!sucio) return;
-    const id = window.setTimeout(
-      () => guardarBorrador(claveBorrador, { titulo, categoria: categoriaTexto, contenido }),
-      600,
-    );
+    const id = window.setTimeout(() => {
+      guardarBorrador(claveBorrador, { titulo, categoria: categoriaTexto, contenido });
+      setGuardadoEn(new Date());
+    }, 600);
     return () => window.clearTimeout(id);
   }, [sucio, claveBorrador, titulo, categoriaTexto, contenido]);
 
@@ -133,41 +136,57 @@ export function EntradaForm({
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="border-2 border-ink-strong bg-primary-pink px-3 py-2 font-pixel text-xs tracking-wide text-ink-strong outline-none"
+          className="border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 font-pixel text-xs tracking-wide text-ink-strong outline-none"
         >
           {estado.error}
         </p>
       ) : null}
 
       {borrador ? (
-        <div className="flex flex-wrap items-center gap-3 border-2 border-dashed border-ink bg-secondary-turquoise/15 px-3 py-2">
+        <div className="flex flex-wrap items-center gap-3 border-(length:--borde) border-dashed border-ink rounded-theme bg-secondary-turquoise/15 px-3 py-2">
           <p className="flex-1 text-sm">
             {t("borradorEncontrado", {
               fecha: format.dateTime(new Date(borrador.guardadoEn), {
                 dateStyle: "short",
                 timeStyle: "short",
               }),
+              hace: format.relativeTime(new Date(borrador.guardadoEn)),
             })}
           </p>
           <button
             type="button"
             onClick={restaurar}
-            className="border-2 border-ink bg-primary-green px-3 py-1.5 font-pixel text-xs tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+            className="flex h-10 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
           >
-            {t("restaurarBorrador").toUpperCase()}
+            {t("restaurarBorrador")}
           </button>
           <button
             type="button"
             onClick={descartar}
-            className="border-2 border-ink bg-card px-3 py-1.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
+            className="flex h-10 items-center border-(length:--borde) border-ink rounded-theme bg-card px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-primary-pink/30"
           >
-            {t("descartarBorrador").toUpperCase()}
+            {t("descartarBorrador")}
           </button>
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-1">
+      {guardadoEn && sucio ? (
+        <p aria-live="polite" className="-mb-1 flex items-center gap-1.5 text-xs text-muted/75">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 12l5 5L20 6" />
+          </svg>
+          {t("borradorGuardado", {
+            hora: format.dateTime(guardadoEn, { hour: "numeric", minute: "2-digit" }),
+          })}
+        </p>
+      ) : null}
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor={`${formId}-titulo`} className="text-xs font-semibold">
+          {t("campoTitulo")} <span aria-hidden="true" className="text-secondary-purple">*</span>
+        </label>
         <input
+          id={`${formId}-titulo`}
           type="text"
           name="titulo"
           required
@@ -175,7 +194,7 @@ export function EntradaForm({
           value={titulo}
           onChange={(evento) => setTitulo(evento.target.value)}
           placeholder={t("tituloPlaceholder")}
-          className="rounded-theme border-2 border-ink bg-card px-3 py-2.5 font-diario text-2xl font-semibold outline-none"
+          className="rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2.5 font-diario text-2xl font-semibold outline-none"
         />
         {titulo.length > TITULO_MAXIMO - 20 ? (
           <span className="self-end font-pixel text-xs text-muted/70 tabular-nums">
@@ -191,7 +210,7 @@ export function EntradaForm({
           value={categoriaTexto}
           onChange={(evento) => setCategoriaTexto(evento.target.value)}
           placeholder={t("categoriaPlaceholder")}
-          className="w-64 max-w-full rounded-theme border-2 border-ink bg-card px-3 py-2 text-sm outline-none"
+          className="w-64 max-w-full rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2 text-sm outline-none"
         />
         {categorias.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
@@ -203,7 +222,7 @@ export function EntradaForm({
                   type="button"
                   onClick={() => setCategoriaTexto(seleccionada ? "" : cat.nombre)}
                   aria-pressed={seleccionada}
-                  className={`flex items-center gap-1.5 border-2 px-2.5 py-1 font-pixel text-xs tracking-wide transition-colors ${
+                  className={`flex items-center gap-1.5 border-(length:--borde) px-2.5 py-1 font-pixel text-xs tracking-wide transition-colors ${
                     seleccionada ? "border-ink-strong bg-secondary-purple/10" : "border-ink/30 hover:border-ink-strong"
                   }`}
                 >

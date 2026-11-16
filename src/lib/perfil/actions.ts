@@ -23,3 +23,19 @@ export async function renombrarPerfil(nombre: string) {
 
   if (error) throw error;
 }
+
+/** Cierra el mensaje de bienvenida para siempre (en esta cuenta, en todos
+ * sus dispositivos). */
+export async function marcarBienvenidaVista() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabase
+    .from("perfiles")
+    .upsert({ id: user.id, bienvenida_vista_en: new Date().toISOString() }, { onConflict: "id" });
+
+  if (error) throw error;
+}

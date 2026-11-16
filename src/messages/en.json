@@ -3,7 +3,26 @@
     "diario": "Journal",
     "listas": "Lists",
     "vitrina": "Showcase",
-    "audio": "Audio"
+    "audio": "Audio",
+    "secciones": "Sections",
+    "crear": "Create",
+    "crearTitulo": "What do you want to keep today?",
+    "crearAyuda": "Pick one and start right away.",
+    "crearAyudaTeclas": "You can also use keys 1 to 4.",
+    "escribir": "Write",
+    "escribirAyuda": "An entry in your journal",
+    "exhibir": "Display",
+    "exhibirAyuda": "Photos or art in your showcase",
+    "grabar": "Record",
+    "grabarAyuda": "A voice note, up to 10 min",
+    "nuevaLista": "New list",
+    "nuevaListaAyuda": "Books, ideas, to-dos…",
+    "cerrar": "Close",
+    "filtrarCategoria": "Filter by category",
+    "todas": "All",
+    "avisoStorage": "Your storage is at {porcentaje}%: {usado} of {limite}. When it fills up you won't be able to upload more photos or audio.",
+    "avisoStorageLleno": "Your storage is full ({usado} of {limite}). To upload more photos or audio, free up space or move to a plan with more storage.",
+    "personalizar": "Customize my room"
   },
   "perfil": {
     "titulo": "Profile",
@@ -35,7 +54,14 @@
     "proximamente": "Soon",
     "cerrarSesion": "Log out",
     "errorFormato": "Unsupported format. Upload a JPG, PNG or WebP.",
-    "errorSesion": "Your session expired. Sign in again and try once more."
+    "errorSesion": "Your session expired. Sign in again and try once more.",
+    "terminos": "Terms of use",
+    "privacidad": "Privacy",
+    "espacioUsado": "Storage used",
+    "espacioDe": "{usado} of {limite}",
+    "espacioAyuda": "Photos and audio. We'll warn you before it fills up.",
+    "abrirPersonalizacion": "Personalize",
+    "personalizacionAyudaCorta": "Theme, colors, fonts, cursor and icons"
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -44,25 +70,68 @@
     "password": "Password",
     "entrar": "Sign in",
     "error": "Could not sign in. Check your details and try again.",
-    "modulos": {
-      "titulo": "What's waiting inside",
-      "diario": {
-        "titulo": "Journal",
-        "descripcion": "Your thoughts, with formatting."
-      },
-      "listas": {
-        "titulo": "Lists",
-        "descripcion": "Books, ideas, to-dos."
-      },
-      "vitrina": {
-        "titulo": "Showcase",
-        "descripcion": "Your art, on display."
-      },
-      "audio": {
-        "titulo": "Audio",
-        "descripcion": "What you'd rather say out loud."
-      }
-    }
+    "lema": "Your space to write, collect and keep everyday life.",
+    "modulo": {
+      "diario": "Journal",
+      "diarioAyuda": "Your thoughts, with formatting.",
+      "listas": "Lists",
+      "listasAyuda": "Books, ideas, to-dos.",
+      "vitrina": "Showcase",
+      "vitrinaAyuda": "Your art, on display.",
+      "audio": "Audio",
+      "audioAyuda": "What you'd rather say out loud."
+    },
+    "privado": "Private: only you can see what you keep here.",
+    "acceso": "Access",
+    "tabEntrar": "Sign in",
+    "tabCrear": "Create account",
+    "saludoEntrar": "Good to see you again",
+    "saludoCrear": "Welcome to your room",
+    "olvide": "Forgot your password?",
+    "mostrar": "Show password",
+    "ocultar": "Hide password",
+    "requisitos": "Password requirements",
+    "reqLargo": "At least 8 characters",
+    "reqLetra": "A letter",
+    "reqNumero": "A number",
+    "cumplido": "(done)",
+    "pendiente": "(missing)",
+    "crear": "Create my room",
+    "registroAyuda": "We'll email you a link to confirm your account before you sign in.",
+    "registroEnviado": "Done! If the email is valid, you'll get a link to confirm your account. Open it and you'll go straight to your journal.",
+    "contrasenaDebil": "The password doesn't meet the requirements.",
+    "mismaContrasena": "Pick a password different from the previous one.",
+    "errorRegistro": "Couldn't create the account. Try again in a while.",
+    "confirmarCorreo": "Before signing in, confirm your account from the link we emailed you.",
+    "demasiadosIntentos": "Too many attempts in a row. Wait a few minutes and try again.",
+    "enlaceVencido": "That link expired or was already used. Ask for a new one.",
+    "recuperarTitulo": "Recover your password",
+    "recuperarAyuda": "Enter your email and we'll send you a link to choose a new one.",
+    "enviarEnlace": "Send link",
+    "recuperarEnviado": "If there's an account with that email, a link will arrive in a few minutes.",
+    "volverEntrar": "Back to sign in",
+    "restablecerTitulo": "Choose a new password",
+    "contrasenaNueva": "New password",
+    "guardarContrasena": "Save and sign in",
+    "pedirOtro": "Ask for another link",
+    "errorRestablecer": "Couldn't change the password. Try again.",
+    "cuentaBloqueada": "Too many failed attempts. For your security, wait {minutos, plural, one {# minute} other {# minutes}} before trying again.",
+    "legal": "By creating an account you accept the <terminos>terms of use</terminos> and the <privacidad>privacy policy</privacidad>.",
+    "terminos": "Terms of use",
+    "privacidad": "Privacy",
+    "documentos": "Documents",
+    "cambiarIdioma": "Cambiar idioma / Switch language",
+    "modoClaroOscuro": "Toggle light or dark mode",
+    "volverInicio": "Cuarto Propio, back to home",
+    "entrando": "Logging in…",
+    "creando": "Creating your room…",
+    "enviando": "Sending…",
+    "guardando": "Saving…",
+    "temaElegido": "Your room will start with the {tema} theme.",
+    "metaEntrar": "Log in",
+    "metaCrear": "Create account",
+    "metaRecuperar": "Recover password",
+    "metaRestablecer": "New password"
   },
   "diario": {
     "titulo": "Journal",
@@ -82,7 +151,7 @@
     "tituloDemasiadoLargo": "The title can't be longer than {maximo} characters.",
     "limpiarFiltros": "Clear filters",
     "resultados": "{cantidad, plural, =0 {no entries} one {# entry} other {# entries}}",
-    "borradorEncontrado": "You have an unsaved draft from {fecha}.",
+    "borradorEncontrado": "You have an unsaved draft from {hace} ({fecha}).",
     "restaurarBorrador": "Restore",
     "descartarBorrador": "Discard",
     "categoriaPlaceholder": "Category (optional)",
@@ -90,7 +159,11 @@
     "editar": "Edit",
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this entry? This cannot be undone.",
-    "volver": "Back to journal"
+    "volver": "Back to journal",
+    "nueva": "New",
+    "conLaPalabra": "with “{palabra}”",
+    "campoTitulo": "Title",
+    "borradorGuardado": "Draft saved on this device · {hora}"
   },
   "dialogos": {
     "cerrar": "Close",
@@ -121,7 +194,17 @@
     "colorTexto": "Text colour",
     "quitarColorTexto": "Remove text colour",
     "resaltar": "Highlight text",
-    "quitarResaltado": "Remove highlight"
+    "quitarResaltado": "Remove highlight",
+    "imagen": "Image",
+    "subiendoImagen": "Uploading…",
+    "reintentar": "Retry",
+    "descartar": "Dismiss",
+    "errorImagen": {
+      "formato": "That file isn't a JPG, PNG or WebP image.",
+      "tamano": "The image is larger than 25 MB.",
+      "sesion": "Your session expired. Sign in again and retry; what you wrote is kept as a draft.",
+      "fallo": "Couldn't upload the image. What you wrote is still here: try again."
+    }
   },
   "listas": {
     "titulo": "Lists",
@@ -142,7 +225,7 @@
     "bajarItem": "Move item down",
     "todasLasCategorias": "All categories",
     "sinItemsAun": "No items yet. Add the first one.",
-    "itemPlaceholder": "Add an item...",
+    "itemPlaceholder": "Add an item and press Enter",
     "agregarItem": "Add item",
     "eliminarItem": "Delete item",
     "eliminarItemConfirmar": "Delete this item? This cannot be undone.",
@@ -150,7 +233,13 @@
     "cancelar": "Cancel",
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this list? This cannot be undone.",
-    "errorGuardar": "Couldn’t save that change. Please try again."
+    "errorGuardar": "Couldn’t save that change. Please try again.",
+    "progresoTexto": "{hechos} of {total} done",
+    "agregar": "Add",
+    "cantidadItems": "{total, plural, =0 {No items} one {# item} other {# items}}",
+    "abrirLista": "Open list",
+    "plegarLista": "Collapse list",
+    "eliminarLista": "Delete list"
   },
   "vitrina": {
     "titulo": "Showcase",
@@ -195,7 +284,8 @@
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this piece? This cannot be undone.",
     "volver": "Back to showcase",
-    "volverPieza": "Back to the piece"
+    "volverPieza": "Back to the piece",
+    "filtrarHashtag": "Filter by hashtag"
   },
   "audio": {
     "titulo": "Audio",
@@ -229,7 +319,11 @@
     "nuevaCategoriaPlaceholder": "New category…",
     "eliminar": "Delete",
     "eliminarConfirmar": "Delete this audio note? This cannot be undone.",
-    "errorGuardar": "Couldn’t save that change. Please try again."
+    "errorGuardar": "Couldn’t save that change. Please try again.",
+    "grabadora": "Recorder",
+    "tocaParaGrabar": "Tap to record",
+    "tocaParaDetener": "tap the square to stop",
+    "ayudaGrabar": "Up to {minutos} minutes. It saves itself when you stop; add a title later (or keep the date and time)."
   },
   "paginacion": {
     "cargarMas": "Load more",
@@ -253,5 +347,384 @@
     "appActualizadaBarra": "Something new",
     "appActualizadaTitulo": "Your room got a refresh",
     "recargar": "Reload"
+  },
+  "legal": {
+    "documentos": "Documents",
+    "actualizado": "Last updated: November 15, 2026",
+    "terminos": {
+      "titulo": "Terms of use",
+      "intro": "Cuarto Propio is a personal space to write, collect and keep your everyday life. By using it you accept these terms, written in plain language.",
+      "secciones": [
+        {
+          "titulo": "Your account",
+          "texto": "You need a verified email and a password to sign in. Keep your password safe: what happens inside your account is your responsibility."
+        },
+        {
+          "titulo": "Your content is yours",
+          "texto": "Everything you write, upload or record remains yours. You only give us permission to store it and show it to you, including making lighter versions of your photos so they load fast. We don't publish it or share it with anyone."
+        },
+        {
+          "titulo": "Acceptable use",
+          "texto": "Only keep content that is yours or that you have the right to keep. Don't use Cuarto Propio for anything illegal, and don't try to access other accounts or overload the service."
+        },
+        {
+          "titulo": "Service limits",
+          "texto": "This is a personal project in its first stage, running on free plans: it may have occasional downtime and a storage limit (we'll warn you when you get close). Photos can be up to 25 MB and audio up to 50 MB or 10 minutes.\nThere's no trash: deleting is permanent. Data export isn't available yet."
+        },
+        {
+          "titulo": "No warranty",
+          "texto": "The service is provided as is. Keep your own backups of anything important to you."
+        },
+        {
+          "titulo": "Closing your account",
+          "texto": "You can ask for your account and all its content to be deleted by writing to [CONTACT EMAIL]."
+        },
+        {
+          "titulo": "Changes",
+          "texto": "If these terms change, the date above is updated. Important changes are announced inside the app."
+        }
+      ]
+    },
+    "privacidad": {
+      "titulo": "Privacy",
+      "intro": "What you keep here is personal and intimate. This page explains what we store, where and why. In short: only so that you can see it.",
+      "secciones": [
+        {
+          "titulo": "What we store",
+          "texto": "Your email and password (encrypted, handled by Supabase Auth). Your name and profile photo, if you add them. Your journal entries, lists, photos (thumbnail and full size), voice notes, categories and hashtags."
+        },
+        {
+          "titulo": "What stays on your device",
+          "texto": "Your journal draft while you write and your light or dark mode preference are saved in the browser. We only use the cookies needed to keep you signed in."
+        },
+        {
+          "titulo": "What we use it for",
+          "texto": "Only to show you your own content. Never to train artificial intelligence, for third-party analytics or for advertising. We don't sell or share your data."
+        },
+        {
+          "titulo": "Where it lives",
+          "texto": "On Supabase (database, files and authentication) and Vercel (where the app runs). Everything travels encrypted over HTTPS, and every record is protected so only your account can read it."
+        },
+        {
+          "titulo": "Emails",
+          "texto": "We only email you about your account: to confirm sign-up and to recover your password."
+        },
+        {
+          "titulo": "How long",
+          "texto": "For as long as you have the account. What you delete is deleted permanently; the database's automatic backups renew on their own according to the provider's schedule."
+        },
+        {
+          "titulo": "Your rights",
+          "texto": "You can view, correct and delete your content from the app. To delete the whole account, write to [CONTACT EMAIL]."
+        }
+      ]
+    }
+  },
+  "bienvenida": {
+    "barra": "WELCOME",
+    "titulo": "This is your room of your own",
+    "texto": "A place just for you to write, collect and keep your everyday life. Nobody else sees what you keep here.",
+    "diario": "Journal: write",
+    "listas": "Lists: collect",
+    "vitrina": "Showcase: display your art",
+    "audio": "Audio: say it out loud",
+    "consejo": "To start anything, tap “Create”. Your photo, name and light or dark mode are in your profile, top right.",
+    "empezar": "Get started"
+  },
+  "personalizacion": {
+    "titulo": "Personalization",
+    "subtitulo": "Make your room look like you. Every change saves itself and shows right away.",
+    "activo": "in use",
+    "error": "Couldn't save the change. Try again.",
+    "subiendo": "Uploading…",
+    "modo": {
+      "claro": "light",
+      "oscuro": "dark"
+    },
+    "tema": {
+      "titulo": "Theme",
+      "ayuda": "The overall look: box shapes, borders, shadows and base colors. Each theme keeps its own colors and fonts: when you come back to one, it is just as you left it.",
+      "retro": "Y2K desktop windows: thick borders, square corners and solid shadow.",
+      "whimsical": "Soft and warm, blogspot style: rounded corners, thin borders and a diffuse shadow.",
+      "proximamente": "Coming soon: {nombres}.",
+      "softsignal": "Retro gadget: plastic casing, keys with little lights and green LCD screens.",
+      "void": "Y2K emo: 2000s desktop windows, stars, glitter and chrome titles."
+    },
+    "colores": {
+      "titulo": "Colors",
+      "ayuda": "You're changing the colors of {modo} mode (the one you see now). Changes show live; they're saved when you tap “Save colors”.",
+      "guardar": "Save colors",
+      "restablecer": "Back to the theme's",
+      "secundarioMorado": "Accent",
+      "secundarioMoradoUso": "Top bar, titles and main buttons",
+      "primarioVerde": "Green",
+      "primarioVerdeUso": "Save and create buttons",
+      "primarioRosa": "Pink",
+      "primarioRosaUso": "Write buttons and notices",
+      "secundarioTurquesa": "Turquoise",
+      "secundarioTurquesaUso": "Display, hashtags and images",
+      "fondo": "Background",
+      "fondoUso": "The background of every screen",
+      "texto": "Text",
+      "textoUso": "The color of the letters"
+    },
+    "contraste": {
+      "titulo": "Heads up: some combinations will be hard to read.",
+      "texto": "Text on the background",
+      "tarjeta": "Text on cards",
+      "acento": "Titles (accent) on the background",
+      "barra": "Top bar letters on the accent",
+      "botonVerde": "Text on green buttons",
+      "botonRosa": "Text on pink buttons",
+      "botonTurquesa": "Text on turquoise buttons",
+      "minimo": "recommended is {minimo}:1",
+      "revisar": "Review colors",
+      "guardarIgual": "Save anyway"
+    },
+    "tipografia": {
+      "titulo": "Typography",
+      "restablecer": "Back to the theme's fonts",
+      "ayuda": "The font for what you write is separate from menus and buttons, so a decorative font never makes a button unreadable.",
+      "diario": "For what you write",
+      "interfaz": "For menus and buttons",
+      "muestraDiario": "It rained today and I wrote slowly.",
+      "muestraInterfaz": "Journal · Lists · Create"
+    },
+    "cursor": {
+      "titulo": "Cursor",
+      "ayuda": "The mouse pointer across the app (not visible on phones). Hover over each option to try it.",
+      "sistema": "System",
+      "flecha": "Arrow",
+      "corazon": "Heart",
+      "estrella": "Star",
+      "lapiz": "Pencil",
+      "propio": "Yours",
+      "subir": "Upload my own cursor",
+      "formatos": "PNG, WebP, JPG, GIF or SVG, up to 2 MB. Reduced to 32 px."
+    },
+    "iconos": {
+      "titulo": "Icons",
+      "ayuda": "The section drawings in the navigation bar and in “Create”.",
+      "trazo": "Line",
+      "pixel": "Pixel",
+      "propios": "Or use your own images, section by section:",
+      "subir": "Upload image",
+      "cambiar": "Change",
+      "quitar": "Remove"
+    },
+    "errorSubida": {
+      "formato": "That file isn't an image we can use (PNG, WebP, JPG, GIF or SVG).",
+      "tamano": "The image is too large (2 MB max).",
+      "sesion": "Your session expired. Sign in again and try once more.",
+      "fallo": "Couldn't upload the image. Try again."
+    }
+  },
+  "decoracion": {
+    "panelIzquierdo": "Your room in numbers",
+    "panelDerecho": "Latest",
+    "senal": "SIGNAL",
+    "frecuencia": "PERSONAL FREQUENCY",
+    "ahoraSuena": "Now playing",
+    "tuCuarto": "Your room",
+    "entradas": "entries",
+    "piezas": "pieces",
+    "notas": "notes",
+    "listas": "lists",
+    "audio": "audio",
+    "sinNotas": "Nothing recorded yet",
+    "notaSinTitulo": "Untitled note",
+    "archivo": "ARCHIVE",
+    "estado": "Status",
+    "escribiendo": "writing in your room",
+    "brillo": "glitter",
+    "angel": "angel?",
+    "barraTareas": "Taskbar",
+    "inicio": "start",
+    "dias": [
+      "M",
+      "T",
+      "W",
+      "T",
+      "F",
+      "S",
+      "S"
+    ]
+  },
+  "landing": {
+    "nav": {
+      "login": "Log in",
+      "signup": "Create account",
+      "loginCorto": "Log in"
+    },
+    "hero": {
+      "badge": "A private digital sanctuary • No algorithms or likes",
+      "title": "A room of one’s own to write, collect, and inhabit your everyday life.",
+      "subtitle": "Everything currently scattered across loose notes, boards, photos, and voice memos—gathered into one intimate corner styled just the way you like.",
+      "ctaPrimary": "Create my room — it’s free",
+      "ctaSecondary": "I have a key (Log in)",
+      "note": "Installable on your phone • English & Spanish • 100% private",
+      "win1Title": "november_diary.txt",
+      "win1Date": "Sunday, 6:40 PM",
+      "win1Tag": "#rainy-afternoons",
+      "win1Body": "\"Played that old record again while sipping chamomile tea. Such a relief having a place nobody else reads...\"",
+      "win2Title": "voice_note_04.wav",
+      "win2Desc": "Thoughts before falling asleep",
+      "win3Caption": "My desk today ✿",
+      "restore": "↺ Reopen windows"
+    },
+    "problem": {
+      "title": "Your notes in one app, your photos in another, your voice memos lost in a chat…",
+      "subtitle": "Your daily life doesn’t live in separate silos. We bring your words, lists, photos, and voice together in one calm room.",
+      "item1": "Scattered notes",
+      "item2": "Boards & checklists",
+      "item3": "Unposted photos",
+      "item4": "Voice memos",
+      "together": "All kept under your own key in Cuarto Propio"
+    },
+    "mod1": {
+      "pill": "01 • Personal blog-style diary",
+      "title": "Write like the cozy blogs of old, except just for yourself.",
+      "desc": "A warm rich-text editor with bolds, headings, colors, and images. Organize entries by category, search by keyword, and revisit them chronologically.",
+      "winTitle": "Personal Notebook — Chronological view",
+      "catAll": "All",
+      "cat1": "Dreams",
+      "cat2": "Readings",
+      "cat3": "Slow days",
+      "entry1Title": "Toast with fig jam",
+      "entry1Text": "Did nothing extraordinary today and yet it felt worthwhile. Jotted down three Virginia Woolf quotes in the margin.",
+      "entry2Title": "The library by the sea",
+      "entry2Text": "Dreamt the bookshelves had tiny windows letting in the scent of salt and old paper.",
+      "entry3Title": "Notes on \"A Room of One’s Own\"",
+      "entry3Text": "\"Locking the door means shutting out the noise outside to finally hear what you yourself think.\""
+    },
+    "mod2": {
+      "pill": "02 • Pressure-free lists & boards",
+      "title": "Keep your whims, reading lists, and daydream projects.",
+      "desc": "Visual boards with checklists for \"Books read\", \"Sunday movies\", \"Costumes I want to sew\", or your grandmother’s recipes. Zero productivity metrics.",
+      "winTitle": "My_Lists.exe — Intimate boards",
+      "board1": "📚 Books read this year",
+      "book3": "The Pillow Book",
+      "board2": "🧵 Costumes I want to make",
+      "costume1": "Forest fairy with green tulle",
+      "costume2": "Victorian librarian",
+      "placeholder": "Add an idea..."
+    },
+    "mod3": {
+      "pill": "03 • Showcase of your own pieces",
+      "title": "Your private gallery to exhibit your photos and artwork.",
+      "desc": "Here your photos and drawings are called <b>pieces</b>, and pinning them to your wall is called <b>exhibiting</b>. Arranged in a masonry grid with hashtag filters.",
+      "winTitle": "Showcase — 4 pieces exhibited",
+      "tagAll": "#all",
+      "p1": "Notebook botanicals",
+      "p2": "Afternoon wall shadows",
+      "p3": "Clippings & tickets",
+      "p4": "Quick self-portrait"
+    },
+    "mod4": {
+      "pill": "04 • Audio & Reverse Journaling",
+      "title": "When you don’t feel like typing, simply talk to your room.",
+      "desc": "Record voice notes up to 10 minutes long to vent, capture a dream upon waking, or save the sound of rain against your window.",
+      "winTitle": "Intimate Recorder — Up to 10:00 min",
+      "trackTitle": "\"Walking home under the streetlamps\"",
+      "trackMeta": "Nov 13 • Private voice note • 06:18",
+      "statusIdle": "Press ▶ to hear how talking out loud to yourself feels.",
+      "statusPlaying": "Playing gentle ambient chime… (Web Audio synth)"
+    },
+    "mod5": {
+      "pill": "05 • Total customization",
+      "title": "Your room changes with you. Try it right here.",
+      "desc": "These are the themes you'll find in Customization. The preview cycles through each one; tap the one you want to try and change the font, the accent color and the cursor."
+    },
+    "privacy": {
+      "title": "It is yours. Not a social network. We never sell or train on your content.",
+      "desc": "In Cuarto Propio there are no followers, no public feeds, no ads, and no algorithms demanding you post more. Everything you write, draw, photograph, or record stays under your key.",
+      "p1": "✦ Zero ads or tracking",
+      "p2": "✦ Never used for AI training",
+      "p3": "✦ Free for personal use"
+    },
+    "ctaFinal": {
+      "title": "Unlock the door to your own room.",
+      "subtitle": "Start today in under a minute. Install it on your phone as an app and carry it anywhere.",
+      "primary": "Create free account",
+      "secondary": "Log in"
+    },
+    "footer": {
+      "tagline": "An intimate digital sanctuary",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy"
+    },
+    "marca": "Cuarto Propio",
+    "inicio": "Cuarto Propio, home",
+    "altMarca": "Cuarto Propio logo",
+    "altLogo": "Cuarto Propio illustration: a girl with headphones writes in her journal on a green rug, beside a sleeping cat, records and cassettes.",
+    "otroIdioma": "Español",
+    "idiomaBoton": "EN / ES",
+    "idiomaPie": "🌐 English / Español",
+    "cambiarIdioma": "Switch language / Cambiar idioma",
+    "modoClaroOscuro": "Toggle light or dark mode",
+    "cerrarVentana": "Close window",
+    "reproducir": "Play or pause sample",
+    "ideas": "Ideas",
+    "rec": "● REC",
+    "masonry": "✦ masonry",
+    "probador": {
+      "temas": {
+        "retro": "'98 desktop windows: thick borders, square corners and a hard shadow. The theme the app starts with.",
+        "whimsical": "Pastel and warm, inspired by the blogs of old: soft borders, a gentle shadow and a literary font.",
+        "softsignal": "A retro plastic gadget: cream casing, keys with little lights and dates on green LCD screens.",
+        "void": "Y2K emo: 2000s desktop windows, stars, hot-pink glow and chrome titles.",
+        "fairy": "Dreamy pastel, italics and sparkles. We're still designing it."
+      },
+      "pronto": "soon",
+      "asiSeVeria": "This is how your room would look in {tema}",
+      "maquetaAlt": "Preview of the app in the {tema} theme: the navigation bar, the Journal title and two entries",
+      "temasGrupo": "Choose a theme",
+      "letra": "Font",
+      "acento": "Accent",
+      "cursor": "Cursor",
+      "modo": "Mode",
+      "delTema": "Theme's",
+      "cursorNormal": "Default",
+      "cursorAyuda": "Hover over the preview",
+      "cursores": {
+        "corazon": "Heart cursor",
+        "estrella": "Star cursor",
+        "lapiz": "Pencil cursor"
+      },
+      "acentos": {
+        "0": "Raspberry accent",
+        "1": "Forest green accent",
+        "2": "Blue accent",
+        "3": "Orange accent"
+      },
+      "cta": "Create my room with {tema}",
+      "ctaNota": "Your account starts with this theme. Change it anytime.",
+      "maqueta": {
+        "diario": "Journal",
+        "listas": "Lists",
+        "vitrina": "Showcase",
+        "audio": "Audio",
+        "todas": "All",
+        "cat1": "Slow days",
+        "cat2": "Reading",
+        "dia1": "fri",
+        "dia2": "tue",
+        "titulo1": "Toast with fig jam",
+        "texto1": "I did nothing extraordinary today, and still the day felt worth it.",
+        "titulo2": "Notes on \"A Room of One's Own\"",
+        "texto2": "Closing the door to finally hear what one actually thinks.",
+        "inicial": "V"
+      }
+    }
+  },
+  "comun": {
+    "saltarContenido": "Skip to content"
+  },
+  "noEncontrado": {
+    "meta": "Page not found",
+    "titulo": "This door doesn't lead to any room",
+    "texto": "The page you're looking for doesn't exist or has moved. Maybe the link was incomplete.",
+    "inicio": "Back to home",
+    "diario": "Go to my journal"
   }
 }

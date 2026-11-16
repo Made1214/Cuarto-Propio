@@ -5,6 +5,9 @@ import { listarListas } from "@/lib/listas/queries";
 import { ListaColumna } from "./lista-columna";
 import { NuevaListaInline } from "./nueva-lista-inline";
 
+/** Hasta cuántas listas se muestran abiertas de entrada. */
+const LISTAS_ABIERTAS_MAXIMO = 6;
+
 export default async function ListasPage({
   params,
   searchParams,
@@ -24,32 +27,26 @@ export default async function ListasPage({
   // Solo la categoría que de verdad existe: un id roto en la URL se trata
   // como si no hubiera filtro (ver `listarConFiltroCategoria`).
   const categoria = categoriaActual?.id;
+  // Con pocas listas se ven todas abiertas; con muchas, plegadas (nombre y
+  // progreso) para no montar miles de filas de una vez. Cada dispositivo
+  // recuerda las que se abrieron a mano (src/lib/listas/plegado.ts).
+  const abiertasPorDefecto = listas.length <= LISTAS_ABIERTAS_MAXIMO;
 
   return (
     <div className="flex w-full flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+          <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
           <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
         </div>
 
-        <div className="flex flex-wrap items-end justify-end gap-3">
-          {categorias.length > 0 ? (
-            <FiltroCategoria
-              pathname="/listas"
-              categorias={categorias}
-              categoriaActualId={categoria ?? null}
-              etiquetaTodas={t("todasLasCategorias")}
-              alinearDerecha
-            />
-          ) : null}
-
-          <NuevaListaInline />
-        </div>
+        <NuevaListaInline />
       </div>
 
+      <FiltroCategoria pathname="/listas" categorias={categorias} categoriaActualId={categoria ?? null} />
+
       {listas.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 border-2 border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
           <svg width="28" height="28" viewBox="0 0 10 10" aria-hidden="true" className="text-secondary-purple">
             <rect x="0" y="0" width="3" height="3" fill="currentColor" />
             <rect x="5" y="1" width="5" height="1" fill="currentColor" />
@@ -69,7 +66,7 @@ export default async function ListasPage({
       <div className="columns-[17rem] gap-5">
         {listas.map((lista) => (
           <div key={lista.id} className="mb-5 break-inside-avoid">
-            <ListaColumna lista={lista} categorias={categorias} />
+            <ListaColumna lista={lista} categorias={categorias} abiertaPorDefecto={abiertasPorDefecto} />
           </div>
         ))}
       </div>

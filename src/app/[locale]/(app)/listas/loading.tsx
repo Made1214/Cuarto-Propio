@@ -29,7 +29,7 @@ export default function CargandoListas() {
       <div className="columns-[17rem] gap-5">
         {LISTAS.map((lista, indice) => (
           <div key={indice} className="mb-5 break-inside-avoid">
-            <div className="flex w-full flex-col gap-3 border-2 border-ink bg-card p-4 shadow-[5px_5px_0_var(--ink)]">
+            <div className="flex w-full flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
               <div className="flex items-center justify-between gap-1">
                 <div className="min-w-0 flex-1 py-1">
                   <Hueso className="h-5 w-3/5" />
@@ -39,7 +39,7 @@ export default function CargandoListas() {
               </div>
 
               {lista.casillas ? (
-                <div className="h-1.5 w-full border-2 border-ink/30" aria-hidden="true" />
+                <div className="h-1.5 w-full border-(length:--borde) border-ink/30" aria-hidden="true" />
               ) : null}
 
               <Hueso className="h-7 w-full" />
@@ -50,7 +50,7 @@ export default function CargandoListas() {
                     {lista.casillas ? (
                       <span
                         aria-hidden="true"
-                        className="h-4 w-4 shrink-0 border-2 border-ink/30"
+                        className="h-4 w-4 shrink-0 border-(length:--borde) border-ink/30"
                       />
                     ) : null}
                     <Hueso className={`h-3.5 ${ancho}`} />
@@ -59,10 +59,10 @@ export default function CargandoListas() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="h-8 min-w-0 flex-1 border-2 border-ink/30" aria-hidden="true" />
+                <div className="h-8 min-w-0 flex-1 border-(length:--borde) border-ink/30" aria-hidden="true" />
                 <span
                   aria-hidden="true"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-ink bg-primary-green text-ink-strong"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 5v14M5 12h14" />

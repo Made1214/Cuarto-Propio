@@ -34,9 +34,9 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
       <button
         type="button"
         onClick={() => setActivo(true)}
-        className={`flex items-center gap-2 border-2 border-ink bg-primary-green font-pixel tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
+        className={`flex items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green font-pixel tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
           variante === "panel"
-            ? "px-5 py-3 text-xs shadow-[4px_4px_0_var(--ink)]"
+            ? "px-5 py-3 text-xs shadow-marco"
             : "px-4 py-2.5 text-xs"
         }`}
       >
@@ -75,7 +75,7 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-2 border-ink bg-card p-2 shadow-[4px_4px_0_var(--ink)]">
+    <div className="flex flex-wrap items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-card p-2 shadow-marco">
       <input
         ref={campoRef}
         type="text"
@@ -98,7 +98,7 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
         }}
         disabled={pendiente}
         placeholder={t("nombrePlaceholder")}
-        className="min-w-0 flex-1 basis-48 border-2 border-ink bg-background px-2.5 py-1.5 text-sm outline-none"
+        className="min-w-0 flex-1 basis-48 border-(length:--borde) border-ink rounded-theme bg-background px-2.5 py-1.5 text-sm outline-none"
       />
 
       <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap text-sm">
@@ -107,7 +107,7 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
           checked={conCasillas}
           onChange={(evento) => setConCasillas(evento.target.checked)}
           disabled={pendiente}
-          className="h-4 w-4 shrink-0 cursor-pointer border-2 border-ink accent-secondary-purple"
+          className="h-4 w-4 shrink-0 cursor-pointer border-(length:--borde) border-ink rounded-theme accent-secondary-purple"
         />
         {t("listaConCasillas")}
       </label>
@@ -116,7 +116,7 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
         type="button"
         onClick={enviar}
         disabled={pendiente}
-        className="border-2 border-ink bg-primary-green px-3 py-1.5 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5"
+        className="border-(length:--borde) border-ink rounded-theme bg-primary-green px-3 py-1.5 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5"
       >
         {t("guardar").toUpperCase()}
       </button>
@@ -134,7 +134,7 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
         <p
           id={avisoId}
           role="alert"
-          className="basis-full border-2 border-ink bg-primary-pink px-3 py-2 text-xs text-ink-strong"
+          className="basis-full border-(length:--borde) border-ink rounded-theme bg-primary-pink px-3 py-2 text-xs text-ink-strong"
         >
           {t("nombreRequerido")}
         </p>

@@ -39,7 +39,7 @@ export default function CargandoDiario() {
           {TITULOS.map((ancho) => (
             <div
               key={ancho}
-              className="border-2 border-ink bg-card p-6 shadow-[5px_5px_0_var(--ink)]"
+              className="border-(length:--borde) border-ink rounded-theme bg-card p-6 shadow-marco"
             >
               <div className="flex items-center justify-between gap-3">
                 <Hueso className="h-3 w-14" />

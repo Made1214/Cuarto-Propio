@@ -5,7 +5,7 @@ export async function listarCategorias(): Promise<Categoria[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("categorias")
-    .select("id, nombre")
+    .select("id, nombre, creadoEn:created_at")
     .order("nombre");
 
   if (error) throw error;

@@ -48,7 +48,7 @@ export function DialogoEnlace({
             <button
               type="button"
               onClick={onQuitar}
-              className="mr-auto border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
+              className="mr-auto border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-primary-pink/30"
             >
               {t("quitarEnlace").toUpperCase()}
             </button>
@@ -56,14 +56,14 @@ export function DialogoEnlace({
           <button
             type="button"
             onClick={onCerrar}
-            className="border-2 border-ink bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+            className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
           >
             {tDialogos("cancelar").toUpperCase()}
           </button>
           <button
             type="button"
             onClick={guardar}
-            className="border-2 border-ink bg-primary-green px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            className="border-(length:--borde) border-ink rounded-theme bg-primary-green px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
           >
             {tDialogos("guardar").toUpperCase()}
           </button>
@@ -85,7 +85,7 @@ export function DialogoEnlace({
             }
           }}
           placeholder="https://"
-          className="rounded-theme border-2 border-ink bg-background px-3 py-2 text-sm outline-none"
+          className="rounded-theme border-(length:--borde) border-ink bg-background px-3 py-2 text-sm outline-none"
         />
       </label>
     </VentanaDialogo>

@@ -1,0 +1,351 @@
+/*
+ * Landing de Cuarto Propio: su identidad (Whimsical) con tokens propios.
+ * Vive SOLO acá, colgada de `.landing[data-theme]`: no toca los temas de la
+ * app (src/lib/temas/). Los temas reales se muestran en la maqueta del
+ * probador (probador.tsx), que usa los tokens de la app y no estos.
+ *
+ * El modo claro/oscuro es el mismo de la app (`data-modo` en el <html>, ver
+ * src/lib/temas/modo.ts): claro por defecto, oscuro por preferencia del
+ * sistema salvo que se haya fijado "claro", y el oscuro fijado a mano al
+ * final para ganarle a la media query.
+ *
+ * Generado a partir del HTML de diseño de la landing; si se ajusta un color,
+ * se ajusta en los dos lugares donde aparece su modo oscuro.
+ */
+
+.landing[data-theme="whimsical"] {
+  --bg-page: #FCF6F3;
+  --bg-surface: #FFFFFF;
+  --bg-surface-alt: #F6ECE7;
+  --bg-window-bar: #F0AEC4;
+  --text-primary: #3D2C4F;
+  --text-secondary: #68557C;
+  --text-on-accent: #FFFFFF;
+  --text-window-bar: #3D2C4F;
+  --accent-primary: #9BCFAE;
+  --accent-secondary: #F0AEC4;
+  --accent-tertiary: #74C7C3;
+  --btn-bg: #5B3F73;
+  --btn-text: #FBF4F2;
+  --border-color: #E5D4DE;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --radius-card: 24px;
+  --radius-pill: 9999px;
+  --radius-inner: 16px;
+  --shadow-card: 0 12px 30px -8px rgba(61, 44, 79, 0.10);
+  --shadow-btn: 0 6px 16px -4px rgba(91, 63, 115, 0.30);
+  --font-literary: var(--font-lora), Georgia, serif;
+  --font-ui: var(--font-inter), system-ui, sans-serif;
+  --bg-pattern: radial-gradient(rgba(155, 207, 174, 0.25) 1.5px, transparent 1.5px);
+  --bg-pattern-size: 26px 26px;
+  --sparkle-color-1: #F0AEC4;
+  --sparkle-color-2: #9BCFAE;
+  --sparkle-color-3: #74C7C3;
+}
+
+
+
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) .landing[data-theme="whimsical"] {
+    --bg-page: #2B2033;
+    --bg-surface: #362840;
+    --bg-surface-alt: #23192A;
+    --bg-window-bar: #8A6BA3;
+    --text-primary: #FBF4F2;
+    --text-secondary: #D4C5DE;
+    --text-on-accent: #2B2033;
+    --text-window-bar: #FBF4F2;
+    --accent-primary: #B8E0C6;
+    --accent-secondary: #F5C4D3;
+    --accent-tertiary: #8ED9D4;
+    --btn-bg: #8A6BA3;
+    --btn-text: #FBF4F2;
+    --border-color: #523D61;
+    --border-width: 1.5px;
+    --border-style: solid;
+    --radius-card: 24px;
+    --radius-pill: 9999px;
+    --radius-inner: 16px;
+    --shadow-card: 0 14px 34px -8px rgba(14, 8, 19, 0.45);
+    --shadow-btn: 0 6px 18px -4px rgba(138, 107, 163, 0.45);
+    --font-literary: var(--font-lora), Georgia, serif;
+    --font-ui: var(--font-inter), system-ui, sans-serif;
+    --bg-pattern: radial-gradient(rgba(184, 224, 198, 0.14) 1.5px, transparent 1.5px);
+    --bg-pattern-size: 26px 26px;
+    --sparkle-color-1: #F5C4D3;
+    --sparkle-color-2: #B8E0C6;
+    --sparkle-color-3: #8ED9D4;
+  }
+
+
+
+
+}
+
+:root[data-modo="oscuro"] .landing[data-theme="whimsical"] {
+  --bg-page: #2B2033;
+  --bg-surface: #362840;
+  --bg-surface-alt: #23192A;
+  --bg-window-bar: #8A6BA3;
+  --text-primary: #FBF4F2;
+  --text-secondary: #D4C5DE;
+  --text-on-accent: #2B2033;
+  --text-window-bar: #FBF4F2;
+  --accent-primary: #B8E0C6;
+  --accent-secondary: #F5C4D3;
+  --accent-tertiary: #8ED9D4;
+  --btn-bg: #8A6BA3;
+  --btn-text: #FBF4F2;
+  --border-color: #523D61;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --radius-card: 24px;
+  --radius-pill: 9999px;
+  --radius-inner: 16px;
+  --shadow-card: 0 14px 34px -8px rgba(14, 8, 19, 0.45);
+  --shadow-btn: 0 6px 18px -4px rgba(138, 107, 163, 0.45);
+  --font-literary: var(--font-lora), Georgia, serif;
+  --font-ui: var(--font-inter), system-ui, sans-serif;
+  --bg-pattern: radial-gradient(rgba(184, 224, 198, 0.14) 1.5px, transparent 1.5px);
+  --bg-pattern-size: 26px 26px;
+  --sparkle-color-1: #F5C4D3;
+  --sparkle-color-2: #B8E0C6;
+  --sparkle-color-3: #8ED9D4;
+}
+
+
+
+
+.landing {
+  background-color: var(--bg-page);
+  background-image: var(--bg-pattern);
+  background-size: var(--bg-pattern-size);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  transition:
+    background-color 0.55s ease,
+    color 0.55s ease;
+  overflow-x: clip;
+}
+
+.landing ::selection {
+  background: #f0aec4;
+  color: #3d2c4f;
+}
+
+.landing .font-literary {
+  font-family: var(--font-literary);
+}
+
+.landing .font-ui {
+  font-family: var(--font-ui);
+}
+
+
+.landing .theme-card {
+  background-color: var(--bg-surface);
+  border: var(--border-width) var(--border-style) var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    border-radius 0.5s ease,
+    box-shadow 0.5s ease,
+    transform 0.25s ease;
+}
+
+.landing .theme-surface-alt {
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-inner);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    border-radius 0.5s ease;
+}
+
+.landing .window-bar {
+  background-color: var(--bg-window-bar);
+  color: var(--text-window-bar);
+  border-bottom: var(--border-width) var(--border-style) var(--border-color);
+  border-top-left-radius: calc(var(--radius-card) - 2px);
+  border-top-right-radius: calc(var(--radius-card) - 2px);
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-radius 0.5s ease;
+}
+
+.landing .theme-btn-primary {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: var(--border-width) var(--border-style) var(--border-color);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-btn);
+  transition:
+    transform 0.2s ease,
+    background-color 0.4s ease,
+    border-radius 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.landing .theme-btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.landing .theme-btn-primary:active {
+  transform: translateY(1px);
+}
+
+.landing .theme-btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: var(--border-width) var(--border-style) var(--border-color);
+  border-radius: var(--radius-pill);
+  transition:
+    transform 0.2s ease,
+    background-color 0.4s ease,
+    border-radius 0.4s ease;
+}
+
+.landing .theme-btn-secondary:hover {
+  background-color: var(--bg-surface-alt);
+  transform: translateY(-2px);
+}
+
+/* Flotar: un vaivén corto y con ritmo propio para cada ventanita (si las
+   tres van al mismo compás parece que se mueve el fondo, no ellas). */
+@keyframes landing-flota {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.6deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.4deg);
+  }
+}
+
+@keyframes landing-flota-2 {
+  0%,
+  100% {
+    transform: translateY(0) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0deg);
+  }
+}
+
+.landing .animate-float {
+  animation: landing-flota 3.4s ease-in-out infinite;
+}
+
+.landing .animate-float-delayed {
+  animation: landing-flota-2 3s ease-in-out 0.4s infinite;
+}
+
+.landing .animate-float-3 {
+  animation: landing-flota 3.8s ease-in-out 0.9s infinite reverse;
+}
+
+/* Aparecer al bajar. Solo se esconde cuando el JS ya está corriendo
+   (`data-js`): sin JS, o antes de hidratar, todo se ve. */
+.landing[data-js] .reveal-section {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out;
+}
+
+.landing[data-js] .reveal-section.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.cursor-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  animation: landing-destello 0.75s ease-out forwards;
+}
+
+@keyframes landing-destello {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-50%, -90%) scale(1.15) rotate(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -140%) scale(0.2) rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing .animate-float,
+  .landing .animate-float-delayed,
+  .landing .animate-float-3 {
+    animation: none;
+  }
+
+  .landing[data-js] .reveal-section {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .cursor-sparkle {
+    display: none;
+  }
+
+  .landing *,
+  .landing {
+    transition-duration: 0.05s !important;
+  }
+}
+
+/* Fundido del probador al elegir un tema (View Transitions): solo la
+   maqueta, el resto de la página no se mueve. */
+::view-transition-group(muestra-tema) {
+  animation-duration: 0.35s;
+}
+
+.muestra-tema,
+.muestra-tema * {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    border-radius 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .muestra-tema,
+  .muestra-tema * {
+    transition: none;
+  }
+}
+
+/* La barrita que muestra cuánto falta para el próximo tema del probador. */
+@keyframes probador-progreso {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.probador-progreso {
+  animation-name: probador-progreso;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}

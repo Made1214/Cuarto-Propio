@@ -1,15 +1,13 @@
-import { obtenerUsuario } from "@/lib/supabase/server";
-import { redirect } from "@/i18n/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { Landing } from "@/components/landing/landing";
 
-export default async function RootPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+/**
+ * La landing es estática (se prerenderiza una vez por idioma): quien ya tiene
+ * sesión no llega hasta acá, el proxy la manda directo al diario
+ * (src/proxy.ts).
+ */
+export default async function RootPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  // Verificación local del JWT (sin ida al servidor de Auth): solo decide a
-  // qué pantalla mandar, y cada una vuelve a mirar la sesión por su cuenta.
-  const usuario = await obtenerUsuario();
-
-  redirect({ href: usuario ? "/diario" : "/login", locale });
+  setRequestLocale(locale);
+  return <Landing locale={locale} />;
 }

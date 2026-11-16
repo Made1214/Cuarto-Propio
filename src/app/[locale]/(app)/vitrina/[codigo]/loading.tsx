@@ -22,7 +22,7 @@ export default function CargandoPieza() {
             {Array.from({ length: RELACIONADAS }, (_, indice) => (
               <div
                 key={indice}
-                className="border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)]"
+                className="border-(length:--borde) border-ink rounded-theme bg-background shadow-marco-sm"
               >
                 <Hueso className="aspect-square w-full" />
               </div>
@@ -30,8 +30,8 @@ export default function CargandoPieza() {
           </div>
         </div>
 
-        <div className="order-1 min-w-0 border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)] lg:ml-52 xl:ml-60">
-          <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
+        <div className="order-1 min-w-0 border-(length:--borde) border-ink rounded-theme bg-card shadow-marco lg:ml-52 xl:ml-60">
+          <div className="flex items-center gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2 text-background">
             {/* Sobre el morado, el gris de tinta no se vería: el título de
                 la barra se esboza con el color del fondo, translúcido. */}
             <div className="min-w-0 flex-1">
@@ -39,7 +39,7 @@ export default function CargandoPieza() {
             </div>
             <span
               aria-hidden="true"
-              className="flex h-6 w-6 shrink-0 items-center justify-center border-2 border-ink bg-primary-green text-ink-strong"
+              className="flex h-6 w-6 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong"
             >
               <IconoLapiz />
             </span>
@@ -54,7 +54,7 @@ export default function CargandoPieza() {
               <Hueso className="aspect-[4/5] max-h-[68svh] w-full" />
             </div>
 
-            <div className="flex min-w-0 flex-col gap-3 border-t-2 border-ink p-4 lg:border-t-0 lg:border-l-2">
+            <div className="flex min-w-0 flex-col gap-3 border-t-(length:--borde) border-ink p-4 lg:border-t-0 lg:border-l-(length:--borde)">
               <Hueso className="h-7 w-3/4" />
               <div className="flex flex-col gap-2">
                 <Hueso className="h-3.5 w-full" />
@@ -67,7 +67,7 @@ export default function CargandoPieza() {
                 <Hueso className="h-6 w-14" />
               </div>
               <Hueso className="h-7 w-24" />
-              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-2 border-ink/20 pt-3">
+              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
                 <Hueso className="h-2.5 w-28" />
                 <Hueso className="h-6 w-24" />
               </div>

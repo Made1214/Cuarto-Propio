@@ -101,10 +101,10 @@ export function FotoPerfil({ perfil }: { perfil: PerfilVisible }) {
             type="button"
             disabled={subiendo}
             onClick={() => inputRef.current?.click()}
-            className="flex items-center justify-center gap-2 border-2 border-ink bg-primary-green px-3 py-2 font-pixel text-[0.625rem] tracking-wide text-ink-strong shadow-[3px_3px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60"
+            className="flex items-center justify-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green px-3 py-2.5 text-[13px] font-semibold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60"
           >
             <IconoCamara />
-            {(subiendo ? t("subiendoFoto") : t("cambiarFoto")).toUpperCase()}
+            {subiendo ? t("subiendoFoto") : t("cambiarFoto")}
           </button>
 
           {perfil.fotoUrl ? (
@@ -114,17 +114,17 @@ export function FotoPerfil({ perfil }: { perfil: PerfilVisible }) {
               textoConfirmar={t("quitarFoto")}
               etiqueta={t("quitarFoto")}
               onConfirmar={() => void quitar()}
-              className="flex items-center justify-center gap-2 border-2 border-dashed border-ink px-3 py-1.5 font-pixel text-[0.625rem] tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="flex items-center justify-center gap-2 border-(length:--borde) border-dashed border-ink rounded-theme px-3 py-2 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
             >
               <IconoQuitar />
-              {t("quitarFoto").toUpperCase()}
+              {t("quitarFoto")}
             </BotonConfirmar>
           ) : null}
         </div>
       </div>
 
       {error ? (
-        <p role="alert" className="border-2 border-ink bg-primary-pink px-3 py-2 text-sm text-ink-strong">
+        <p role="alert" className="border-(length:--borde) border-ink rounded-theme bg-primary-pink px-3 py-2 text-sm text-ink-strong">
           {error}
         </p>
       ) : null}

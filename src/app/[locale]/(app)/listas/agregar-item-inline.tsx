@@ -22,8 +22,23 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
     campoRef.current?.focus();
   }
 
+  // Un solo renglón punteado con el "+" adentro: se lee como "acá va el
+  // siguiente ítem", y Enter lo agrega sin buscar un botón.
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex h-10 items-center gap-2 border-(length:--borde) border-dashed border-ink/40 pl-2.5 transition-colors focus-within:border-solid focus-within:border-ink">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        aria-hidden="true"
+        className="shrink-0"
+      >
+        <path d="M12 5v14M5 12h14" />
+      </svg>
       <input
         ref={campoRef}
         type="text"
@@ -35,30 +50,19 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
             enviar();
           }
         }}
-        placeholder={t("itemPlaceholder")}
-        className="min-w-0 flex-1 border-2 border-ink/30 bg-transparent px-2 py-1.5 text-sm outline-none transition-colors placeholder:text-muted/60 focus:border-ink"
-      />
-      <button
-        type="button"
-        onClick={enviar}
         aria-label={t("agregarItem")}
-        title={t("agregarItem")}
-        className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-ink bg-primary-green text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
+        placeholder={t("itemPlaceholder")}
+        className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted/60"
+      />
+      {valor.trim() ? (
+        <button
+          type="button"
+          onClick={enviar}
+          className="h-full shrink-0 border-l-(length:--borde) border-ink bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
         >
-          <path d="M12 5v14M5 12h14" />
-        </svg>
-      </button>
+          {t("agregar")}
+        </button>
+      ) : null}
     </div>
   );
 }

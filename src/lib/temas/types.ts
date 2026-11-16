@@ -1,3 +1,5 @@
+import type { FuenteDiarioId, FuenteInterfazId } from "./fuentes";
+
 export type ModoColor = "claro" | "oscuro";
 
 export type PaletaTema = {
@@ -34,13 +36,21 @@ export type TemaDiseno = {
   nombre: string;
   descripcion: string;
   colores: Record<ModoColor, PaletaTema>;
-  /** Tipografía para lo que la usuaria escribe (títulos y cuerpo del diario). */
-  fuenteDiario: string;
+  /** Tipografía para lo que la usuaria escribe (títulos y cuerpo del
+   * diario). Un id del set curado de `fuentes.ts`. */
+  fuenteDiario: FuenteDiarioId;
   /** Tipografía para la interfaz (nav, botones, etiquetas, fechas). */
-  fuenteInterfaz: string;
+  fuenteInterfaz: FuenteInterfazId;
+  /** Radio de las cajas (tarjetas, botones, ventanitas). */
   radio: string;
   anchoBorde: string;
   sombra: EstiloSombra;
   /** Requerido cuando `sombra` es "dura" (sombra sólida desplazada, sin blur). */
   sombraOffset?: string;
+  /**
+   * De qué color depende la tinta (bordes) cuando la usuaria pone colores
+   * propios. Por defecto del texto; en los temas donde la tinta es un acento
+   * y no el color de la letra (Void), del color que se indique acá.
+   */
+  tintaSigue?: keyof PaletaTema;
 };

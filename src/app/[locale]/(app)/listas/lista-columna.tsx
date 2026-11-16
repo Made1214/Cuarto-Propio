@@ -19,7 +19,8 @@ import {
 } from "@/lib/listas/actions";
 import type { ItemLista, ListaConItems } from "@/lib/listas/types";
 import { AgregarItemInline } from "./agregar-item-inline";
-import { IconoCasilla, IconoEliminar } from "./iconos";
+import { IconoCasilla, IconoEliminar, IconoPlegar } from "./iconos";
+import { useListaAbierta } from "@/lib/listas/plegado";
 import { ItemFila } from "./item-fila";
 
 type AccionItems = { tipo: "alternar"; id: string; marcado: boolean } | { tipo: "eliminar"; id: string };
@@ -63,8 +64,17 @@ function nuevoId(): string {
 
 const SIN_PENDIENTES: ItemLista[] = [];
 
-export function ListaColumna({ lista, categorias }: { lista: ListaConItems; categorias: Categoria[] }) {
+export function ListaColumna({
+  lista,
+  categorias,
+  abiertaPorDefecto,
+}: {
+  lista: ListaConItems;
+  categorias: Categoria[];
+  abiertaPorDefecto: boolean;
+}) {
   const t = useTranslations("listas");
+  const [abierta, setAbierta] = useListaAbierta(lista.id, abiertaPorDefecto);
   const [, startTransition] = useTransition();
   const [error, setError] = useState<ErrorAccion | null>(null);
   const nombreRef = useRef<HTMLInputElement>(null);
@@ -179,8 +189,40 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
     );
   }
 
+  const resumen =
+    conCasillas && filas.length > 0
+      ? t("progresoTexto", { hechos, total: filas.length })
+      : t("cantidadItems", { total: filas.length });
+
+  // Plegada: solo el nombre y cuánto lleva. Las filas, el selector y los
+  // botones recién se montan al abrirla.
+  if (!abierta) {
+    return (
+      <div className="tema-panel w-full border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+        <button
+          type="button"
+          onClick={() => setAbierta(true)}
+          aria-expanded={false}
+          className="flex min-h-14 w-full items-center gap-3 p-4 text-left"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block truncate font-diario text-lg font-semibold">{nombre}</span>
+            <span className="mt-0.5 block text-xs font-semibold text-muted/75 tabular-nums">{resumen}</span>
+            {conCasillas && filas.length > 0 ? (
+              <span aria-hidden="true" className="mt-2 block h-1.5 w-full border-(length:--borde) border-ink/40 rounded-theme bg-background">
+                <span className="block h-full bg-primary-green" style={{ width: `${(hechos / filas.length) * 100}%` }} />
+              </span>
+            ) : null}
+          </span>
+          <span className="sr-only">{t("abrirLista")}</span>
+          <IconoPlegar abierta={false} />
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex w-full flex-col gap-3 border-2 border-ink bg-card p-4 shadow-[5px_5px_0_var(--ink)]">
+    <div className="tema-panel flex w-full flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
       <div className="flex items-center justify-between gap-1">
         <input
           ref={nombreRef}
@@ -208,14 +250,8 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
           onKeyDown={(evento) => {
             if (evento.key === "Enter") evento.currentTarget.blur();
           }}
-          className="min-w-0 flex-1 border-b-2 border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none focus:border-ink"
+          className="min-w-0 flex-1 border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none focus:border-ink"
         />
-
-        {conCasillas && filas.length > 0 ? (
-          <span className="shrink-0 px-1 font-pixel text-xs text-muted/70 tabular-nums">
-            {hechos}/{filas.length}
-          </span>
-        ) : null}
 
         <button
           type="button"
@@ -229,40 +265,47 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
           aria-pressed={conCasillas}
           aria-label={t("listaConCasillas")}
           title={t("listaConCasillas")}
-          className={`flex h-7 w-7 shrink-0 items-center justify-center transition-colors ${
+          className={`flex h-9 w-9 shrink-0 items-center justify-center transition-colors pointer-coarse:h-11 pointer-coarse:w-11 ${
             conCasillas ? "bg-secondary-purple/25 text-ink" : "text-ink/35 hover:bg-secondary-purple/15 hover:text-ink"
           }`}
         >
           <IconoCasilla activa={conCasillas} />
         </button>
 
-        <BotonConfirmar
-          titulo={t("eliminar")}
-          mensaje={t("eliminarConfirmar")}
-          textoConfirmar={t("eliminar")}
-          etiqueta={t("eliminar")}
-          onConfirmar={() => guardar(() => {}, () => eliminarLista(lista.id))}
-          className="flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink"
+        <button
+          type="button"
+          onClick={() => setAbierta(false)}
+          aria-expanded={true}
+          aria-label={t("plegarLista")}
+          title={t("plegarLista")}
+          className="flex h-9 w-9 shrink-0 items-center justify-center text-ink/60 transition-colors hover:bg-secondary-purple/15 hover:text-ink pointer-coarse:h-11 pointer-coarse:w-11"
         >
-          <IconoEliminar />
-        </BotonConfirmar>
+          <IconoPlegar abierta />
+        </button>
       </div>
 
       <AvisoErrorAccion error={error} mensajeFallo={t("errorGuardar")} />
 
+      {/* Progreso en palabras y en barra: "3 de 5" se entiende sin tener que
+          contar casillas. */}
       {conCasillas && filas.length > 0 ? (
-        <div
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={filas.length}
-          aria-valuenow={hechos}
-          aria-label={t("progreso")}
-          className="h-1.5 w-full border-2 border-ink/30"
-        >
+        <div className="flex flex-col gap-1.5">
+          <span className="text-xs font-semibold tabular-nums">
+            {t("progresoTexto", { hechos, total: filas.length })}
+          </span>
           <div
-            className="h-full bg-primary-green transition-[width]"
-            style={{ width: `${(hechos / filas.length) * 100}%` }}
-          />
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={filas.length}
+            aria-valuenow={hechos}
+            aria-label={t("progreso")}
+            className="h-2.5 w-full border-(length:--borde) border-ink rounded-theme bg-background"
+          >
+            <div
+              className="h-full bg-primary-green transition-[width]"
+              style={{ width: `${(hechos / filas.length) * 100}%` }}
+            />
+          </div>
         </div>
       ) : null}
 
@@ -281,7 +324,7 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
       />
 
       {filas.length === 0 ? (
-        <p className="text-xs text-muted/70">{t("sinItemsAun")}</p>
+        <p className="text-sm text-muted/75">{t("sinItemsAun")}</p>
       ) : (
         <div className="flex flex-col">
           {filas.map(({ item, pendiente }, indice) => (
@@ -309,6 +352,22 @@ export function ListaColumna({ lista, categorias }: { lista: ListaConItems; cate
       )}
 
       <AgregarItemInline onAgregar={agregar} />
+
+      {/* Borrar la lista va abajo y con palabras, lejos de la ✕ de cada
+          ítem: en el celular quedaban pegadas y era fácil tocar la que no. */}
+      <div className="flex justify-end border-t-(length:--borde) border-ink/15 pt-2">
+        <BotonConfirmar
+          titulo={t("eliminar")}
+          mensaje={t("eliminarConfirmar")}
+          textoConfirmar={t("eliminar")}
+          etiqueta={t("eliminarLista")}
+          onConfirmar={() => guardar(() => {}, () => eliminarLista(lista.id))}
+          className="flex min-h-9 items-center gap-1.5 rounded-theme px-2 text-xs font-semibold text-ink/55 transition-colors hover:bg-primary-pink/30 hover:text-ink pointer-coarse:min-h-11"
+        >
+          <IconoEliminar />
+          <span>{t("eliminarLista")}</span>
+        </BotonConfirmar>
+      </div>
     </div>
   );
 }

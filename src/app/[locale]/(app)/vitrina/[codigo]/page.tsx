@@ -9,6 +9,7 @@ import { colorCategoria } from "@/lib/categorias/color";
 import { listarCategorias } from "@/lib/categorias/queries";
 import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
 import { listarRelacionadas, obtenerImagenPorCodigo } from "@/lib/imagenes/queries";
+import { textoAlternativo } from "@/lib/imagenes/hashtags";
 import type { ImagenEnVitrina } from "@/lib/imagenes/types";
 import { BotonesVentana, IconoLapiz, IconoVolver } from "../iconos";
 import { VentanaImagen } from "../ventana-imagen";
@@ -80,10 +81,10 @@ export default async function ImagenPage({
       <ArribaAlRecargar />
       <Link
         href="/vitrina"
-        className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+        className="flex w-fit items-center gap-2 text-sm font-semibold text-muted/70 transition-colors hover:text-secondary-purple"
       >
         <IconoVolver />
-        {t("volver").toUpperCase()}
+        {t("volver")}
       </Link>
 
       {/* En pantalla ancha la columna de relacionadas va POSICIONADA sobre
@@ -97,16 +98,16 @@ export default async function ImagenPage({
           <RelacionadasAlCostado locale={locale} relacionadas={relacionadas} />
         </Suspense>
 
-        <div className="order-1 min-w-0 border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)] lg:ml-52 xl:ml-60">
-          <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
-            <span className="min-w-0 flex-1 truncate font-pixel text-xs tracking-wide">
+        <div className="order-1 min-w-0 border-(length:--borde) border-ink rounded-theme bg-card shadow-marco lg:ml-52 xl:ml-60">
+          <div className="flex items-center gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2 text-background">
+            <span className="min-w-0 flex-1 truncate text-sm font-semibold">
               {titulo}
             </span>
             <Link
               href={`/vitrina/${imagen.codigo}/editar`}
               aria-label={t("editar")}
               title={t("editar")}
-              className="flex h-6 w-6 shrink-0 items-center justify-center border-2 border-ink bg-primary-green text-ink-strong transition-[filter] hover:brightness-90"
+              className="flex h-6 w-6 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong transition-[filter] hover:brightness-90"
             >
               <IconoLapiz />
             </Link>
@@ -128,19 +129,19 @@ export default async function ImagenPage({
                   // La miniatura de fondo solo calza si se conoce la
                   // proporción real (estirada a la caja de la foto).
                   miniaturaUrl={proporcion ? imagen.miniaturaUrl : null}
-                  alt={titulo}
+                  alt={textoAlternativo(imagen.titulo, imagen.descripcion, t("sinTitulo"))}
                   ancho={imagen.ancho ?? 1200}
                   alto={imagen.alto ?? 1200}
                   altoMaximo={ALTO_FOTO}
                 />
               ) : (
                 <p className="py-16 text-center font-pixel text-xs text-muted/60">
-                  {t("noSePudoCargar").toUpperCase()}
+                  {t("noSePudoCargar")}
                 </p>
               )}
             </div>
 
-            <div className="flex min-w-0 flex-col gap-3 border-t-2 border-ink p-4 lg:border-t-0 lg:border-l-2">
+            <div className="flex min-w-0 flex-col gap-3 border-t-(length:--borde) border-ink p-4 lg:border-t-0 lg:border-l-(length:--borde)">
               <h1 className="font-diario text-2xl font-bold text-secondary-purple">{titulo}</h1>
 
               {imagen.descripcion?.trim() ? (
@@ -155,7 +156,7 @@ export default async function ImagenPage({
                     <Link
                       key={hashtag}
                       href={{ pathname: "/vitrina", query: { hashtag } }}
-                      className="border-2 border-ink-strong bg-secondary-turquoise px-1.5 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+                      className="border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
                     >
                       #{hashtag}
                     </Link>
@@ -166,25 +167,25 @@ export default async function ImagenPage({
               {imagen.categoriaId && imagen.categoriaNombre ? (
                 <Link
                   href={{ pathname: "/vitrina", query: { categoria: imagen.categoriaId } }}
-                  className="w-fit border-2 border-ink-strong px-2 py-1 font-pixel text-[0.625rem] tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+                  className="w-fit border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
                   style={{ background: colorCategoria(categorias, imagen.categoriaId) }}
                 >
-                  {imagen.categoriaNombre.toUpperCase()}
+                  {imagen.categoriaNombre}
                 </Link>
               ) : null}
 
-              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-2 border-ink/20 pt-3">
-                <span className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
-                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long" }).toUpperCase()}
+              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
+                <span className="text-[13px] font-semibold text-muted/70">
+                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long" })}
                 </span>
                 {imagen.completaUrl ? (
                   <a
                     href={imagen.completaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-2 border-ink bg-card px-2 py-0.5 font-pixel text-[0.625rem] tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+                    className="border-(length:--borde) border-ink rounded-theme bg-card px-2.5 py-1 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
                   >
-                    {t("verCompleta").toUpperCase()}
+                    {t("verCompleta")}
                   </a>
                 ) : null}
               </div>
@@ -227,7 +228,7 @@ async function RelacionadasAlCostado({
 
   return (
     <aside className={CLASES_COSTADO}>
-      <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+      <h2 className="text-sm font-semibold text-secondary-purple">
         {t("relacionadas").toUpperCase()}
       </h2>
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
@@ -236,12 +237,12 @@ async function RelacionadasAlCostado({
             key={otra.id}
             href={`/vitrina/${otra.codigo}`}
             title={otra.titulo ?? undefined}
-            className="block border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
+            className="block border-(length:--borde) border-ink rounded-theme bg-background shadow-marco-sm transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5"
           >
             {otra.miniaturaUrl ? (
               <Image
                 src={otra.miniaturaUrl}
-                alt={otra.titulo ?? t("sinTitulo")}
+                alt={textoAlternativo(otra.titulo, otra.descripcion, t("sinTitulo"))}
                 width={otra.ancho ?? 400}
                 height={otra.alto ?? 400}
                 unoptimized
@@ -266,7 +267,7 @@ function RelacionadasAlCostadoCargando() {
       <Hueso className="h-2.5 w-24" />
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
         {Array.from({ length: AL_COSTADO }, (_, indice) => (
-          <div key={indice} className="border-2 border-ink bg-background shadow-[3px_3px_0_var(--ink)]">
+          <div key={indice} className="border-(length:--borde) border-ink rounded-theme bg-background shadow-marco-sm">
             <Hueso className="aspect-square w-full" />
           </div>
         ))}
@@ -291,7 +292,7 @@ async function RelacionadasMasAbajo({
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="font-pixel text-[0.625rem] tracking-wide text-muted/70">
+      <h2 className="text-sm font-semibold text-secondary-purple">
         {t("masComoEsta").toUpperCase()}
       </h2>
       <div className="columns-[15rem] gap-5 lg:columns-[17rem]">

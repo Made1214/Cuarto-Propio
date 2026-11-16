@@ -35,22 +35,22 @@ export default async function EditarImagenPage({
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <Link
         href={`/vitrina/${imagen.codigo}`}
-        className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+        className="flex w-fit items-center gap-2 text-sm font-semibold text-muted/70 transition-colors hover:text-secondary-purple"
       >
         <IconoVolver />
-        {t("volverPieza").toUpperCase()}
+        {t("volverPieza")}
       </Link>
 
-      <div className="border-2 border-ink bg-card shadow-[5px_5px_0_var(--ink)]">
-        <div className="flex items-center gap-2 border-b-2 border-ink bg-secondary-purple px-3 py-2 text-background">
-          <span className="min-w-0 flex-1 truncate font-pixel text-xs tracking-wide">
+      <div className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+        <div className="flex items-center gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2 text-background">
+          <span className="min-w-0 flex-1 truncate text-sm font-semibold">
             {t("editandoPieza", { titulo })}
           </span>
           <BotonesVentana />
         </div>
 
         <div className="flex flex-col sm:flex-row">
-          <div className="shrink-0 border-b-2 border-ink bg-background p-3 sm:w-48 sm:border-b-0 sm:border-r-2">
+          <div className="shrink-0 border-b-(length:--borde) border-ink bg-background p-3 sm:w-48 sm:border-b-0 sm:border-r-(length:--borde)">
             {imagen.miniaturaUrl ? (
               <Image
                 src={imagen.miniaturaUrl}
@@ -58,7 +58,7 @@ export default async function EditarImagenPage({
                 width={imagen.ancho ?? 800}
                 height={imagen.alto ?? 800}
                 unoptimized
-                className="mx-auto h-auto w-full max-w-48 border-2 border-ink"
+                className="mx-auto h-auto w-full max-w-48 border-(length:--borde) border-ink rounded-theme"
               />
             ) : null}
           </div>
