@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
-import { TAMANO_MAXIMO_BYTES } from "./limites";
+import { TAMANO_MAXIMO_BYTES, TAMANO_MAXIMO_ORIGINAL_BYTES } from "./limites";
 import { FormatoNoSoportadoError, generarMiniatura, procesarImagen } from "./procesar";
 
 type Formato = "png" | "jpeg" | "webp" | "gif";
@@ -69,5 +69,11 @@ describe("generarMiniatura", () => {
 });
 
 describe("límites", () => {
-  it("el tope de subida es 25 MB", () => expect(TAMANO_MAXIMO_BYTES).toBe(25 * 1024 * 1024));
+  // Debajo de los 4,5 MB que Vercel deja pasar por petición: si alguien lo
+  // sube, las fotos rebotarían con 413 solo en producción.
+  it("el tope de subida es 4 MB", () => expect(TAMANO_MAXIMO_BYTES).toBe(4 * 1024 * 1024));
+  it("el tope de subida queda bajo el límite de Vercel", () =>
+    expect(TAMANO_MAXIMO_BYTES).toBeLessThan(4.5 * 1000 * 1000));
+  it("el original antes de reducir puede pesar hasta 25 MB", () =>
+    expect(TAMANO_MAXIMO_ORIGINAL_BYTES).toBe(25 * 1024 * 1024));
 });

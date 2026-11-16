@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { IconoSeccion } from "@/components/icono-seccion";
 import { ICONO_SECCION, ICONO_SECCION_PIXEL, type RutaSeccion } from "@/components/iconos-secciones";
 import { useRouter } from "@/i18n/navigation";
+import { reducirImagen, type OpcionesReduccion } from "@/lib/imagenes/reducir";
 import {
   elegirCursor,
   elegirPreset,
@@ -40,6 +41,20 @@ const CLASE_BOTON =
   "flex h-10 items-center justify-center border-(length:--borde) border-ink rounded-theme px-4 text-[13px] font-semibold transition-[filter] hover:brightness-95 disabled:opacity-60";
 
 type ErrorSubida = "formato" | "tamano" | "sesion" | "fallo";
+
+/** Cómo se achica en el navegador un cursor o icono propio. El servidor
+ * (`/api/personalizacion/imagen`) acepta hasta 2 MB y lo redibuja como PNG
+ * de 32/64 px con fondo transparente, así que:
+ * - lo chico (casi todo cursor o icono) va tal cual, sin tocarlo;
+ * - si hay que reducir, se codifica en PNG para no perder la transparencia
+ *   (nunca JPEG), a 512 px: sobra para lo que el servidor deja al final;
+ * - un SVG nunca se rasteriza acá (lo resuelve `reducirImagen`). */
+const REDUCCION_PROPIA: OpcionesReduccion = {
+  ladoMaximo: 512,
+  umbralBytes: 1024 * 1024,
+  topeBytes: 2 * 1024 * 1024,
+  conAlfa: true,
+};
 
 export function EditorPersonalizacion({ config }: { config: ConfigTema }) {
   const t = useTranslations("personalizacion");
@@ -395,8 +410,14 @@ function useSubidaImagen() {
     setSubiendo(true);
     setError(null);
     try {
+      const reducido = await reducirImagen(archivo, REDUCCION_PROPIA);
+      // El tope se mira sobre lo reducido, que es lo que viaja.
+      if (reducido.size > REDUCCION_PROPIA.topeBytes) {
+        setError("tamano");
+        return;
+      }
       const cuerpo = new FormData();
-      cuerpo.append("archivo", archivo);
+      cuerpo.append("archivo", reducido);
       for (const [clave, valor] of Object.entries(campos)) cuerpo.append(clave, valor);
       const respuesta = await fetch("/api/personalizacion/imagen", { method: "POST", body: cuerpo });
       if (!respuesta.ok) {

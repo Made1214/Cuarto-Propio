@@ -3,4 +3,8 @@
  * real): este archivo no importa nada de Node a propósito. */
 export const NOMBRE_MAXIMO = 60;
 
-export { FORMATOS_ACEPTADOS, TAMANO_MAXIMO_BYTES } from "@/lib/imagenes/limites";
+export {
+  FORMATOS_ACEPTADOS,
+  TAMANO_MAXIMO_BYTES,
+  TAMANO_MAXIMO_ORIGINAL_BYTES,
+} from "@/lib/imagenes/limites";

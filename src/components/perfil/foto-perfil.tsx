@@ -4,7 +4,12 @@ import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { BotonConfirmar } from "@/components/boton-confirmar";
 import { useRouter } from "@/i18n/navigation";
-import { FORMATOS_ACEPTADOS, TAMANO_MAXIMO_BYTES } from "@/lib/perfil/limites";
+import { reducirImagen } from "@/lib/imagenes/reducir";
+import {
+  FORMATOS_ACEPTADOS,
+  TAMANO_MAXIMO_BYTES,
+  TAMANO_MAXIMO_ORIGINAL_BYTES,
+} from "@/lib/perfil/limites";
 import type { PerfilVisible } from "@/lib/perfil/types";
 import { Avatar } from "./avatar";
 import { IconoCamara, IconoQuitar } from "./iconos";
@@ -33,17 +38,26 @@ export function FotoPerfil({ perfil }: { perfil: PerfilVisible }) {
   async function subir(archivo: File) {
     setError(null);
 
-    // Se corta acá lo que igual va a rebotar en el servidor: así no se sube
-    // una foto de 40MB por una conexión de celular para nada.
-    if (archivo.size > TAMANO_MAXIMO_BYTES) {
+    // Un original absurdo ni se intenta abrir: decodificar 40MB en un
+    // celular para achicarlo no tiene sentido.
+    if (archivo.size > TAMANO_MAXIMO_ORIGINAL_BYTES) {
       setError(t("errorTamano"));
       return;
     }
 
     setSubiendo(true);
     try {
+      // Se reduce en el navegador (Vercel corta las peticiones de más de
+      // 4,5 MB) y recién lo reducido se compara con el tope del servidor:
+      // es lo que viaja, y lo que igual rebotaría no se sube para nada.
+      const reducido = await reducirImagen(archivo);
+      if (reducido.size > TAMANO_MAXIMO_BYTES) {
+        setError(t("errorTamano"));
+        return;
+      }
+
       const cuerpo = new FormData();
-      cuerpo.append("archivo", archivo);
+      cuerpo.append("archivo", reducido);
       const respuesta = await fetch("/api/perfil/foto", { method: "POST", body: cuerpo });
 
       if (!respuesta.ok) {

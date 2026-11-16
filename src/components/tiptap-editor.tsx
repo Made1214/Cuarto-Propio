@@ -17,7 +17,12 @@ import {
   IconoTachado,
   IconoTitulo,
 } from "@/components/editor-iconos";
-import { FORMATOS_ACEPTADOS, TAMANO_MAXIMO_BYTES } from "@/lib/imagenes/limites";
+import {
+  FORMATOS_ACEPTADOS,
+  TAMANO_MAXIMO_BYTES,
+  TAMANO_MAXIMO_ORIGINAL_BYTES,
+} from "@/lib/imagenes/limites";
+import { reducirImagen } from "@/lib/imagenes/reducir";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
 type ErrorImagen = "formato" | "tamano" | "sesion" | "fallo";
@@ -117,20 +122,31 @@ function Barra({
   async function subir(archivo: File) {
     if (!editor) return;
     setErrorImagen(null);
-    if (archivo.size > TAMANO_MAXIMO_BYTES) {
+    if (archivo.size > TAMANO_MAXIMO_ORIGINAL_BYTES) {
       setPendiente(null);
       setErrorImagen("tamano");
       return;
     }
     setSubiendo(true);
+    // Se reduce en el navegador antes de subir (Vercel corta las peticiones
+    // de más de 4,5 MB). El tope se mira sobre lo reducido, que es lo que
+    // viaja; y si hay que reintentar, se reintenta con esto, sin reducir de
+    // nuevo.
+    const reducido = await reducirImagen(archivo);
+    if (reducido.size > TAMANO_MAXIMO_BYTES) {
+      setSubiendo(false);
+      setPendiente(null);
+      setErrorImagen("tamano");
+      return;
+    }
     try {
       const cuerpo = new FormData();
-      cuerpo.append("archivo", archivo);
+      cuerpo.append("archivo", reducido);
       const respuesta = await fetch("/api/diario/imagen", { method: "POST", body: cuerpo });
       if (!respuesta.ok) {
         const datos = (await respuesta.json().catch(() => ({}))) as { error?: ErrorImagen };
         const codigo = datos.error ?? "fallo";
-        setPendiente(codigo === "formato" ? null : archivo);
+        setPendiente(codigo === "formato" ? null : reducido);
         setErrorImagen(codigo);
         return;
       }
@@ -145,7 +161,7 @@ function Barra({
         .run();
       setPendiente(null);
     } catch {
-      setPendiente(archivo);
+      setPendiente(reducido);
       setErrorImagen("fallo");
     } finally {
       setSubiendo(false);

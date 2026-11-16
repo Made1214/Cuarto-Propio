@@ -8,8 +8,10 @@ import {
   DESCRIPCION_MAXIMA,
   FORMATOS_ACEPTADOS,
   TAMANO_MAXIMO_BYTES,
+  TAMANO_MAXIMO_ORIGINAL_BYTES,
   TITULO_MAXIMO,
 } from "@/lib/imagenes/limites";
+import { reducirImagen } from "@/lib/imagenes/reducir";
 import { IconoCerrar, IconoReintentar, IconoSubir } from "./iconos";
 
 type CodigoError = "formato" | "tamano" | "sesion" | "fallo";
@@ -17,6 +19,9 @@ type CodigoError = "formato" | "tamano" | "sesion" | "fallo";
 type Pieza = {
   id: string;
   archivo: File;
+  /** La versión achicada en el navegador, la que de verdad se sube. Se
+   * guarda para que un reintento no vuelva a reducir la misma foto. */
+  reducido?: File;
   /** URL local (`blob:`) para verla mientras se la describe, antes de que
    * exista en el servidor. */
   vistaPrevia: string;
@@ -32,6 +37,7 @@ type Pieza = {
  * avisa cuánto se subió. Una foto de 8MB sin barra se siente colgada. */
 function enviar(
   pieza: Pieza,
+  archivo: File,
   onProgreso: (porcentaje: number) => void,
 ): Promise<{ codigo?: string; error?: CodigoError }> {
   return new Promise((resolver) => {
@@ -61,7 +67,7 @@ function enviar(
     peticion.onerror = () => resolver({ error: "fallo" });
 
     const cuerpo = new FormData();
-    cuerpo.append("archivo", pieza.archivo);
+    cuerpo.append("archivo", archivo);
     cuerpo.append("titulo", pieza.titulo);
     cuerpo.append("descripcion", pieza.descripcion);
     cuerpo.append("hashtags", pieza.hashtags);
@@ -108,10 +114,11 @@ export function ExhibirPiezas() {
       titulo: archivo.name.replace(/\.[^.]+$/, "").slice(0, TITULO_MAXIMO),
       descripcion: "",
       hashtags: "",
-      // El tope de tamaño se chequea acá para no gastar una subida entera
-      // en algo que el servidor va a rechazar igual.
-      estado: archivo.size > TAMANO_MAXIMO_BYTES ? "error" : "borrador",
-      error: archivo.size > TAMANO_MAXIMO_BYTES ? "tamano" : undefined,
+      // Acá solo se descarta un original absurdo: lo normal (una foto de
+      // celular de 3–12 MB) se reduce antes de subir, y el tope del servidor
+      // se compara con eso, no con el original.
+      estado: archivo.size > TAMANO_MAXIMO_ORIGINAL_BYTES ? "error" : "borrador",
+      error: archivo.size > TAMANO_MAXIMO_ORIGINAL_BYTES ? "tamano" : undefined,
       progreso: 0,
     }));
 
@@ -171,7 +178,17 @@ export function ExhibirPiezas() {
 
     for (const pieza of pendientes) {
       actualizar(pieza.id, { estado: "subiendo", progreso: 0, error: undefined });
-      const resultado = await enviar(pieza, (porcentaje) =>
+      // Se reduce justo antes de subir y no al elegir: así elegir diez fotos
+      // no congela el diálogo, y cada una se achica mientras le toca.
+      // Vercel corta las peticiones de más de 4,5 MB.
+      const archivo = pieza.reducido ?? (await reducirImagen(pieza.archivo));
+      if (archivo.size > TAMANO_MAXIMO_BYTES) {
+        algunaFallo = true;
+        actualizar(pieza.id, { estado: "error", error: "tamano" });
+        continue;
+      }
+      actualizar(pieza.id, { reducido: archivo });
+      const resultado = await enviar(pieza, archivo, (porcentaje) =>
         actualizar(pieza.id, { progreso: porcentaje }),
       );
       if (resultado.codigo) {
