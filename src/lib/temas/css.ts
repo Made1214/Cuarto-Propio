@@ -100,13 +100,23 @@ export function generarCssTema(config: ConfigTema, alcance?: string): string {
   const propiasClaro = declaraciones(variablesPropiasTema(config.preset, "claro", paletaClaro));
   const propiasOscuro = declaraciones(variablesPropiasTema(config.preset, "oscuro", paletaOscuro));
 
-  let cursor = "";
+  // El cursor elegido vale también sobre lo que se toca (enlaces, botones,
+  // etiquetas, lo que se arrastra): sin esto el navegador —y las clases
+  // `cursor-pointer`/`cursor-grab`— lo cambiaban por la manito o el puño, y
+  // parecía que el cursor propio se perdía al pasar por un botón. Los campos
+  // de texto conservan la barrita de escribir, y lo deshabilitado su aviso.
+  const clicables = `${cuerpo} :is(a,button,[role="button"],label,summary,select,[draggable="true"],.cursor-pointer,.cursor-grab):not(:disabled,[aria-disabled="true"])`;
+  let imagenCursor: { url: string; punto: readonly [number, number] } | null = null;
   if (config.cursor?.tipo === "preset") {
     const { archivo, punto } = CURSORES[config.cursor.id];
-    cursor = `${cuerpo}{cursor:url("${archivo}") ${punto[0]} ${punto[1]},auto}`;
+    imagenCursor = { url: archivo, punto };
   } else if (config.cursor?.tipo === "propio") {
-    cursor = `${cuerpo}{cursor:url("${config.cursor.imagen}") ${PUNTO_CURSOR_PROPIO[0]} ${PUNTO_CURSOR_PROPIO[1]},auto}`;
+    imagenCursor = { url: config.cursor.imagen, punto: PUNTO_CURSOR_PROPIO };
   }
+  const cursor = imagenCursor
+    ? `${cuerpo}{cursor:url("${imagenCursor.url}") ${imagenCursor.punto[0]} ${imagenCursor.punto[1]},auto}` +
+      `${clicables}{cursor:url("${imagenCursor.url}") ${imagenCursor.punto[0]} ${imagenCursor.punto[1]},pointer}`
+    : "";
 
   return [
     `${raiz}{${forma};${claro}}`,

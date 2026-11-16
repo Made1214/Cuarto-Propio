@@ -10,7 +10,7 @@ import { CONFIG_POR_DEFECTO, type ConfigTema } from "@/lib/temas/config";
 import { generarCssTema } from "@/lib/temas/css";
 import { CURSORES, type CursorId } from "@/lib/temas/cursores";
 import { FUENTES_DIARIO, type FuenteDiarioId } from "@/lib/temas/fuentes";
-import { TEMAS_DISPONIBLES, TEMAS_PLANEADOS, type PresetId } from "@/lib/temas/presets";
+import { TEMAS_DISPONIBLES, type PresetId } from "@/lib/temas/presets";
 import { BotonModo } from "./landing-raiz";
 import { RUTA_REGISTRO } from "./rutas";
 
@@ -19,8 +19,10 @@ import { RUTA_REGISTRO } from "./rutas";
  * filtros y una entrada del diario) que se viste con los temas REALES de
  * Personalización —los mismos tokens de src/lib/temas/presets.ts y la misma
  * decoración de temas.css—, mientras el resto de la página conserva su
- * identidad. En escritorio el tema cambia al bajar por la lista de temas; en
- * el celular, o con «reducir movimiento», solo con los botones.
+ * identidad. Mientras se ve, la maqueta va pasando sola por los temas (cada
+ * pocos segundos, y se detiene al pasar el mouse por encima); apenas se toca
+ * cualquier cosa del probador, se queda quieta y manda la usuaria. Con
+ * «reducir movimiento» no rota nunca.
  *
  * El tema elegido viaja al registro (`/registro?tema=void`) y es con el que
  * se crea la cuenta (ver src/lib/temas/inicial.ts).
@@ -34,6 +36,8 @@ const CURSORES_MUESTRA: CursorId[] = ["corazon", "estrella", "lapiz"];
 const ACENTOS = ["#D6457A", "#2E9E83", "#4C6EF5", "#E8772E"] as const;
 
 const SELECTOR = ".muestra-tema";
+/** Cuánto se queda cada tema en la maqueta mientras rota sola. */
+const MS_POR_TEMA = 4500;
 
 function sinMovimiento() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -54,29 +58,29 @@ export function Probador() {
   const [fuente, setFuente] = useState<FuenteDiarioId | null>(null);
   const [acento, setAcento] = useState<string | null>(null);
   const [cursor, setCursor] = useState<CursorId | null>(null);
-  const pasos = useRef<HTMLOListElement>(null);
-  const autoRef = useRef(auto);
-  useEffect(() => {
-    autoRef.current = auto;
-  }, [auto]);
+  const raiz = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [encima, setEncima] = useState(false);
+  const rotando = auto && visible && !encima;
 
-  // En escritorio, el paso que queda a media pantalla decide el tema.
+  // Solo rota mientras el probador está en pantalla.
   useEffect(() => {
-    const lista = pasos.current;
-    if (!lista || sinMovimiento()) return;
-    const observador = new IntersectionObserver(
-      (entradas) => {
-        if (!autoRef.current) return;
-        for (const entrada of entradas) {
-          const id = (entrada.target as HTMLElement).dataset.paso as PresetId | undefined;
-          if (entrada.isIntersecting && id) setTema(id);
-        }
-      },
-      { rootMargin: "-45% 0px -45% 0px" },
-    );
-    lista.querySelectorAll("[data-paso]").forEach((paso) => observador.observe(paso));
+    const nodo = raiz.current;
+    if (!nodo || sinMovimiento()) return;
+    const observador = new IntersectionObserver(([entrada]) => setVisible(entrada.isIntersecting), {
+      threshold: 0.35,
+    });
+    observador.observe(nodo);
     return () => observador.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!rotando) return;
+    const temporizador = window.setTimeout(() => {
+      setTema((actual) => TEMAS_PROBADOR[(TEMAS_PROBADOR.indexOf(actual) + 1) % TEMAS_PROBADOR.length]);
+    }, MS_POR_TEMA);
+    return () => window.clearTimeout(temporizador);
+  }, [rotando, tema]);
 
   function elegir(id: PresetId) {
     setAuto(false);
@@ -96,74 +100,76 @@ export function Probador() {
   }, [tema, fuente, acento, cursor]);
 
   const nombre = TEMAS_DISPONIBLES[tema].nombre;
-  const chip = "flex min-h-11 items-center justify-center gap-1.5 rounded-[var(--radius-inner)] border border-[var(--border-color)] px-3 text-xs font-semibold transition-colors";
-  const chipActivo = "bg-[var(--btn-bg)] text-[var(--btn-text)]";
-  const chipInactivo = "bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)]";
+
+  // Cualquier clic dentro del probador (tema, letra, acento, cursor) para la
+  // rotación: desde ahí la que elige es ella. Clic y no `pointerdown`, para
+  // que bajar la página con el dedo por encima no cuente como elegir.
+  const detener = () => setAuto(false);
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
-      {/* Los pasos: solo en escritorio, donde hay lugar para bajar al lado
-          de la maqueta. */}
-      <ol ref={pasos} className="hidden lg:col-span-5 lg:flex lg:flex-col lg:gap-[28vh] lg:py-[18vh]">
-        {TEMAS_PROBADOR.map((id) => {
-          const activo = id === tema;
-          return (
-            <li key={id} data-paso={id}>
-              <button
-                type="button"
-                onClick={() => elegir(id)}
-                aria-pressed={activo}
-                className={`theme-surface-alt w-full space-y-1.5 p-5 text-left transition-[opacity,transform] duration-300 ${
-                  activo ? "opacity-100" : "opacity-55 hover:opacity-80"
-                }`}
-              >
-                <span className="font-literary block text-2xl font-semibold text-[var(--text-primary)]">
-                  {TEMAS_DISPONIBLES[id].nombre}
-                </span>
-                <span className="block text-sm leading-relaxed text-[var(--text-secondary)]">
-                  {t(`temas.${id}`)}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-        {TEMAS_PLANEADOS.map(({ id }) => (
-          <li key={id} className="theme-surface-alt space-y-1.5 p-5 opacity-55">
-            <span className="font-literary block text-2xl font-semibold text-[var(--text-primary)]">
-              Fairy <span className="text-sm font-medium">· {t("pronto")}</span>
-            </span>
-            <span className="block text-sm leading-relaxed text-[var(--text-secondary)]">{t("temas.fairy")}</span>
-          </li>
-        ))}
-      </ol>
+    <div
+      ref={raiz}
+      onClickCapture={detener}
+      className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-5"
+    >
+      {/* Estilos del tema de la maqueta, colgados solo de ella. Solo llevan
+          valores de las listas cerradas de src/lib/temas/. */}
+      <style dangerouslySetInnerHTML={{ __html: css }} />
 
-      <div className="space-y-4 lg:sticky lg:top-24 lg:col-span-7 lg:self-start">
-        {/* Estilos del tema de la maqueta, colgados solo de ella. Solo llevan
-            valores de las listas cerradas de src/lib/temas/. */}
-        <style dangerouslySetInnerHTML={{ __html: css }} />
+      <div
+        onPointerEnter={(e) => e.pointerType === "mouse" && setEncima(true)}
+        onPointerLeave={() => setEncima(false)}
+        className="space-y-3 lg:col-span-7 lg:col-start-6 lg:row-start-1"
+      >
         <p aria-live="polite" className="text-center text-sm font-semibold text-[var(--text-primary)]">
           {t("asiSeVeria", { tema: nombre })}
         </p>
-
         <Maqueta tema={tema} />
+      </div>
 
-        <div role="group" aria-label={t("temasGrupo")} className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-          {TEMAS_PROBADOR.map((id) => (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={id === tema}
-              onClick={() => elegir(id)}
-              className={`${chip} ${id === tema ? chipActivo : chipInactivo}`}
-            >
-              {TEMAS_DISPONIBLES[id].nombre}
-            </button>
-          ))}
+      {/* Los temas: tarjetas con su descripción en escritorio, chips en el
+          celular. Todos a la vista: elegir es un toque, no bajar la página. */}
+      <div className="space-y-4 lg:col-span-5 lg:col-start-1 lg:row-span-2 lg:row-start-1">
+        <div role="group" aria-label={t("temasGrupo")} className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+          {TEMAS_PROBADOR.map((id) => {
+            const activo = id === tema;
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={activo}
+                onClick={() => elegir(id)}
+                className={`relative min-h-11 overflow-hidden rounded-[var(--radius-inner)] border px-3 py-2 text-left transition-colors lg:px-4 lg:py-3 ${
+                  activo
+                    ? "border-[var(--btn-bg)] bg-[var(--btn-bg)] text-[var(--btn-text)]"
+                    : "border-[var(--border-color)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)]"
+                }`}
+              >
+                <span className="block text-sm font-semibold lg:text-base">{TEMAS_DISPONIBLES[id].nombre}</span>
+                <span className={`hidden text-xs leading-snug lg:block ${activo ? "opacity-90" : "text-[var(--text-secondary)]"}`}>
+                  {t(`temas.${id}`)}
+                </span>
+                {/* Cuánto falta para el próximo tema mientras rota sola. */}
+                {activo && auto && visible ? (
+                  <span
+                    key={tema}
+                    aria-hidden="true"
+                    className="probador-progreso absolute inset-x-0 bottom-0 h-1 origin-left bg-[var(--btn-text)]/45"
+                    style={{
+                      animationDuration: `${MS_POR_TEMA}ms`,
+                      animationPlayState: rotando ? "running" : "paused",
+                    }}
+                  />
+                ) : null}
+              </button>
+            );
+          })}
           <span
             aria-disabled="true"
-            className={`${chip} col-span-2 cursor-not-allowed border-dashed opacity-60 sm:col-span-1`}
+            className="col-span-2 flex min-h-11 cursor-not-allowed flex-col justify-center rounded-[var(--radius-inner)] border border-dashed border-[var(--border-color)] px-3 py-2 opacity-60 lg:col-span-1 lg:px-4"
           >
-            Fairy · {t("pronto")}
+            <span className="text-sm font-semibold">Fairy · {t("pronto")}</span>
+            <span className="hidden text-xs leading-snug text-[var(--text-secondary)] lg:block">{t("temas.fairy")}</span>
           </span>
         </div>
 
@@ -217,8 +223,9 @@ export function Probador() {
             <BotonModo />
           </Fila>
         </div>
+      </div>
 
-        <div className="flex flex-col items-center gap-2 pt-1 text-center">
+        <div className="flex flex-col items-center gap-2 text-center lg:col-span-7 lg:col-start-6 lg:row-start-2 lg:self-start">
           <Link
             href={{ pathname: RUTA_REGISTRO, query: { tema } }}
             className="theme-btn-primary inline-flex min-h-12 items-center px-6 py-3 text-sm font-semibold sm:text-base"
@@ -227,7 +234,6 @@ export function Probador() {
           </Link>
           <p className="text-xs text-[var(--text-secondary)]">{t("ctaNota")}</p>
         </div>
-      </div>
     </div>
   );
 }
@@ -315,7 +321,11 @@ function Maqueta({ tema }: { tema: PresetId }) {
             </span>
           ))}
         </span>
-        <span className="h-7 w-7 shrink-0 border-(length:--borde) border-ink rounded-theme bg-primary-pink" />
+        {/* Sin foto de perfil, la app muestra la inicial del nombre: acá
+            también, igual que el avatar de la barra (src/components/perfil/avatar.tsx). */}
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink font-pixel text-[11px] leading-none text-ink-strong">
+          {t("inicial")}
+        </span>
       </div>
 
       <div className="p-3 sm:p-5">

@@ -633,7 +633,7 @@
     "mod5": {
       "pill": "05 • Total customization",
       "title": "Your room changes with you. Try it right here.",
-      "desc": "These are the themes you'll find in Customization. Scroll (or tap one) and watch your journal change; then switch the font, the accent color and the cursor."
+      "desc": "These are the themes you'll find in Customization. The preview cycles through each one; tap the one you want to try and change the font, the accent color and the cursor."
     },
     "privacy": {
       "title": "It is yours. Not a social network. We never sell or train on your content.",
@@ -712,7 +712,8 @@
         "titulo1": "Toast with fig jam",
         "texto1": "I did nothing extraordinary today, and still the day felt worth it.",
         "titulo2": "Notes on \"A Room of One's Own\"",
-        "texto2": "Closing the door to finally hear what one actually thinks."
+        "texto2": "Closing the door to finally hear what one actually thinks.",
+        "inicial": "V"
       }
     }
   },

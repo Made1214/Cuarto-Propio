@@ -6,7 +6,9 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useAlternarModo } from "@/lib/temas/use-modo";
 
 const CLASE =
-  "flex h-11 min-w-11 items-center justify-center border-(length:--borde) border-background/50 rounded-theme px-2.5 text-xs font-bold text-background transition-colors hover:bg-background/15";
+  // Color heredado del panel (`currentColor`): claro sobre el morado en modo
+  // claro, y el del texto sobre el panel oscuro en modo oscuro.
+  "flex h-11 min-w-11 items-center justify-center border-(length:--borde) border-current/45 rounded-theme px-2.5 text-xs font-bold transition-colors hover:bg-current/15";
 
 /**
  * Idioma y modo claro/oscuro en las pantallas de acceso: quien llega por

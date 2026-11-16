@@ -297,3 +297,21 @@ body {
     }
   }
 }
+
+/*
+ * El panel de marca de las pantallas de acceso. En claro es el morado de la
+ * barra; en oscuro ese "morado" es un lila claro (#c9a8e0, el acento que se
+ * lee sobre fondo oscuro) y el panel encandilaba al lado del formulario. En
+ * oscuro pasa a ser un morado profundo con el texto claro de la página.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) .acceso-panel {
+    background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
+    color: var(--foreground);
+  }
+}
+
+:root[data-modo="oscuro"] .acceso-panel {
+  background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
+  color: var(--foreground);
+}

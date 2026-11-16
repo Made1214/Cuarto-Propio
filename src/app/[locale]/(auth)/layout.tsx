@@ -34,7 +34,7 @@ export default async function AccesoLayout({
       {/* En el celular el panel es solo una barra (marca + idioma + modo):
           antes ocupaba media pantalla y el botón de entrar quedaba abajo del
           pliegue. Desde tablet vuelve a ser la columna con qué es la app. */}
-      <section className="flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-2 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
+      <section className="acceso-panel flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-2 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" aria-label={t("volverInicio")} className="flex min-h-11 items-center gap-2.5">
             <Image

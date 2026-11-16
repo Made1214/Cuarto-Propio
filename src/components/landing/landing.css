@@ -216,32 +216,38 @@
   transform: translateY(-2px);
 }
 
+/* Flotar: un vaivén corto y con ritmo propio para cada ventanita (si las
+   tres van al mismo compás parece que se mueve el fondo, no ellas). */
 @keyframes landing-flota {
   0%,
   100% {
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(0) rotate(-0.6deg);
   }
   50% {
-    transform: translateY(-8px) rotate(1deg);
+    transform: translateY(-6px) rotate(0.4deg);
   }
 }
 
 @keyframes landing-flota-2 {
   0%,
   100% {
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(0) rotate(1deg);
   }
   50% {
-    transform: translateY(-6px) rotate(-1.2deg);
+    transform: translateY(-5px) rotate(0deg);
   }
 }
 
 .landing .animate-float {
-  animation: landing-flota 5.5s ease-in-out infinite;
+  animation: landing-flota 3.4s ease-in-out infinite;
 }
 
 .landing .animate-float-delayed {
-  animation: landing-flota-2 6.5s ease-in-out 1.5s infinite;
+  animation: landing-flota-2 3s ease-in-out 0.4s infinite;
+}
+
+.landing .animate-float-3 {
+  animation: landing-flota 3.8s ease-in-out 0.9s infinite reverse;
 }
 
 /* Aparecer al bajar. Solo se esconde cuando el JS ya está corriendo
@@ -284,7 +290,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .landing .animate-float,
-  .landing .animate-float-delayed {
+  .landing .animate-float-delayed,
+  .landing .animate-float-3 {
     animation: none;
   }
 
@@ -325,4 +332,20 @@
   .muestra-tema * {
     transition: none;
   }
+}
+
+/* La barrita que muestra cuánto falta para el próximo tema del probador. */
+@keyframes probador-progreso {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.probador-progreso {
+  animation-name: probador-progreso;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
 }

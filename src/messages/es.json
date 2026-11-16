@@ -633,7 +633,7 @@
     "mod5": {
       "pill": "05 • Personalización total",
       "title": "Tu cuarto cambia contigo. Pruébalo aquí mismo.",
-      "desc": "Estos son los temas que vas a encontrar en Personalización. Baja (o toca uno) y mira cómo se viste tu diario; después cambia la letra, el color de acento y el cursor."
+      "desc": "Estos son los temas que vas a encontrar en Personalización. La maqueta va pasando por cada uno; toca el que quieras probar y cambia la letra, el color de acento y el cursor."
     },
     "privacy": {
       "title": "Es tuyo. No es una red social. No vendemos ni entrenamos con tu contenido.",
@@ -712,7 +712,8 @@
         "titulo1": "Pan tostado con mermelada de higo",
         "texto1": "Hoy no hice nada extraordinario y aun así sentí que el día valió la pena.",
         "titulo2": "Notas sobre «Un cuarto propio»",
-        "texto2": "Cerrar la puerta para escuchar por fin lo que una misma piensa."
+        "texto2": "Cerrar la puerta para escuchar por fin lo que una misma piensa.",
+        "inicial": "V"
       }
     }
   },

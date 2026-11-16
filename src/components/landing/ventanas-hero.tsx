@@ -27,7 +27,11 @@ export function VentanasHero() {
   }
 
   return (
-    <div className="relative flex min-h-[360px] items-center justify-center lg:col-span-5 sm:min-h-[410px]">
+    // Columna escalonada y no posiciones absolutas: las ventanitas se pisan
+    // apenas por el borde (nunca la barra de título ni la ✕ de otra), con
+    // cualquier ancho. Desde `sm` hay lugar para que la foto quede al costado
+    // del diario en vez de debajo.
+    <div className="mx-auto flex w-full max-w-[30rem] flex-col py-2 lg:col-span-6">
       {!cerradas.has("diario") && (
         <Ventana
           key={`diario-${reinicio}`}
@@ -38,7 +42,7 @@ export function VentanasHero() {
           }
           alCerrar={() => cerrar("diario")}
           subirAlFrente={subirAlFrente}
-          className="animate-float z-20 w-72 sm:w-80"
+          className="animate-float relative z-10 w-72 self-start"
           barra="px-3.5 py-2 text-xs"
         >
           <div className="space-y-2.5 p-4">
@@ -65,7 +69,7 @@ export function VentanasHero() {
           }
           alCerrar={() => cerrar("audio")}
           subirAlFrente={subirAlFrente}
-          className="animate-float-delayed absolute -bottom-2 left-1 z-30 w-60 sm:left-0 sm:w-64"
+          className="animate-float-3 relative z-30 order-3 -mt-3 ml-4 w-60 self-start sm:-mt-20 sm:ml-10"
           barra="px-3 py-1.5 text-[11px]"
         >
           <div className="flex items-center gap-2.5 p-3">
@@ -89,7 +93,7 @@ export function VentanasHero() {
           titulo={<span>🖼️ pieza_12.jpg</span>}
           alCerrar={() => cerrar("foto")}
           subirAlFrente={subirAlFrente}
-          className="absolute -top-3 right-1 z-10 w-44 sm:right-0 sm:w-48"
+          className="animate-float-delayed relative z-20 order-2 -mt-3 w-44 self-end sm:-mt-24 sm:w-48"
           barra="px-3 py-1.5 text-[11px]"
         >
           <div className="space-y-1.5 p-2.5 text-center">
@@ -115,7 +119,7 @@ export function VentanasHero() {
             setCerradas(new Set());
             setReinicio((n) => n + 1);
           }}
-          className="theme-btn-secondary absolute right-2 bottom-2 z-30 px-3 py-1.5 text-xs"
+          className="theme-btn-secondary order-4 mt-4 min-h-11 self-center px-4 py-2 text-xs"
         >
           {t("hero.restore")}
         </button>

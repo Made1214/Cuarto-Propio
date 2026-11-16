@@ -79,7 +79,7 @@ export async function Landing({ locale }: { locale: string }) {
           className="relative overflow-hidden px-4 pt-10 pb-16 sm:px-6 sm:pt-16 sm:pb-24"
         >
           <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 lg:grid-cols-12">
-            <div className="space-y-6 text-center lg:col-span-7 lg:text-left">
+            <div className="space-y-6 text-center lg:col-span-6 lg:text-left">
               <div className="theme-surface-alt inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)]">
                 <span aria-hidden="true">✦</span>
                 <span>{t("hero.badge")}</span>
