@@ -55,7 +55,7 @@ export default function ErrorApp({
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M20 12a8 8 0 1 1-2.5-5.8M20 4v5h-5" />
           </svg>
-          {t("recargar").toUpperCase()}
+          {t("recargar")}
         </button>
       </VentanaAviso>
     );
@@ -74,13 +74,13 @@ export default function ErrorApp({
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M20 12a8 8 0 1 1-2.5-5.8M20 4v5h-5" />
         </svg>
-        {t("reintentar").toUpperCase()}
+        {t("reintentar")}
       </button>
       <Link href="/diario" className={BOTON_AVISO_SECUNDARIO}>
-        {t("volverAlDiario").toUpperCase()}
+        {t("volverAlDiario")}
       </Link>
       {error.digest ? (
-        <p className="w-full font-pixel text-[0.625rem] tracking-wide text-muted/50">
+        <p className="w-full apoyo text-xs">
           {t("codigoError", { codigo: error.digest })}
         </p>
       ) : null}

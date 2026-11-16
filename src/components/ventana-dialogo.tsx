@@ -57,8 +57,8 @@ export function VentanaDialogo({
     >
       <div className="flex flex-col border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-lg">
         <div className="flex items-center justify-between gap-3 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2">
-          <h2 className="truncate font-pixel text-xs tracking-wide text-background">
-            {titulo.toUpperCase()}
+          <h2 className="truncate font-pixel text-xs tracking-wide text-background uppercase">
+            {titulo}
           </h2>
           <div className="flex shrink-0 items-center gap-2">
             <span aria-hidden="true" className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-primary-green" />

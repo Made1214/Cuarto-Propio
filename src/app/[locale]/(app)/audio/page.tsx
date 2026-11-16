@@ -35,14 +35,9 @@ export default async function AudioPage({
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <span className="mt-1 shrink-0 text-secondary-turquoise">
-            <IconoAudio />
-          </span>
-          <div>
-            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-            <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
-          </div>
+        <div>
+          <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+          <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
         </div>
       </div>
 

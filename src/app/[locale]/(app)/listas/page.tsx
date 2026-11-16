@@ -56,7 +56,7 @@ export default async function ListasPage({
             <rect x="5" y="8" width="5" height="1" fill="currentColor" />
           </svg>
           <p className="text-muted/70">{categoria ? t("sinResultados") : t("vacio")}</p>
-          {categoria ? null : <NuevaListaInline variante="panel" />}
+          {categoria ? null : <NuevaListaInline />}
         </div>
       ) : null}
 

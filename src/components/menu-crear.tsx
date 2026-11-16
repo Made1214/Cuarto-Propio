@@ -119,7 +119,7 @@ export function MenuCrear({ variante }: { variante: "barra" | "inferior" }) {
                   href={href}
                   onClick={() => setAbierto(false)}
                   className={`flex h-full min-h-32 flex-col gap-2.5 border-(length:--borde) border-ink rounded-theme p-4 shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none ${fondo} ${
-                    fondo === "bg-card" ? "text-ink" : "text-ink-strong"
+                    fondo === "bg-card" ? "text-foreground" : "text-ink-strong"
                   }`}
                 >
                   <span className="flex h-10 w-10 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-card text-ink">

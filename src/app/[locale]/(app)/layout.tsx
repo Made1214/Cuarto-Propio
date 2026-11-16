@@ -111,7 +111,7 @@ export default async function AppLayout({
               href="/personalizacion"
               aria-label={t("personalizar")}
               title={t("personalizar")}
-              className="flex h-10 w-10 items-center justify-center border-(length:--borde) border-transparent rounded-theme text-background transition-colors hover:border-background/50 hover:bg-background/15 aria-[current=page]:border-background/60 aria-[current=page]:bg-background/20"
+              className="tema-barra-icono flex h-10 w-10 items-center justify-center border-(length:--borde) border-transparent rounded-theme text-background transition-colors hover:border-background/50 hover:bg-background/15 aria-[current=page]:border-background/60 aria-[current=page]:bg-background/20"
             >
               <IconoPincel />
             </Link>

@@ -85,8 +85,8 @@ export function PanelPerfil({
         <div className="flex h-full flex-col border-l-(length:--borde-grueso) border-ink bg-card">
           {/* Barra de título, igual que la de la ventana principal */}
           <div className="flex shrink-0 items-center justify-between gap-3 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-3">
-            <h2 className="truncate font-pixel text-xs tracking-wide text-background">
-              {t("titulo").toUpperCase()}
+            <h2 className="truncate font-pixel text-xs tracking-wide text-background uppercase">
+              {t("titulo")}
             </h2>
             <button
               type="button"
@@ -246,8 +246,8 @@ function Seccion({
 }) {
   return (
     <section className="flex flex-col gap-2 border-t-(length:--borde) border-ink/15 pt-5">
-      <h3 className="font-pixel text-xs tracking-wide text-secondary-purple">
-        {titulo.toUpperCase()}
+      <h3 className="rotulo">
+        {titulo}
       </h3>
       {children}
       {ayuda ? (

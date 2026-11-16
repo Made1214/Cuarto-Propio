@@ -157,14 +157,9 @@ export default async function VitrinaPage({
       {/* Recargar vuelve arriba (y a la primera tanda: ver `paginar`). */}
       <ArribaAlRecargar />
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <span className="mt-1 shrink-0 text-secondary-turquoise">
-            <IconoVitrina />
-          </span>
-          <div>
-            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-            <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
-          </div>
+        <div>
+          <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+          <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
         </div>
 
         <ExhibirPiezas />
@@ -231,12 +226,12 @@ export default async function VitrinaPage({
           {hayFiltro ? (
             <Link
               href="/vitrina"
-              className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+              className="boton"
             >
-              {t("limpiarFiltros").toUpperCase()}
+              {t("limpiarFiltros")}
             </Link>
           ) : (
-            <ExhibirPiezas variante="panel" />
+            <ExhibirPiezas />
           )}
         </div>
       ) : (

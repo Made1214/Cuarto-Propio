@@ -20,7 +20,7 @@ export default function PiezaNoEncontrada() {
       mensaje={t("noEncontradaPieza")}
     >
       <Link href="/vitrina" className={BOTON_AVISO_PRINCIPAL}>
-        {t("volverALaVitrina").toUpperCase()}
+        {t("volverALaVitrina")}
       </Link>
     </VentanaAviso>
   );

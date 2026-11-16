@@ -72,6 +72,18 @@ Pendiente:
 - [ ] **Miniaturas viejas:** las piezas y la foto de perfil subidas antes del cambio de tamaños siguen con la miniatura de 800 px. Correr `npx tsx scripts/regenerar-miniaturas.ts --aplicar` con la clave secreta en `.env.local` (primero sin `--aplicar` para ver qué haría).
 - [ ] **Rutas en inglés** (`/en/registro`, `/en/terminos`): se podrían traducir con `pathnames` de next-intl, pero obliga a tipar todos los enlaces de la app. Se dejó para después.
 
+## 0.1 Pasada de uniformidad (2026-11-16)
+
+Revisión de todas las pantallas en los cuatro temas (claro y oscuro, celular y escritorio) contra los prototipos de Claude Design, con datos de ejemplo:
+
+- **Botones iguales en toda la app:** «Nueva lista», «Exhibir», «Editar», «Eliminar», «Guardar», «Cancelar» y los de los diálogos usan las clases compartidas `boton…` de `globals.css`. Antes unos iban en Inter y otros en pixel y mayúsculas, con altos distintos. Color por papel: rosa = lo nuevo de la sección, verde = guardar/confirmar, turquesa = imágenes y editar.
+- **Sin mayúsculas forzadas en el código:** fechas, enlaces de volver, categorías y botones van en minúsculas; el pixel en mayúsculas queda solo en barras de ventana y rótulos (`rotulo`).
+- **Categoría como punto de color + nombre** también en las tarjetas de Listas y Audio y en el editor (antes una franja pintada y chips en pixel).
+- **Encabezados parejos:** las cuatro secciones abren igual (se quitó el icono suelto que solo tenían Diario, Vitrina y Audio); buscador del Diario a todo el ancho; subtítulos del prototipo.
+- **Softsignal y Void:** el pincel de Personalización no se veía en la barra (blanco sobre barra clara) y en Void la tarjeta «Nueva lista» de Crear tenía el texto lila sobre blanco. Corregidos.
+
+Falta verlo con la base real, junto con lo de la sección 1.
+
 ## 1. Probar con la base real
 
 - [ ] **Acceso:** crear cuenta y confirmar el correo; entrar; equivocarse 5 veces seguidas y ver el bloqueo; recuperar la contraseña. Los correos necesitan antes las Redirect URLs de la sección 2.

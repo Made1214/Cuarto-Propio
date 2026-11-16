@@ -49,7 +49,7 @@ export function IconoTachado(props: IconoProps) {
 
 export function IconoTitulo({ nivel, ...props }: IconoProps & { nivel: 2 | 3 }) {
   return (
-    <span className="flex items-center font-pixel text-xs leading-none">
+    <span className="flex items-center text-sm leading-none font-bold">
       <Svg {...props}>
         <path d="M6 4v16M18 4v16M6 12h12" />
       </Svg>

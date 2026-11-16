@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  CLASE_CHIP,
+  CLASE_CHIP_ACTIVO,
+  CLASE_CHIP_INACTIVO,
+} from "@/components/filtro-categoria";
 import type { JSONContent } from "@tiptap/core";
 import { useFormatter, useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
@@ -136,7 +141,7 @@ export function EntradaForm({
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 font-pixel text-xs tracking-wide text-ink-strong outline-none"
+          className="boton boton-rosa outline-none"
         >
           {estado.error}
         </p>
@@ -197,7 +202,7 @@ export function EntradaForm({
           className="rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2.5 font-diario text-2xl font-semibold outline-none"
         />
         {titulo.length > TITULO_MAXIMO - 20 ? (
-          <span className="self-end font-pixel text-xs text-muted/70 tabular-nums">
+          <span className="self-end apoyo tabular-nums">
             {titulo.length}/{TITULO_MAXIMO}
           </span>
         ) : null}
@@ -213,7 +218,7 @@ export function EntradaForm({
           className="w-64 max-w-full rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2 text-sm outline-none"
         />
         {categorias.length > 0 ? (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {categorias.map((cat) => {
               const seleccionada = cat.nombre === categoriaTexto;
               return (
@@ -222,16 +227,14 @@ export function EntradaForm({
                   type="button"
                   onClick={() => setCategoriaTexto(seleccionada ? "" : cat.nombre)}
                   aria-pressed={seleccionada}
-                  className={`flex items-center gap-1.5 border-(length:--borde) px-2.5 py-1 font-pixel text-xs tracking-wide transition-colors ${
-                    seleccionada ? "border-ink-strong bg-secondary-purple/10" : "border-ink/30 hover:border-ink-strong"
-                  }`}
+                  className={`${CLASE_CHIP} ${seleccionada ? CLASE_CHIP_ACTIVO : CLASE_CHIP_INACTIVO}`}
                 >
                   <span
                     aria-hidden="true"
-                    className="h-2.5 w-2.5 shrink-0 border border-ink-strong"
+                    className="punto-categoria"
                     style={{ background: colorCategoria(categorias, cat.id) }}
                   />
-                  {cat.nombre.toUpperCase()}
+                  {cat.nombre}
                 </button>
               );
             })}

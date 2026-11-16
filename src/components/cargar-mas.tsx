@@ -87,9 +87,9 @@ export function CargarMas({
         // encima lo tiraría al `body`, y quien navega con teclado perdería
         // su lugar justo cuando aparece lo nuevo.
         aria-disabled={pendiente}
-        className="border-(length:--borde) border-ink rounded-theme bg-card px-5 py-3 font-pixel text-xs tracking-wide text-ink shadow-marco transition-[transform,background-color] hover:bg-secondary-purple/10 active:translate-x-1 active:translate-y-1 active:shadow-none aria-disabled:cursor-progress aria-disabled:opacity-70"
+        className="boton aria-disabled:cursor-progress aria-disabled:opacity-70"
       >
-        {(pendiente ? t("cargando") : t("cargarMas")).toUpperCase()}
+        {(pendiente ? t("cargando") : t("cargarMas"))}
       </button>
     </div>
   );
@@ -108,8 +108,8 @@ export function FinDeLista() {
   return (
     <>
       <ArribaAlRecargar />
-      <p className="text-center font-pixel text-[10px] tracking-wide text-muted/60">
-        {t("fin").toUpperCase()}
+      <p className="text-center apoyo text-xs">
+        {t("fin")}
       </p>
     </>
   );

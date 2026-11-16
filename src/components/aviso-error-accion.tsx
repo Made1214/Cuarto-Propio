@@ -29,9 +29,9 @@ export function AvisoErrorAccion({
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="shrink-0 border-(length:--borde) border-ink rounded-theme bg-card px-2.5 py-1 font-pixel text-[10px] tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
+          className="boton boton-chico"
         >
-          {t("recargar").toUpperCase()}
+          {t("recargar")}
         </button>
       </div>
     );

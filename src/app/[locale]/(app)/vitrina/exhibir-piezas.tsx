@@ -79,7 +79,7 @@ function enviar(
  * primeras ya están y esa se reintenta sola, sin volver a mandar las demás
  * (CLAUDE.md → Confiabilidad).
  */
-export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "panel" }) {
+export function ExhibirPiezas() {
   const t = useTranslations("vitrina");
   const tDialogos = useTranslations("dialogos");
   const router = useRouter();
@@ -216,12 +216,10 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className={`flex shrink-0 items-center justify-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green font-pixel text-xs tracking-wide text-ink-strong shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none ${
-          variante === "panel" ? "px-5 py-3" : "px-4 py-2.5"
-        }`}
+        className="boton boton-turquesa"
       >
         <IconoSubir />
-        {t("exhibir").toUpperCase()}
+        {t("exhibir")}
       </button>
 
       <VentanaDialogo
@@ -236,27 +234,27 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
               type="button"
               onClick={cerrar}
               disabled={subiendo}
-              className="border-(length:--borde) border-ink rounded-theme bg-card px-4 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10 disabled:opacity-60"
+              className="boton"
             >
-              {tDialogos("cancelar").toUpperCase()}
+              {tDialogos("cancelar")}
             </button>
             <button
               type="button"
               onClick={exhibir}
               disabled={subiendo || pendientes.length === 0}
-              className="flex items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60"
+              className="boton boton-verde"
             >
               {(subiendo
                 ? t("exhibiendo", { hecha: Math.min(exhibidas + 1, piezas.length), total: piezas.length })
                 : t("exhibir")
-              ).toUpperCase()}
+              )}
             </button>
           </>
         }
       >
         <div className="flex flex-col gap-3">
           {aviso ? (
-            <p className="border-(length:--borde) border-ink-strong rounded-theme bg-primary-pink px-3 py-2 font-pixel text-[0.625rem] tracking-wide text-ink-strong">
+            <p className="aviso">
               {aviso}
             </p>
           ) : null}
@@ -364,9 +362,9 @@ export function ExhibirPiezas({ variante = "boton" }: { variante?: "boton" | "pa
                     />
 
                     {pieza.estado === "error" && pieza.error ? (
-                      <p className="flex items-center gap-1.5 font-pixel text-[0.625rem] tracking-wide text-ink-strong">
+                      <p className="flex items-center gap-1.5 text-xs font-medium text-ink-strong">
                         {pieza.error !== "tamano" ? <IconoReintentar /> : null}
-                        {textoError(pieza.error).toUpperCase()}
+                        {textoError(pieza.error)}
                       </p>
                     ) : null}
                   </div>

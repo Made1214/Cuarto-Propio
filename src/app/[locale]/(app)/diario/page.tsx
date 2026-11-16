@@ -65,18 +65,9 @@ export default async function DiarioPage({
     <ZonaBusqueda>
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
         <div className="flex items-end justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <svg width="20" height="20" viewBox="0 0 10 10" aria-hidden="true" className="mt-1 shrink-0">
-              <rect x="4" y="0" width="2" height="2" fill="var(--secondary-turquoise)" />
-              <rect x="2" y="2" width="6" height="2" fill="var(--secondary-turquoise)" />
-              <rect x="0" y="4" width="10" height="2" fill="var(--secondary-turquoise)" />
-              <rect x="2" y="6" width="6" height="2" fill="var(--secondary-turquoise)" />
-              <rect x="4" y="8" width="2" height="2" fill="var(--secondary-turquoise)" />
-            </svg>
-            <div>
-              <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-              <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
-            </div>
+          <div>
+            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+            <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
           <Link
             href="/diario/nueva"
@@ -150,8 +141,8 @@ export default async function DiarioPage({
               {grupos.map((grupo) => (
                 <section key={grupo.clave} className="flex flex-col gap-4">
                   <h2 className="flex items-center gap-3">
-                    <span className="font-pixel text-xs tracking-wide text-secondary-purple">
-                      {grupo.etiqueta.toUpperCase()}
+                    <span className="rotulo">
+                      {grupo.etiqueta}
                     </span>
                     <span className="h-0.5 flex-1 bg-ink/15" aria-hidden="true" />
                     <span className="text-xs text-muted/75">

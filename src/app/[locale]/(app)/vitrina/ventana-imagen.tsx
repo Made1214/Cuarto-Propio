@@ -73,8 +73,8 @@ export async function VentanaImagen({
             className="h-auto w-full"
           />
         ) : (
-          <p className="px-3 py-10 text-center font-pixel text-[0.625rem] text-muted/60">
-            {t("noSePudoCargar").toUpperCase()}
+          <p className="px-3 py-10 text-center apoyo text-xs">
+            {t("noSePudoCargar")}
           </p>
         )}
       </div>

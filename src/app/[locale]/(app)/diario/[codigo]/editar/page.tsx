@@ -46,15 +46,15 @@ export default async function EditarEntradaPage({
       <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
         <div className="flex items-center justify-between gap-4 p-5">
           <div className="flex items-center gap-3">
-            <span className="font-pixel text-xs tracking-wide text-muted/70">
-              {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" }).toUpperCase()}
+            <span className="apoyo">
+              {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" })}
             </span>
             {entrada.categoriaNombre && entrada.categoriaId ? (
               <span
-                className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 font-pixel text-xs tracking-wide text-ink-strong"
+                className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-xs font-semibold text-ink-strong"
                 style={{ background: colorCategoria(categorias, entrada.categoriaId) }}
               >
-                {entrada.categoriaNombre.toUpperCase()}
+                {entrada.categoriaNombre}
               </span>
             ) : null}
           </div>

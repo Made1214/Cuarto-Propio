@@ -8,10 +8,9 @@ import { crearLista } from "@/lib/listas/actions";
 import { IconoEliminar } from "./iconos";
 
 /** Vive en el encabezado, no en el tablero: crear una lista es una acción de
- * la página, y como tarjeta ocupaba un lugar de la cuadrícula. La variante
- * "panel" es la misma acción dentro del estado vacío, donde el botón tiene
- * que ser el siguiente paso obvio. */
-export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | "panel" }) {
+ * la página, y como tarjeta ocupaba un lugar de la cuadrícula. El mismo
+ * botón va dentro del estado vacío, donde es el siguiente paso obvio. */
+export function NuevaListaInline() {
   const t = useTranslations("listas");
   const [activo, setActivo] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -34,16 +33,12 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
       <button
         type="button"
         onClick={() => setActivo(true)}
-        className={`flex items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-green font-pixel tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 ${
-          variante === "panel"
-            ? "px-5 py-3 text-xs shadow-marco"
-            : "px-4 py-2.5 text-xs"
-        }`}
+        className="boton boton-rosa"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 5v14M5 12h14" />
         </svg>
-        {t("nuevaLista").toUpperCase()}
+        {t("nuevaLista")}
       </button>
     );
   }
@@ -116,9 +111,9 @@ export function NuevaListaInline({ variante = "boton" }: { variante?: "boton" | 
         type="button"
         onClick={enviar}
         disabled={pendiente}
-        className="border-(length:--borde) border-ink rounded-theme bg-primary-green px-3 py-1.5 font-pixel text-xs tracking-wide text-ink-strong transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5"
+        className="boton boton-verde boton-chico"
       >
-        {t("guardar").toUpperCase()}
+        {t("guardar")}
       </button>
       <button
         type="button"

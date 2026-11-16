@@ -10,12 +10,9 @@ export default function CargandoAudio() {
   return (
     <EsqueletoPantalla className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <Hueso className="mt-1 h-5 w-5 shrink-0" />
-          <div className="flex flex-col gap-2">
-            <Hueso className="h-9 w-32" />
-            <Hueso className="h-4 w-52" />
-          </div>
+        <div className="flex flex-col gap-2">
+          <Hueso className="h-9 w-32" />
+          <Hueso className="h-4 w-52" />
         </div>
         <Hueso className="h-11 w-32" />
       </div>

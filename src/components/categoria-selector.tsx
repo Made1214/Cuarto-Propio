@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  CLASE_CHIP,
+  CLASE_CHIP_ACTIVO,
+  CLASE_CHIP_INACTIVO,
+} from "@/components/filtro-categoria";
 import { useOptimistic, useState, useTransition } from "react";
 import { colorCategoria } from "@/lib/categorias/color";
 import type { Categoria } from "@/lib/categorias/types";
@@ -97,18 +102,20 @@ export function CategoriaSelector({
         onClick={() => setAbierto((valor) => !valor)}
         aria-expanded={abierto}
         aria-label={textos.cambiar}
-        className="flex w-full items-center justify-between gap-2 border-(length:--borde) px-2 py-1 text-left font-pixel text-xs tracking-wide"
-        style={
-          actual.id
-            ? {
-                borderColor: "var(--ink-strong)",
-                background: colorCategoria(categoriasVisibles, actual.id),
-                color: "var(--ink-strong)",
-              }
-            : { borderColor: "var(--ink)", borderStyle: "dashed", opacity: 0.7 }
-        }
+        // La categoría se lee como en el resto de la app: un punto de color y
+        // el nombre, no una franja pintada que le compite al título.
+        className={`flex min-h-8 w-fit max-w-full items-center gap-1.5 border-(length:--borde) rounded-theme px-2 text-left text-[0.8125rem] font-medium transition-colors hover:border-ink ${
+          actual.id ? "border-ink/30 text-ink" : "border-dashed border-ink/40 text-muted/70"
+        }`}
       >
-        <span className="truncate">{(actual.nombre ?? textos.placeholder).toUpperCase()}</span>
+        {actual.id ? (
+          <span
+            aria-hidden="true"
+            className="punto-categoria"
+            style={{ background: colorCategoria(categoriasVisibles, actual.id) }}
+          />
+        ) : null}
+        <span className="truncate">{actual.nombre ?? textos.placeholder}</span>
         <svg
           width="10"
           height="10"
@@ -132,9 +139,9 @@ export function CategoriaSelector({
               <button
                 type="button"
                 onClick={() => elegir("")}
-                className="border-(length:--borde) border-dashed border-ink rounded-theme px-2 py-0.5 font-pixel text-xs tracking-wide text-ink hover:bg-secondary-purple/10"
+                className={`${CLASE_CHIP} ${CLASE_CHIP_INACTIVO} border-dashed`}
               >
-                {textos.quitar.toUpperCase()}
+                {textos.quitar}
               </button>
             ) : null}
             {categoriasVisibles.map((cat) => (
@@ -143,13 +150,14 @@ export function CategoriaSelector({
                 type="button"
                 onClick={() => elegir(cat.nombre)}
                 aria-pressed={cat.id === actual.id}
-                className={`border-(length:--borde) px-2 py-0.5 font-pixel text-xs tracking-wide text-ink-strong ${
-                  cat.id === actual.id ? "border-ink-strong" : "border-transparent hover:border-ink-strong"
-                }`}
-                style={{ background: colorCategoria(categoriasVisibles, cat.id) }}
+                className={`${CLASE_CHIP} ${cat.id === actual.id ? CLASE_CHIP_ACTIVO : CLASE_CHIP_INACTIVO}`}
               >
-                {cat.id === actual.id ? "✓ " : ""}
-                {cat.nombre.toUpperCase()}
+                <span
+                  aria-hidden="true"
+                  className="punto-categoria"
+                  style={{ background: colorCategoria(categoriasVisibles, cat.id) }}
+                />
+                <span className="max-w-40 truncate">{cat.nombre}</span>
               </button>
             ))}
           </div>

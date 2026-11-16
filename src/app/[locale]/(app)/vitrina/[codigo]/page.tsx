@@ -135,7 +135,7 @@ export default async function ImagenPage({
                   altoMaximo={ALTO_FOTO}
                 />
               ) : (
-                <p className="py-16 text-center font-pixel text-xs text-muted/60">
+                <p className="py-16 text-center apoyo">
                   {t("noSePudoCargar")}
                 </p>
               )}
@@ -228,8 +228,8 @@ async function RelacionadasAlCostado({
 
   return (
     <aside className={CLASES_COSTADO}>
-      <h2 className="text-sm font-semibold text-secondary-purple">
-        {t("relacionadas").toUpperCase()}
+      <h2 className="rotulo">
+        {t("relacionadas")}
       </h2>
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-1">
         {alCostado.map((otra) => (
@@ -292,8 +292,8 @@ async function RelacionadasMasAbajo({
 
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="text-sm font-semibold text-secondary-purple">
-        {t("masComoEsta").toUpperCase()}
+      <h2 className="rotulo">
+        {t("masComoEsta")}
       </h2>
       <div className="columns-[15rem] gap-5 lg:columns-[17rem]">
         {masAbajo.map((otra) => (

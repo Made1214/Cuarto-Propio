@@ -91,7 +91,7 @@ export function NotaAudio({
         />
 
         {nota.duracionSegundos ? (
-          <span className="shrink-0 px-1 font-pixel text-xs text-muted/70 tabular-nums">
+          <span className="shrink-0 px-1 apoyo tabular-nums">
             {formatearDuracion(nota.duracionSegundos)}
           </span>
         ) : null}
@@ -128,14 +128,14 @@ export function NotaAudio({
           {t("sinReproductor")}
         </audio>
       ) : (
-        <p className="border-(length:--borde) border-dashed border-ink/40 px-3 py-4 text-center font-pixel text-[10px] text-muted/60">
-          {t("noSePudoCargar").toUpperCase()}
+        <p className="border-(length:--borde) border-dashed border-ink/40 px-3 py-4 text-center apoyo text-xs">
+          {t("noSePudoCargar")}
         </p>
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <span className="font-pixel text-[10px] tracking-wide text-muted/70">
-          {format.dateTime(fecha, { dateStyle: "long" }).toUpperCase()}
+        <span className="apoyo text-xs">
+          {format.dateTime(fecha, { dateStyle: "long" })}
         </span>
 
         <div className="w-full max-w-56">

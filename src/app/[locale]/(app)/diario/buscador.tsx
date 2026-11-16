@@ -63,7 +63,7 @@ export function Buscador({ valorInicial, categoria }: { valorInicial: string; ca
   const buscando = isPending || termino !== enviado;
 
   return (
-    <div className="relative w-full sm:max-w-md">
+    <div className="relative w-full">
       <svg
         width="18"
         height="18"

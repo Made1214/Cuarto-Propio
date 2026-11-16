@@ -23,7 +23,7 @@ export default function EntradaNoEncontrada() {
       mensaje={t("noEncontradaEntrada")}
     >
       <Link href="/diario" className={BOTON_AVISO_PRINCIPAL}>
-        {t("volverAlDiario").toUpperCase()}
+        {t("volverAlDiario")}
       </Link>
     </VentanaAviso>
   );

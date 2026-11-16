@@ -32,35 +32,35 @@ export default async function EntradaPage({
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <Link
         href="/diario"
-        className="flex w-fit items-center gap-2 font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+        className="enlace-volver"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
-        {t("volver").toUpperCase()}
+        {t("volver")}
       </Link>
 
       <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
         <div className="flex items-center justify-between gap-4 p-5">
           <div className="flex items-center gap-3">
-            <span className="font-pixel text-xs tracking-wide text-muted/70">
-              {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" }).toUpperCase()}
+            <span className="apoyo">
+              {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" })}
             </span>
             {entrada.categoriaNombre && entrada.categoriaId ? (
               <span
-                className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 font-pixel text-xs tracking-wide text-ink-strong"
+                className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-xs font-semibold text-ink-strong"
                 style={{ background: colorCategoria(categorias, entrada.categoriaId) }}
               >
-                {entrada.categoriaNombre.toUpperCase()}
+                {entrada.categoriaNombre}
               </span>
             ) : null}
           </div>
           <div className="flex items-center gap-2.5">
             <Link
               href={`/diario/${codigo}/editar`}
-              className="border-(length:--borde) border-ink rounded-theme bg-secondary-turquoise px-4 py-2 font-pixel text-xs tracking-wide text-ink-strong transition-[filter] hover:brightness-95"
+              className="boton boton-turquesa"
             >
-              {t("editar").toUpperCase()}
+              {t("editar")}
             </Link>
             <EliminarEntradaBoton action={eliminar} />
           </div>
