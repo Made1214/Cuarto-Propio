@@ -9,6 +9,7 @@ import { redirect } from "@/i18n/navigation";
 import { aplicarTemaInicial, META_TEMA_INICIAL } from "@/lib/temas/inicial";
 import { esPreset } from "@/lib/temas/presets";
 import { destinoSeguro } from "@/lib/auth/destino";
+import { ipCliente } from "@/lib/auth/ip";
 
 export type EstadoAcceso = { error?: string; enviado?: boolean } | undefined;
 
@@ -46,11 +47,20 @@ function minutosHasta(hasta: string): number {
 }
 
 /**
- * Entrar. Además de los límites por IP de Supabase, bloquea 15 minutos una
- * cuenta tras 5 contraseñas equivocadas seguidas (migración 0009). Si esa
- * migración todavía no está aplicada, las llamadas fallan y el login sigue
- * funcionando como antes, sin el bloqueo: mejor eso que dejar a la usuaria
- * afuera por una función que falta.
+ * Entrar. Además de los límites por IP de Supabase, bloquea 15 minutos un par
+ * (correo, IP) tras 5 contraseñas equivocadas seguidas (migraciones 0009 y
+ * 0012). Contar por IP también es lo que evita que alguien que solo sepa el
+ * correo de una usuaria la deje afuera fallando a propósito desde otro lado.
+ *
+ * Límite honesto: las funciones se llaman con la clave pública (sin sesión),
+ * así que quien conozca el correo Y la IP de la víctima todavía podría
+ * bloquearla. Lo completo es registrar los fallos con la clave secreta de
+ * Supabase desde el servidor y quitarle a `anon` el permiso sobre esas
+ * funciones; queda para cuando la app tenga esa variable de entorno.
+ *
+ * Si las migraciones todavía no están aplicadas, las llamadas fallan y el
+ * login sigue funcionando como antes, sin el bloqueo: mejor eso que dejar a la
+ * usuaria afuera por una función que falta.
  */
 export async function login(
   locale: string,
@@ -61,9 +71,11 @@ export async function login(
 
   const supabase = await createClient();
   const t = await getTranslations({ locale, namespace: "login" });
+  const ip = ipCliente(await headers());
 
   const bloqueo = await supabase.rpc("login_bloqueado_hasta", {
     p_email: email,
+    p_ip: ip,
   });
   if (!bloqueo.error && bloqueo.data) {
     return {
@@ -82,6 +94,7 @@ export async function login(
     if (error.code === "invalid_credentials") {
       const fallo = await supabase.rpc("registrar_fallo_login", {
         p_email: email,
+        p_ip: ip,
       });
       if (!fallo.error && fallo.data) {
         return {

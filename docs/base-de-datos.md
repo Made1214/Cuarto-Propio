@@ -142,16 +142,21 @@ Guarda tu personalización visual. Hoy solo se usa el color básico; el resto (c
 
 ### `intentos_login`
 
-Cuenta los fallos de login seguidos por correo, para bloquear 15 minutos una cuenta tras 5 contraseñas equivocadas (además de los límites por IP que ya trae Supabase Auth). Es la única tabla sin `usuario_id`: los intentos pasan **antes** de que haya sesión.
+Cuenta los fallos de login seguidos por **correo e IP**, para bloquear 15 minutos ese par tras 5 contraseñas equivocadas (además de los límites por IP que ya trae Supabase Auth). Es la única tabla sin `usuario_id`: los intentos pasan **antes** de que haya sesión. La clave primaria es `(email, ip)`.
 
 | Columna | Qué guarda |
 | --- | --- |
-| `email` | El correo intentado, en minúsculas |
+| `email` | El correo intentado, en minúsculas (hasta 320 caracteres) |
+| `ip` | La IP desde la que se intentó, en forma canónica, o `desconocida` si no llegó una IP válida (en local) |
 | `fallidos` | Cuántos fallos seguidos lleva |
 | `bloqueado_hasta` | Hasta cuándo está bloqueada (`NULL` = no lo está) |
 | `actualizado_en` | El último intento: un fallo de hace más de 15 minutos ya no cuenta como "seguido" |
 
-Tiene RLS activo y **ninguna** política: nadie la lee ni la escribe directo. Solo se toca con tres funciones `security definer`: `login_bloqueado_hasta(email)` y `registrar_fallo_login(email)` (las llama el login antes y después de intentar) y `limpiar_intentos_login()` (tras entrar bien, solo con sesión y solo sobre el correo propio — así nadie puede borrar el bloqueo de otra cuenta).
+Tiene RLS activo y **ninguna** política: nadie la lee ni la escribe directo. Solo se toca con tres funciones `security definer`: `login_bloqueado_hasta(email, ip)` y `registrar_fallo_login(email, ip)` (las llama el login antes y después de intentar, con la IP que el servidor lee de `x-forwarded-for` — ver `src/lib/auth/ip.ts`) y `limpiar_intentos_login()` (tras entrar bien, solo con sesión y solo sobre el correo propio, desde todas las IP — así nadie puede borrar el bloqueo de otra cuenta). Las dos primeras normalizan la IP con `normalizar_ip_login`, una función interna que no se expone por la API, y `registrar_fallo_login` borra de paso las filas de más de un día para que la tabla no crezca sin fin.
+
+**Por qué por correo e IP** (migración 0012): con el contador solo por correo, y `registrar_fallo_login` llamable sin sesión (tiene que serlo: los fallos pasan antes de entrar), cualquiera que supiera el correo de una usuaria podía llamar a la función cinco veces con la clave pública y dejarla fuera de su cuenta cada 15 minutos. Contando por par, esos fallos bloquean solo la IP de quien ataca.
+
+**Límite conocido:** la función sigue siendo llamable sin sesión y la IP la manda quien llama, así que alguien que conozca el correo **y** la IP de la víctima todavía podría bloquearla; y quien rote de IP no acumula el bloqueo (para eso quedan los límites por IP de Supabase Auth). Lo completo es registrar los fallos desde el servidor con la clave secreta de Supabase y quitarle a `anon` el permiso sobre estas funciones — queda para cuando la app tenga esa variable de entorno.
 
 ## Seguridad: Row Level Security
 
@@ -246,8 +251,9 @@ El primero, `0001_esquema_completo.sql`, crea las 8 tablas (con `categoria_id` e
 | `0009_intentos_login.sql` | Tabla `intentos_login` y sus tres funciones: bloqueo de 15 minutos tras 5 fallos de login seguidos |
 | `0010_bienvenida_y_storage.sql` | `perfiles.bienvenida_vista_en` (el mensaje de bienvenida sale una sola vez por cuenta) y la función `uso_storage()`, que suma lo que ocupan tus fotos y audios para el medidor del perfil y el aviso de espacio |
 | `0011_endurecer_funciones.sql` | Ajustes que pidió el revisor de seguridad de Supabase: las funciones que solo sirven con sesión dejan de poder llamarse sin sesión, la función del trigger de perfiles deja de estar expuesta por la API y `set_updated_at` fija su `search_path` |
+| `0012_intentos_login_por_ip.sql` | El bloqueo de login pasa a contarse por correo **e** IP (clave `(email, ip)`), las funciones reciben la IP y se borran las firmas viejas de un solo argumento, para que no se pueda dejar fuera a otra persona sabiendo solo su correo |
 
-Las migraciones 0001–0011 están aplicadas en el proyecto de Supabase "Cuarto Propio" (0009–0011 se aplicaron con el conector de Supabase el 2026-11-15). Si en otro proyecto 0009 o 0010 todavía no están aplicadas, la app sigue funcionando: el login entra sin el bloqueo propio, y la bienvenida y el medidor de espacio simplemente no aparecen.
+Las migraciones 0001–0011 están aplicadas en el proyecto de Supabase "Cuarto Propio" (0009–0011 se aplicaron con el conector de Supabase el 2026-11-15). Si en otro proyecto 0009 o 0010 todavía no están aplicadas, la app sigue funcionando: el login entra sin el bloqueo propio, y la bienvenida y el medidor de espacio simplemente no aparecen. La 0012 todavía **no** está aplicada: hasta que se aplique, el código nuevo llama a funciones de dos argumentos que no existen y el login entra sin el bloqueo propio (y lo mismo al revés, si se aplica antes de desplegar el código).
 
 Cada cambio de esquema nuevo (por ejemplo al construir Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
 
