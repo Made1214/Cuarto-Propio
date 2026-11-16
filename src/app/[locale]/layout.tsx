@@ -136,6 +136,14 @@ const rubik = Rubik({
 });
 
 export const metadata: Metadata = {
+  // Para que la imagen de `opengraph-image.jpg` salga con URL absoluta al
+  // compartir. En Vercel toma el dominio de producción; en local, localhost.
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : "http://localhost:3000"),
+  ),
   title: "Cuarto Propio",
   description: "Diario, listas, vitrina y audio — tu espacio personal.",
   // iOS no lee los íconos del manifest: necesita su propio apple-touch-icon

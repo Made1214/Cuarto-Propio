@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import {
   createClient,
@@ -21,6 +22,7 @@ import {
   obtenerUsoStorage,
   UMBRAL_AVISO_STORAGE,
 } from "@/lib/storage/uso";
+import marca from "@/assets/logo/marca.webp";
 import { logout } from "../(auth)/login/actions";
 
 export default async function AppLayout({
@@ -84,12 +86,13 @@ export default async function AppLayout({
           su capa superior, por encima de cualquier z-index. */}
         <header className="tema-barra sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
           <div className="flex items-center gap-2.5">
-            <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
-              <path
-                d="M2 0h4v2H2zM8 0h4v2H8zM0 2h14v4H0zM2 6h10v2H2zM4 8h6v2H4zM6 10h2v2H6z"
-                fill="var(--primary-pink)"
-              />
-            </svg>
+            <Image
+              src={marca}
+              alt=""
+              width={32}
+              height={32}
+              className="h-7 w-7 shrink-0 rounded-theme border-(length:--borde) border-ink object-cover md:h-8 md:w-8"
+            />
             <span className="tema-marca font-pixel text-sm tracking-wide text-background">
               CUARTO PROPIO
             </span>

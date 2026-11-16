@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import marca from "@/assets/logo/marca.webp";
 import { Link } from "@/i18n/navigation";
 
 /**
@@ -28,12 +30,13 @@ export default async function AccesoLayout({
     <main className="flex flex-1 flex-col bg-background text-foreground md:flex-row">
       <section className="flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-6 pt-12 pb-7 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
         <div className="flex items-center gap-2.5">
-          <svg width="22" height="19" viewBox="0 0 14 12" aria-hidden="true">
-            <path
-              d="M2 0h4v2H2zM8 0h4v2H8zM0 2h14v4H0zM2 6h10v2H2zM4 8h6v2H4zM6 10h2v2H6z"
-              fill="var(--primary-pink)"
-            />
-          </svg>
+          <Image
+            src={marca}
+            alt=""
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 rounded-theme border-(length:--borde) border-ink object-cover"
+          />
           <span className="font-pixel text-base tracking-wide">
             CUARTO PROPIO
           </span>

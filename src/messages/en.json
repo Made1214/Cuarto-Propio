@@ -532,5 +532,142 @@
       "S",
       "S"
     ]
+  },
+  "landing": {
+    "nav": {
+      "login": "Log in",
+      "signup": "Create account"
+    },
+    "switcher": {
+      "title": "Decorate this room",
+      "autoScroll": "Shift theme on scroll",
+      "btn": "Change theme"
+    },
+    "hero": {
+      "badge": "A private digital sanctuary • No algorithms or likes",
+      "title": "A room of one’s own to write, collect, and inhabit your everyday life.",
+      "subtitle": "Everything currently scattered across loose notes, boards, photos, and voice memos—gathered into one intimate corner styled just the way you like.",
+      "ctaPrimary": "Create my room — it’s free",
+      "ctaSecondary": "I have a key (Log in)",
+      "note": "Installable on your phone • English & Spanish • 100% private",
+      "win1Title": "november_diary.txt",
+      "win1Date": "Sunday, 6:40 PM",
+      "win1Tag": "#rainy-afternoons",
+      "win1Body": "\"Played that old record again while sipping chamomile tea. Such a relief having a place nobody else reads...\"",
+      "win2Title": "voice_note_04.wav",
+      "win2Desc": "Thoughts before falling asleep",
+      "win3Caption": "My desk today ✿",
+      "restore": "↺ Reopen windows"
+    },
+    "problem": {
+      "title": "Your notes in one app, your photos in another, your voice memos lost in a chat…",
+      "subtitle": "Your daily life doesn’t live in separate silos. We bring your words, lists, photos, and voice together in one calm room.",
+      "item1": "Scattered notes",
+      "item2": "Boards & checklists",
+      "item3": "Unposted photos",
+      "item4": "Voice memos",
+      "together": "All kept under your own key in Cuarto Propio"
+    },
+    "mod1": {
+      "pill": "01 • Personal blog-style diary",
+      "title": "Write like the cozy blogs of old, except just for yourself.",
+      "desc": "A warm rich-text editor with bolds, headings, colors, and images. Organize entries by category, search by keyword, and revisit them chronologically.",
+      "winTitle": "Personal Notebook — Chronological view",
+      "catAll": "All",
+      "cat1": "Dreams",
+      "cat2": "Readings",
+      "cat3": "Slow days",
+      "entry1Title": "Toast with fig jam",
+      "entry1Text": "Did nothing extraordinary today and yet it felt worthwhile. Jotted down three Virginia Woolf quotes in the margin.",
+      "entry2Title": "The library by the sea",
+      "entry2Text": "Dreamt the bookshelves had tiny windows letting in the scent of salt and old paper.",
+      "entry3Title": "Notes on \"A Room of One’s Own\"",
+      "entry3Text": "\"Locking the door means shutting out the noise outside to finally hear what you yourself think.\""
+    },
+    "mod2": {
+      "pill": "02 • Pressure-free lists & boards",
+      "title": "Keep your whims, reading lists, and daydream projects.",
+      "desc": "Visual boards with checklists for \"Books read\", \"Sunday movies\", \"Costumes I want to sew\", or your grandmother’s recipes. Zero productivity metrics.",
+      "winTitle": "My_Lists.exe — Intimate boards",
+      "board1": "📚 Books read this year",
+      "book3": "The Pillow Book",
+      "board2": "🧵 Costumes I want to make",
+      "costume1": "Forest fairy with green tulle",
+      "costume2": "Victorian librarian",
+      "placeholder": "Add an idea..."
+    },
+    "mod3": {
+      "pill": "03 • Showcase of your own pieces",
+      "title": "Your private gallery to exhibit your photos and artwork.",
+      "desc": "Here your photos and drawings are called <b>pieces</b>, and pinning them to your wall is called <b>exhibiting</b>. Arranged in a masonry grid with hashtag filters.",
+      "winTitle": "Showcase — 4 pieces exhibited",
+      "tagAll": "#all",
+      "p1": "Notebook botanicals",
+      "p2": "Afternoon wall shadows",
+      "p3": "Clippings & tickets",
+      "p4": "Quick self-portrait"
+    },
+    "mod4": {
+      "pill": "04 • Audio & Reverse Journaling",
+      "title": "When you don’t feel like typing, simply talk to your room.",
+      "desc": "Record voice notes up to 10 minutes long to vent, capture a dream upon waking, or save the sound of rain against your window.",
+      "winTitle": "Intimate Recorder — Up to 10:00 min",
+      "trackTitle": "\"Walking home under the streetlamps\"",
+      "trackMeta": "Nov 13 • Private voice note • 06:18",
+      "statusIdle": "Press ▶ to hear how talking out loud to yourself feels.",
+      "statusPlaying": "Playing gentle ambient chime… (Web Audio synth)"
+    },
+    "mod5": {
+      "pill": "05 • Total customization",
+      "title": "Your room shifts with you. Try it right here.",
+      "desc": "Pick a full design theme, tweak accent colors, switch light/dark mode, or toggle cursor sparkles. This entire page transforms live.",
+      "step1": "1. Design theme",
+      "step2": "2. Accent color",
+      "step2Hint": "Updates primary accent and sparkles.",
+      "step3": "3. Mood & cursor",
+      "modeBtn": "Toggle Light / Dark",
+      "sparkleBtn": "Cursor sparkles: ON",
+      "sparkleBtnOff": "Cursor sparkles: OFF"
+    },
+    "privacy": {
+      "title": "It is yours. Not a social network. We never sell or train on your content.",
+      "desc": "In Cuarto Propio there are no followers, no public feeds, no ads, and no algorithms demanding you post more. Everything you write, draw, photograph, or record stays under your key.",
+      "p1": "✦ Zero ads or tracking",
+      "p2": "✦ Never used for AI training",
+      "p3": "✦ Free for personal use"
+    },
+    "ctaFinal": {
+      "title": "Unlock the door to your own room.",
+      "subtitle": "Start today in under a minute. Install it on your phone as an app and carry it anywhere.",
+      "primary": "Create free account",
+      "secondary": "Log in"
+    },
+    "footer": {
+      "tagline": "An intimate digital sanctuary",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy"
+    },
+    "marca": "Cuarto Propio",
+    "inicio": "Cuarto Propio, home",
+    "altMarca": "Cuarto Propio logo",
+    "altLogo": "Cuarto Propio illustration: a girl with headphones writes in her journal on a green rug, beside a sleeping cat, records and cassettes.",
+    "otroIdioma": "Español",
+    "idiomaBoton": "EN / ES",
+    "idiomaPie": "🌐 English / Español",
+    "cambiarIdioma": "Switch language / Cambiar idioma",
+    "modoClaroOscuro": "Toggle light or dark mode",
+    "selector": "Design and theme picker",
+    "cerrarSelector": "Close picker",
+    "cerrarVentana": "Close window",
+    "reproducir": "Play or pause sample",
+    "ideas": "Ideas",
+    "rec": "● REC",
+    "masonry": "✦ masonry",
+    "acentos": {
+      "verde": "Pastel green",
+      "rosa": "Pastel pink",
+      "turquesa": "Turquoise",
+      "rojo": "Cherry red"
+    }
   }
 }

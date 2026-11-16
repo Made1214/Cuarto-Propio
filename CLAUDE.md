@@ -365,3 +365,6 @@ Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpet
 
 **Implicaciones de este documento que todavía no están reflejadas en el código** (a resolver cuando se retome cada módulo, no automáticamente):
 - La transcripción de audio no está (ni tiene que estar: es Fase 2). La columna `audios.transcripcion` existe y queda vacía.
+
+**Marca y landing:** el logo (la ilustración de la muchacha con el gato y el wordmark) vive en `src/assets/logo/` (`logo.webp` completo; `marca.webp`, recorte de la cara para la barra de la app, la de acceso, el favicon y los íconos de la PWA en `public/icons/`). `src/app/opengraph-image.jpg` es la imagen al compartir. La raíz `/` muestra la landing (`src/components/landing/`) a quien no tiene sesión y manda al diario a quien sí. La landing tiene sus **propios** cuatro temas de demostración (Whimsical, Retro 98, Fairy, Emo, en `landing.css`, colgados de `.landing[data-theme]`), separados de los temas reales de la app (`src/lib/temas/`): se eligió así a propósito, para que la landing muestre el abanico estético sin depender de Personalización. Comparte con la app solo el modo claro/oscuro (`useModo`).
+

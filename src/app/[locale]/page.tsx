@@ -1,3 +1,4 @@
+import { Landing } from "@/components/landing/landing";
 import { obtenerUsuario } from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
 
@@ -8,8 +9,11 @@ export default async function RootPage({
 }) {
   const { locale } = await params;
   // Verificación local del JWT (sin ida al servidor de Auth): solo decide a
-  // qué pantalla mandar, y cada una vuelve a mirar la sesión por su cuenta.
+  // dónde ir, y cada pantalla vuelve a mirar la sesión por su cuenta. Con
+  // sesión se va directo al diario; sin ella, se ve la landing.
   const usuario = await obtenerUsuario();
 
-  redirect({ href: usuario ? "/diario" : "/login", locale });
+  if (usuario) redirect({ href: "/diario", locale });
+
+  return <Landing locale={locale} />;
 }
