@@ -12,7 +12,7 @@ import {
 } from "../componentes";
 import { registrar, type EstadoAcceso } from "../login/actions";
 
-export function RegistroForm({ locale }: { locale: string }) {
+export function RegistroForm({ locale, tema }: { locale: string; tema: string | null }) {
   const t = useTranslations("login");
   const [state, formAction, pending] = useActionState<EstadoAcceso, FormData>(
     (_prevState, formData) => registrar(locale, formData),
@@ -25,6 +25,7 @@ export function RegistroForm({ locale }: { locale: string }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
+      {tema ? <input type="hidden" name="tema" value={tema} /> : null}
       <label className={CLASE_ETIQUETA}>
         {t("email")}
         <input
@@ -48,9 +49,10 @@ export function RegistroForm({ locale }: { locale: string }) {
       <button
         type="submit"
         disabled={pending}
+        aria-busy={pending}
         className={`${CLASE_BOTON} mt-1 bg-primary-pink`}
       >
-        {t("crear")}
+        {pending ? t("creando") : t("crear")}
       </button>
       <p className="text-[13px] leading-snug text-muted/80">
         {t("registroAyuda")}

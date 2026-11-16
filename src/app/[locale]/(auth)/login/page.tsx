@@ -1,16 +1,29 @@
-import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AvisoAcceso, PestanasAcceso } from "../componentes";
 import { LoginForm } from "./login-form";
+import { destinoSeguro } from "@/lib/auth/destino";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "login" });
+  return { title: `${t("metaEntrar")} · Cuarto Propio` };
+}
 
 export default async function LoginPage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 }) {
   const { locale } = await params;
-  const { error } = await searchParams;
+  setRequestLocale(locale);
+  const { error, next } = await searchParams;
   const t = await getTranslations({ locale, namespace: "login" });
 
   return (
@@ -23,7 +36,7 @@ export default async function LoginPage({
       {error === "enlace" ? (
         <AvisoAcceso tipo="error">{t("enlaceVencido")}</AvisoAcceso>
       ) : null}
-      <LoginForm locale={locale} />
+      <LoginForm locale={locale} siguiente={destinoSeguro(next)} />
     </div>
   );
 }

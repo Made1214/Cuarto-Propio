@@ -182,7 +182,7 @@ export default async function VitrinaPage({
 
       {hashtags.length > 0 ? (
         <nav aria-label={t("filtrarHashtag")} className="tema-fila-chips -mx-5 -mt-3 sm:mx-0">
-          <ul className="flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+          <ul className="fila-deslizable flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
             {hashtags.map((etiqueta) => {
               const activo = etiqueta.nombre === hashtag;
               return (

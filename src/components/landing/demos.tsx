@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { BotonesTema, useAlternarModo, useLanding } from "./landing-raiz";
 
 /* Maquetas interactivas de los cinco módulos. Son demostraciones: nada se
    guarda, todo vuelve a su estado al recargar. */
@@ -21,7 +20,7 @@ function Chip({
       type="button"
       aria-pressed={activo}
       onClick={onClick}
-      className={`px-3 py-1 text-xs ${activo ? "theme-btn-primary font-semibold" : "theme-btn-secondary font-medium"}`}
+      className={`min-h-11 px-4 py-2 text-xs ${activo ? "theme-btn-primary font-semibold" : "theme-btn-secondary font-medium"}`}
     >
       {children}
     </button>
@@ -163,9 +162,9 @@ export function DemoListas() {
             maxLength={38}
             placeholder={t("mod2.placeholder")}
             aria-label={t("mod2.placeholder")}
-            className="w-full rounded-[var(--radius-inner)] border border-[var(--border-color)] bg-[var(--bg-surface)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] focus:outline-none"
+            className="min-h-11 w-full rounded-[var(--radius-inner)] border border-[var(--border-color)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none"
           />
-          <button type="submit" aria-label={t("mod2.placeholder")} className="theme-btn-primary px-3 py-1.5 text-xs font-bold">
+          <button type="submit" aria-label={t("mod2.placeholder")} className="theme-btn-primary min-h-11 min-w-11 px-3 py-2 text-base font-bold">
             +
           </button>
         </form>
@@ -324,77 +323,6 @@ export function DemoAudio() {
         <p aria-live="polite" className="text-xs text-[var(--text-secondary)] italic">
           {sonando ? t("mod4.statusPlaying") : t("mod4.statusIdle")}
         </p>
-      </div>
-    </div>
-  );
-}
-
-const ACENTOS = [
-  { color: "#9BCFAE", clave: "verde" },
-  { color: "#F0AEC4", clave: "rosa" },
-  { color: "#74C7C3", clave: "turquesa" },
-  { color: "#E02847", clave: "rojo" },
-] as const;
-
-export function Personalizador() {
-  const t = useTranslations("landing");
-  const { acento, setAcento, destellos, setDestellos } = useLanding();
-  const [, alternarModo] = useAlternarModo();
-
-  return (
-    <div className="mx-auto grid max-w-4xl grid-cols-1 gap-5 md:grid-cols-3">
-      <div className="theme-surface-alt space-y-3 p-4">
-        <h4 className="text-xs font-bold tracking-wider text-[var(--text-secondary)] uppercase">
-          {t("mod5.step1")}
-        </h4>
-        <BotonesTema variante="panel" />
-      </div>
-
-      <div className="theme-surface-alt space-y-3 p-4">
-        <h4 className="text-xs font-bold tracking-wider text-[var(--text-secondary)] uppercase">
-          {t("mod5.step2")}
-        </h4>
-        <div className="flex items-center gap-3 pt-1">
-          {ACENTOS.map(({ color, clave }) => (
-            <button
-              key={color}
-              type="button"
-              aria-label={t(`acentos.${clave}`)}
-              aria-pressed={acento === color}
-              onClick={() => setAcento(color)}
-              className={`h-9 w-9 rounded-full border-2 border-[var(--text-primary)] shadow-sm transition-transform hover:scale-110 ${
-                acento === color ? "ring-2 ring-[var(--text-primary)] ring-offset-2 ring-offset-[var(--bg-surface-alt)]" : ""
-              }`}
-              style={{ background: color }}
-            />
-          ))}
-        </div>
-        <p className="text-[11px] text-[var(--text-secondary)]">{t("mod5.step2Hint")}</p>
-      </div>
-
-      <div className="theme-surface-alt space-y-3 p-4">
-        <h4 className="text-xs font-bold tracking-wider text-[var(--text-secondary)] uppercase">
-          {t("mod5.step3")}
-        </h4>
-        <div className="flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={alternarModo}
-            className="theme-btn-secondary flex items-center justify-between px-3 py-2 text-xs font-semibold"
-          >
-            <span>{t("mod5.modeBtn")}</span>
-            <span aria-hidden="true">🌓</span>
-          </button>
-          <button
-            type="button"
-            aria-pressed={destellos}
-            onClick={() => setDestellos(!destellos)}
-            className="theme-btn-secondary flex items-center justify-between px-3 py-2 text-xs font-semibold"
-          >
-            <span>{destellos ? t("mod5.sparkleBtn") : t("mod5.sparkleBtnOff")}</span>
-            <span aria-hidden="true">✨</span>
-          </button>
-        </div>
       </div>
     </div>
   );

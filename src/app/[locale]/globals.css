@@ -262,3 +262,38 @@ body {
   border-radius: 2px;
   padding: 0 2px;
 }
+
+/*
+ * Filas de chips que en el celular se deslizan de lado (filtros de
+ * categoría y de hashtag): el borde derecho se desvanece para que se note
+ * que hay más. Donde el navegador sabe atar una animación al scroll, el
+ * desvanecido se va al llegar al final, así el último chip se ve entero.
+ */
+@property --fila-fundido {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 2.5rem;
+}
+
+@keyframes fila-deslizable-fin {
+  0%,
+  85% {
+    --fila-fundido: 2.5rem;
+  }
+  100% {
+    --fila-fundido: 0rem;
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .fila-deslizable {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--fila-fundido)), transparent);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .fila-deslizable {
+      animation: fila-deslizable-fin linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
+}

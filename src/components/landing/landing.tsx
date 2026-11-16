@@ -3,9 +3,9 @@ import { getTranslations } from "next-intl/server";
 import logo from "@/assets/logo/logo.webp";
 import marca from "@/assets/logo/marca.webp";
 import { Link } from "@/i18n/navigation";
-import { DemoAudio, DemoDiario, DemoListas, DemoVitrina, Personalizador } from "./demos";
-import { cormorant, pirata } from "./fuentes";
-import { BotonModo, LandingRaiz, SelectorFlotante } from "./landing-raiz";
+import { DemoAudio, DemoDiario, DemoListas, DemoVitrina } from "./demos";
+import { BotonModo, LandingRaiz } from "./landing-raiz";
+import { Probador } from "./probador";
 import { RUTA_LOGIN, RUTA_REGISTRO } from "./rutas";
 import { VentanasHero } from "./ventanas-hero";
 import "./landing.css";
@@ -26,7 +26,7 @@ export async function Landing({ locale }: { locale: string }) {
 
   return (
     <LandingRaiz
-      className={`landing ${cormorant.variable} ${pirata.variable} flex min-h-full flex-1 flex-col antialiased`}
+      className="landing flex min-h-full flex-1 flex-col antialiased"
     >
       {/* ── Barra ── */}
       <header className="sticky top-0 z-40 border-b border-[var(--border-color)] bg-[color-mix(in_srgb,var(--bg-page)_85%,transparent)] backdrop-blur-md transition-colors duration-500">
@@ -45,26 +45,27 @@ export async function Landing({ locale }: { locale: string }) {
             </span>
           </Link>
 
-          <div className="flex items-center gap-1.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <Link
               href="/"
               locale={otroIdioma}
               hrefLang={otroIdioma}
               aria-label={t("cambiarIdioma")}
-              className="theme-btn-secondary px-2.5 py-1.5 text-xs font-semibold"
+              className="theme-btn-secondary flex h-11 items-center px-3 text-xs font-semibold"
             >
               {t("idiomaBoton")}
             </Link>
             <BotonModo />
             <Link
               href={RUTA_LOGIN}
-              className="theme-btn-secondary hidden px-3.5 py-1.5 text-xs font-medium sm:inline-flex sm:text-sm"
+              className="theme-btn-secondary flex h-11 items-center px-3 text-xs font-medium whitespace-nowrap sm:px-3.5 sm:text-sm"
             >
-              {t("nav.login")}
+              <span className="sm:hidden">{t("nav.loginCorto")}</span>
+              <span className="hidden sm:inline">{t("nav.login")}</span>
             </Link>
             <Link
               href={RUTA_REGISTRO}
-              className="theme-btn-primary px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap sm:px-4 sm:text-sm"
+              className="theme-btn-primary hidden h-11 items-center px-3.5 text-xs font-semibold whitespace-nowrap min-[420px]:flex sm:px-4 sm:text-sm"
             >
               {t("nav.signup")}
             </Link>
@@ -72,12 +73,9 @@ export async function Landing({ locale }: { locale: string }) {
         </div>
       </header>
 
-      <SelectorFlotante />
-
-      <main>
+      <main id="contenido">
         {/* ── Hero ── */}
         <section
-          data-section-theme="whimsical"
           className="relative overflow-hidden px-4 pt-10 pb-16 sm:px-6 sm:pt-16 sm:pb-24"
         >
           <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 lg:grid-cols-12">
@@ -159,7 +157,6 @@ export async function Landing({ locale }: { locale: string }) {
         {/* ── Los cinco módulos ── */}
         <div className="mx-auto max-w-6xl space-y-16 px-4 py-8 sm:space-y-24 sm:px-6">
           <section
-            data-section-theme="whimsical"
             className="reveal-section grid grid-cols-1 items-center gap-8 lg:grid-cols-12"
           >
             <div className="space-y-4 lg:col-span-5">
@@ -182,7 +179,6 @@ export async function Landing({ locale }: { locale: string }) {
           </section>
 
           <section
-            data-section-theme="retro"
             className="reveal-section grid grid-cols-1 items-center gap-8 lg:grid-cols-12"
           >
             <div className="theme-card order-2 overflow-hidden lg:order-1 lg:col-span-7">
@@ -204,7 +200,6 @@ export async function Landing({ locale }: { locale: string }) {
           </section>
 
           <section
-            data-section-theme="fairy"
             className="reveal-section grid grid-cols-1 items-center gap-8 lg:grid-cols-12"
           >
             <div className="space-y-4 lg:col-span-5">
@@ -224,7 +219,6 @@ export async function Landing({ locale }: { locale: string }) {
           </section>
 
           <section
-            data-section-theme="emo"
             className="reveal-section grid grid-cols-1 items-center gap-8 lg:grid-cols-12"
           >
             <div className="theme-card order-2 overflow-hidden lg:order-1 lg:col-span-7">
@@ -245,8 +239,7 @@ export async function Landing({ locale }: { locale: string }) {
 
           <section
             id="personalizar"
-            data-section-theme="whimsical"
-            className="reveal-section theme-card space-y-8 p-6 sm:p-10"
+            className="reveal-section theme-card space-y-8 p-5 sm:p-10"
           >
             <div className="mx-auto max-w-2xl space-y-3 text-center">
               <span className={`${pildora} bg-[color-mix(in_srgb,var(--accent-tertiary)_40%,transparent)]`}>
@@ -255,7 +248,7 @@ export async function Landing({ locale }: { locale: string }) {
               <h2 className={tituloModulo}>{t("mod5.title")}</h2>
               <p className="text-sm text-[var(--text-secondary)] sm:text-base">{t("mod5.desc")}</p>
             </div>
-            <Personalizador />
+            <Probador />
           </section>
         </div>
 
@@ -284,7 +277,7 @@ export async function Landing({ locale }: { locale: string }) {
         <section className="reveal-section px-4 py-12 text-center sm:px-6 sm:py-20">
           <div className="mx-auto max-w-2xl space-y-6">
             <div className="theme-card mx-auto w-[min(72vw,18rem)] overflow-hidden">
-              <Image src={logo} alt={t("altLogo")} sizes="(min-width: 400px) 288px, 72vw" className="h-auto w-full" />
+              <Image src={logo} alt={t("altLogo")} sizes="(min-width: 400px) 288px, 72vw" quality={90} className="h-auto w-full" />
             </div>
             <h2 className="section-title font-literary text-3xl font-semibold text-[var(--text-primary)] sm:text-5xl">
               {t("ctaFinal.title")}

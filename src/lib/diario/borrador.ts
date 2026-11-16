@@ -14,12 +14,22 @@ function clave(id: string) {
   return `cuarto-propio:borrador:${id}`;
 }
 
+/** Un borrador de hace más de una semana ya no es "lo que estaba escribiendo
+ * recién": se descarta solo en vez de ofrecerlo cada vez que se abre el
+ * editor. */
+export const VIDA_BORRADOR_MS = 7 * 24 * 60 * 60 * 1000;
+
 export function leerBorrador(id: string): Borrador | null {
   try {
     const crudo = window.localStorage.getItem(clave(id));
     if (!crudo) return null;
     const borrador = JSON.parse(crudo) as Borrador;
-    return typeof borrador?.guardadoEn === "number" ? borrador : null;
+    if (typeof borrador?.guardadoEn !== "number") return null;
+    if (Date.now() - borrador.guardadoEn > VIDA_BORRADOR_MS) {
+      window.localStorage.removeItem(clave(id));
+      return null;
+    }
+    return borrador;
   } catch {
     // Modo privado, almacenamiento bloqueado o JSON corrupto: sin borrador.
     return null;

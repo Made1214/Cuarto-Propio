@@ -41,8 +41,12 @@ function declaraciones(variables: Record<string, string>): string {
  * Mismo esquema de modo que globals.css: el claro en `:root`, el oscuro por
  * preferencia del sistema salvo que se haya fijado "claro", y el oscuro
  * fijado a mano al final para ganarle a la media query.
+ *
+ * Con `alcance` (un selector, p. ej. el de la maqueta del probador de la
+ * landing) todo queda colgado de ese elemento en vez de `:root`/`body`, así
+ * se puede mostrar un tema sin pintar la página entera con él.
  */
-export function generarCssTema(config: ConfigTema): string {
+export function generarCssTema(config: ConfigTema, alcance?: string): string {
   const tema = TEMAS_DISPONIBLES[config.preset];
   const offset = tema.sombraOffset ?? "4px";
   const bordeGrueso = `${parseFloat(tema.anchoBorde) + 1}px`;
@@ -88,22 +92,26 @@ export function generarCssTema(config: ConfigTema): string {
   // `temas.css` las define sobre el envoltorio `[data-tema]`, así que acá se
   // pisan sobre ese mismo elemento, con el atributo repetido para ganarle en
   // especificidad a la regla del mismo modo sin tocar la del otro.
-  const yo = `[data-tema="${config.preset}"][data-tema="${config.preset}"]`;
+  const raiz = alcance ?? ":root";
+  const oscuroAuto = alcance ? `:root:not([data-modo="claro"]) ${alcance}` : ':root:not([data-modo="claro"])';
+  const oscuroFijo = alcance ? `:root[data-modo="oscuro"] ${alcance}` : ':root[data-modo="oscuro"]';
+  const cuerpo = alcance ?? "body";
+  const yo = alcance ?? `[data-tema="${config.preset}"][data-tema="${config.preset}"]`;
   const propiasClaro = declaraciones(variablesPropiasTema(config.preset, "claro", paletaClaro));
   const propiasOscuro = declaraciones(variablesPropiasTema(config.preset, "oscuro", paletaOscuro));
 
   let cursor = "";
   if (config.cursor?.tipo === "preset") {
     const { archivo, punto } = CURSORES[config.cursor.id];
-    cursor = `body{cursor:url("${archivo}") ${punto[0]} ${punto[1]},auto}`;
+    cursor = `${cuerpo}{cursor:url("${archivo}") ${punto[0]} ${punto[1]},auto}`;
   } else if (config.cursor?.tipo === "propio") {
-    cursor = `body{cursor:url("${config.cursor.imagen}") ${PUNTO_CURSOR_PROPIO[0]} ${PUNTO_CURSOR_PROPIO[1]},auto}`;
+    cursor = `${cuerpo}{cursor:url("${config.cursor.imagen}") ${PUNTO_CURSOR_PROPIO[0]} ${PUNTO_CURSOR_PROPIO[1]},auto}`;
   }
 
   return [
-    `:root{${forma};${claro}}`,
-    `@media (prefers-color-scheme: dark){:root:not([data-modo="claro"]){${oscuro}}}`,
-    `:root[data-modo="oscuro"]{${oscuro}}`,
+    `${raiz}{${forma};${claro}}`,
+    `@media (prefers-color-scheme: dark){${oscuroAuto}{${oscuro}}}`,
+    `${oscuroFijo}{${oscuro}}`,
     propiasClaro ? `${yo}{${propiasClaro}}` : "",
     propiasOscuro
       ? `@media (prefers-color-scheme: dark){:root:not([data-modo="claro"]) ${yo}{${propiasOscuro}}}` +

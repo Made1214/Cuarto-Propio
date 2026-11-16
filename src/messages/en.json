@@ -21,7 +21,8 @@
     "filtrarCategoria": "Filter by category",
     "todas": "All",
     "avisoStorage": "Your storage is at {porcentaje}%: {usado} of {limite}. When it fills up you won't be able to upload more photos or audio.",
-    "avisoStorageLleno": "Your storage is full ({usado} of {limite}). To upload more photos or audio, free up space or move to a plan with more storage."
+    "avisoStorageLleno": "Your storage is full ({usado} of {limite}). To upload more photos or audio, free up space or move to a plan with more storage.",
+    "personalizar": "Customize my room"
   },
   "perfil": {
     "titulo": "Profile",
@@ -118,7 +119,19 @@
     "legal": "By creating an account you accept the <terminos>terms of use</terminos> and the <privacidad>privacy policy</privacidad>.",
     "terminos": "Terms of use",
     "privacidad": "Privacy",
-    "documentos": "Documents"
+    "documentos": "Documents",
+    "cambiarIdioma": "Cambiar idioma / Switch language",
+    "modoClaroOscuro": "Toggle light or dark mode",
+    "volverInicio": "Cuarto Propio, back to home",
+    "entrando": "Logging in…",
+    "creando": "Creating your room…",
+    "enviando": "Sending…",
+    "guardando": "Saving…",
+    "temaElegido": "Your room will start with the {tema} theme.",
+    "metaEntrar": "Log in",
+    "metaCrear": "Create account",
+    "metaRecuperar": "Recover password",
+    "metaRestablecer": "New password"
   },
   "diario": {
     "titulo": "Journal",
@@ -138,7 +151,7 @@
     "tituloDemasiadoLargo": "The title can't be longer than {maximo} characters.",
     "limpiarFiltros": "Clear filters",
     "resultados": "{cantidad, plural, =0 {no entries} one {# entry} other {# entries}}",
-    "borradorEncontrado": "You have an unsaved draft from {fecha}.",
+    "borradorEncontrado": "You have an unsaved draft from {hace} ({fecha}).",
     "restaurarBorrador": "Restore",
     "descartarBorrador": "Discard",
     "categoriaPlaceholder": "Category (optional)",
@@ -222,7 +235,11 @@
     "eliminarConfirmar": "Delete this list? This cannot be undone.",
     "errorGuardar": "Couldn’t save that change. Please try again.",
     "progresoTexto": "{hechos} of {total} done",
-    "agregar": "Add"
+    "agregar": "Add",
+    "cantidadItems": "{total, plural, =0 {No items} one {# item} other {# items}}",
+    "abrirLista": "Open list",
+    "plegarLista": "Collapse list",
+    "eliminarLista": "Delete list"
   },
   "vitrina": {
     "titulo": "Showcase",
@@ -536,12 +553,8 @@
   "landing": {
     "nav": {
       "login": "Log in",
-      "signup": "Create account"
-    },
-    "switcher": {
-      "title": "Decorate this room",
-      "autoScroll": "Shift theme on scroll",
-      "btn": "Change theme"
+      "signup": "Create account",
+      "loginCorto": "Log in"
     },
     "hero": {
       "badge": "A private digital sanctuary • No algorithms or likes",
@@ -619,15 +632,8 @@
     },
     "mod5": {
       "pill": "05 • Total customization",
-      "title": "Your room shifts with you. Try it right here.",
-      "desc": "Pick a full design theme, tweak accent colors, switch light/dark mode, or toggle cursor sparkles. This entire page transforms live.",
-      "step1": "1. Design theme",
-      "step2": "2. Accent color",
-      "step2Hint": "Updates primary accent and sparkles.",
-      "step3": "3. Mood & cursor",
-      "modeBtn": "Toggle Light / Dark",
-      "sparkleBtn": "Cursor sparkles: ON",
-      "sparkleBtnOff": "Cursor sparkles: OFF"
+      "title": "Your room changes with you. Try it right here.",
+      "desc": "These are the themes you'll find in Customization. Scroll (or tap one) and watch your journal change; then switch the font, the accent color and the cursor."
     },
     "privacy": {
       "title": "It is yours. Not a social network. We never sell or train on your content.",
@@ -656,18 +662,68 @@
     "idiomaPie": "🌐 English / Español",
     "cambiarIdioma": "Switch language / Cambiar idioma",
     "modoClaroOscuro": "Toggle light or dark mode",
-    "selector": "Design and theme picker",
-    "cerrarSelector": "Close picker",
     "cerrarVentana": "Close window",
     "reproducir": "Play or pause sample",
     "ideas": "Ideas",
     "rec": "● REC",
     "masonry": "✦ masonry",
-    "acentos": {
-      "verde": "Pastel green",
-      "rosa": "Pastel pink",
-      "turquesa": "Turquoise",
-      "rojo": "Cherry red"
+    "probador": {
+      "temas": {
+        "retro": "'98 desktop windows: thick borders, square corners and a hard shadow. The theme the app starts with.",
+        "whimsical": "Pastel and warm, inspired by the blogs of old: soft borders, a gentle shadow and a literary font.",
+        "softsignal": "A retro plastic gadget: cream casing, keys with little lights and dates on green LCD screens.",
+        "void": "Y2K emo: 2000s desktop windows, stars, hot-pink glow and chrome titles.",
+        "fairy": "Dreamy pastel, italics and sparkles. We're still designing it."
+      },
+      "pronto": "soon",
+      "asiSeVeria": "This is how your room would look in {tema}",
+      "maquetaAlt": "Preview of the app in the {tema} theme: the navigation bar, the Journal title and two entries",
+      "temasGrupo": "Choose a theme",
+      "letra": "Font",
+      "acento": "Accent",
+      "cursor": "Cursor",
+      "modo": "Mode",
+      "delTema": "Theme's",
+      "cursorNormal": "Default",
+      "cursorAyuda": "Hover over the preview",
+      "cursores": {
+        "corazon": "Heart cursor",
+        "estrella": "Star cursor",
+        "lapiz": "Pencil cursor"
+      },
+      "acentos": {
+        "0": "Raspberry accent",
+        "1": "Forest green accent",
+        "2": "Blue accent",
+        "3": "Orange accent"
+      },
+      "cta": "Create my room with {tema}",
+      "ctaNota": "Your account starts with this theme. Change it anytime.",
+      "maqueta": {
+        "diario": "Journal",
+        "listas": "Lists",
+        "vitrina": "Showcase",
+        "audio": "Audio",
+        "todas": "All",
+        "cat1": "Slow days",
+        "cat2": "Reading",
+        "dia1": "fri",
+        "dia2": "tue",
+        "titulo1": "Toast with fig jam",
+        "texto1": "I did nothing extraordinary today, and still the day felt worth it.",
+        "titulo2": "Notes on \"A Room of One's Own\"",
+        "texto2": "Closing the door to finally hear what one actually thinks."
+      }
     }
+  },
+  "comun": {
+    "saltarContenido": "Skip to content"
+  },
+  "noEncontrado": {
+    "meta": "Page not found",
+    "titulo": "This door doesn't lead to any room",
+    "texto": "The page you're looking for doesn't exist or has moved. Maybe the link was incomplete.",
+    "inicio": "Back to home",
+    "diario": "Go to my journal"
   }
 }

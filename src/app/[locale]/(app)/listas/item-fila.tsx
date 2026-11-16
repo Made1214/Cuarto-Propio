@@ -102,7 +102,7 @@ export function ItemFila({
           y, al tocarlo, despliega las flechas — que en un celular es la
           única forma real de reordenar (el arrastre HTML no existe ahí). */}
       {pendiente ? (
-        <span aria-hidden="true" className="h-7 w-5 shrink-0" />
+        <span aria-hidden="true" className="h-7 w-5 shrink-0 pointer-coarse:h-11 pointer-coarse:w-9" />
       ) : (
         <button
           type="button"
@@ -126,7 +126,7 @@ export function ItemFila({
           }}
           aria-label={t("moverItem")}
           title={t("moverItem")}
-          className={`flex h-7 w-5 shrink-0 cursor-grab items-center justify-center transition-colors active:cursor-grabbing ${
+          className={`flex h-7 w-5 shrink-0 cursor-grab items-center pointer-coarse:h-11 pointer-coarse:w-9 justify-center transition-colors active:cursor-grabbing ${
             moviendo ? "text-ink" : "text-ink/30 hover:text-ink"
           }`}
         >
@@ -135,14 +135,14 @@ export function ItemFila({
       )}
 
       {moviendo ? (
-        <div className="flex h-7 shrink-0 items-center gap-0.5">
+        <div className="flex h-7 shrink-0 items-center gap-0.5 pointer-coarse:h-11 pointer-coarse:gap-1">
           <button
             type="button"
             disabled={primero}
             onClick={() => onMover(-1)}
             aria-label={t("subirItem")}
             title={t("subirItem")}
-            className="flex h-6 w-6 items-center justify-center border-(length:--borde) border-ink rounded-theme text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
+            className="flex h-6 w-6 items-center justify-center border-(length:--borde) pointer-coarse:h-10 pointer-coarse:w-10 border-ink rounded-theme text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
           >
             <IconoFlecha hacia="arriba" />
           </button>
@@ -152,7 +152,7 @@ export function ItemFila({
             onClick={() => onMover(1)}
             aria-label={t("bajarItem")}
             title={t("bajarItem")}
-            className="flex h-6 w-6 items-center justify-center border-(length:--borde) border-ink rounded-theme text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
+            className="flex h-6 w-6 items-center justify-center border-(length:--borde) pointer-coarse:h-10 pointer-coarse:w-10 border-ink rounded-theme text-ink transition-colors hover:bg-secondary-purple/15 disabled:border-ink/20 disabled:text-ink/20"
           >
             <IconoFlecha hacia="abajo" />
           </button>
@@ -160,7 +160,7 @@ export function ItemFila({
       ) : null}
 
       {conCasillas ? (
-        <div className="flex h-7 shrink-0 items-center">
+        <div className="flex h-7 shrink-0 items-center pointer-coarse:h-11">
           <ItemCheckbox marcado={item.marcado} onCambiar={onAlternar} disabled={pendiente} />
         </div>
       ) : null}
@@ -207,7 +207,7 @@ export function ItemFila({
       />
 
       {pendiente ? (
-        <span aria-hidden="true" className="h-7 w-7 shrink-0" />
+        <span aria-hidden="true" className="h-7 w-7 shrink-0 pointer-coarse:h-11 pointer-coarse:w-11" />
       ) : (
         <EliminarItemBoton onEliminar={onEliminar} />
       )}

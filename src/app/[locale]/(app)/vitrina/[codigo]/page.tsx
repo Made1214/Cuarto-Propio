@@ -9,6 +9,7 @@ import { colorCategoria } from "@/lib/categorias/color";
 import { listarCategorias } from "@/lib/categorias/queries";
 import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
 import { listarRelacionadas, obtenerImagenPorCodigo } from "@/lib/imagenes/queries";
+import { textoAlternativo } from "@/lib/imagenes/hashtags";
 import type { ImagenEnVitrina } from "@/lib/imagenes/types";
 import { BotonesVentana, IconoLapiz, IconoVolver } from "../iconos";
 import { VentanaImagen } from "../ventana-imagen";
@@ -128,7 +129,7 @@ export default async function ImagenPage({
                   // La miniatura de fondo solo calza si se conoce la
                   // proporción real (estirada a la caja de la foto).
                   miniaturaUrl={proporcion ? imagen.miniaturaUrl : null}
-                  alt={titulo}
+                  alt={textoAlternativo(imagen.titulo, imagen.descripcion, t("sinTitulo"))}
                   ancho={imagen.ancho ?? 1200}
                   alto={imagen.alto ?? 1200}
                   altoMaximo={ALTO_FOTO}
@@ -241,7 +242,7 @@ async function RelacionadasAlCostado({
             {otra.miniaturaUrl ? (
               <Image
                 src={otra.miniaturaUrl}
-                alt={otra.titulo ?? t("sinTitulo")}
+                alt={textoAlternativo(otra.titulo, otra.descripcion, t("sinTitulo"))}
                 width={otra.ancho ?? 400}
                 height={otra.alto ?? 400}
                 unoptimized

@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    // 90 para las ilustraciones de la landing (con 75 se veían blandas en
+    // pantallas de 1.5x–2x); 75 para todo lo demás.
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: "https",

@@ -5,6 +5,9 @@ import { listarListas } from "@/lib/listas/queries";
 import { ListaColumna } from "./lista-columna";
 import { NuevaListaInline } from "./nueva-lista-inline";
 
+/** Hasta cuántas listas se muestran abiertas de entrada. */
+const LISTAS_ABIERTAS_MAXIMO = 6;
+
 export default async function ListasPage({
   params,
   searchParams,
@@ -24,6 +27,10 @@ export default async function ListasPage({
   // Solo la categoría que de verdad existe: un id roto en la URL se trata
   // como si no hubiera filtro (ver `listarConFiltroCategoria`).
   const categoria = categoriaActual?.id;
+  // Con pocas listas se ven todas abiertas; con muchas, plegadas (nombre y
+  // progreso) para no montar miles de filas de una vez. Cada dispositivo
+  // recuerda las que se abrieron a mano (src/lib/listas/plegado.ts).
+  const abiertasPorDefecto = listas.length <= LISTAS_ABIERTAS_MAXIMO;
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -59,7 +66,7 @@ export default async function ListasPage({
       <div className="columns-[17rem] gap-5">
         {listas.map((lista) => (
           <div key={lista.id} className="mb-5 break-inside-avoid">
-            <ListaColumna lista={lista} categorias={categorias} />
+            <ListaColumna lista={lista} categorias={categorias} abiertaPorDefecto={abiertasPorDefecto} />
           </div>
         ))}
       </div>

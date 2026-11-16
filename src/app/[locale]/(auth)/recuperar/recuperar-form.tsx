@@ -55,9 +55,10 @@ export function RecuperarForm({ locale }: { locale: string }) {
       <button
         type="submit"
         disabled={pending}
+        aria-busy={pending}
         className={`${CLASE_BOTON} bg-primary-green`}
       >
-        {t("enviarEnlace")}
+        {pending ? t("enviando") : t("enviarEnlace")}
       </button>
       {volver}
     </form>

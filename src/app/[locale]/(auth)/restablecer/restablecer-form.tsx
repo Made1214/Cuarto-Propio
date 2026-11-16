@@ -26,9 +26,10 @@ export function RestablecerForm({ locale }: { locale: string }) {
       <button
         type="submit"
         disabled={pending}
+        aria-busy={pending}
         className={`${CLASE_BOTON} bg-primary-green`}
       >
-        {t("guardarContrasena")}
+        {pending ? t("guardando") : t("guardarContrasena")}
       </button>
     </form>
   );

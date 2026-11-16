@@ -6,6 +6,9 @@ import type { AuthError } from "@supabase/supabase-js";
 import { contrasenaValida } from "@/lib/auth/contrasena";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
+import { aplicarTemaInicial, META_TEMA_INICIAL } from "@/lib/temas/inicial";
+import { esPreset } from "@/lib/temas/presets";
+import { destinoSeguro } from "@/lib/auth/destino";
 
 export type EstadoAcceso = { error?: string; enviado?: boolean } | undefined;
 
@@ -91,10 +94,13 @@ export async function login(
     return { error: t("error") };
   }
 
-  // Entró: los fallos anteriores ya no cuentan como "seguidos".
-  await supabase.rpc("limpiar_intentos_login");
+  // Entró: los fallos anteriores ya no cuentan como "seguidos". Y si se
+  // registró desde el probador de la landing, su cuarto empieza con ese tema.
+  await Promise.all([supabase.rpc("limpiar_intentos_login"), aplicarTemaInicial(supabase)]);
 
-  redirect({ href: "/diario", locale });
+  // De vuelta a donde iba antes de que le pidieran entrar (`?next=`, lo pone
+  // el proxy), o al diario.
+  redirect({ href: destinoSeguro(formData.get("next")) ?? "/diario", locale });
 }
 
 /**
@@ -112,13 +118,20 @@ export async function registrar(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
 
+  const tema = formData.get("tema");
+
   if (!contrasenaValida(password)) return { error: t("contrasenaDebil") };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: await enlaceConfirmacion(`/${locale}/diario`) },
+    options: {
+      emailRedirectTo: await enlaceConfirmacion(`/${locale}/diario`),
+      // El tema elegido en el probador de la landing: se aplica la primera
+      // vez que haya sesión (ver src/lib/temas/inicial.ts).
+      data: esPreset(tema) ? { [META_TEMA_INICIAL]: tema } : undefined,
+    },
   });
 
   if (error) {
@@ -132,7 +145,10 @@ export async function registrar(
 
   // Si el proyecto tuviera la verificación apagada, la cuenta ya viene con
   // sesión: no tiene sentido pedirle que revise el correo.
-  if (data?.session) redirect({ href: "/diario", locale });
+  if (data?.session) {
+    await aplicarTemaInicial(supabase);
+    redirect({ href: "/diario", locale });
+  }
 
   return { enviado: true };
 }

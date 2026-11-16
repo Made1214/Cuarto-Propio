@@ -12,7 +12,7 @@ import {
 } from "../componentes";
 import { login, type EstadoAcceso } from "./actions";
 
-export function LoginForm({ locale }: { locale: string }) {
+export function LoginForm({ locale, siguiente }: { locale: string; siguiente: string | null }) {
   const t = useTranslations("login");
   const [state, formAction, pending] = useActionState<EstadoAcceso, FormData>(
     (_prevState, formData) => login(locale, formData),
@@ -21,6 +21,7 @@ export function LoginForm({ locale }: { locale: string }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
+      {siguiente ? <input type="hidden" name="next" value={siguiente} /> : null}
       <label className={CLASE_ETIQUETA}>
         {t("email")}
         <input
@@ -49,9 +50,10 @@ export function LoginForm({ locale }: { locale: string }) {
       <button
         type="submit"
         disabled={pending}
+        aria-busy={pending}
         className={`${CLASE_BOTON} mt-1 bg-primary-green`}
       >
-        {t("entrar")}
+        {pending ? t("entrando") : t("entrar")}
       </button>
     </form>
   );

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { routing } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
+import { aplicarTemaInicial } from "@/lib/temas/inicial";
 
 /**
  * Adonde llegan los enlaces de los correos de Supabase (confirmar cuenta,
@@ -36,7 +37,12 @@ export async function GET(request: Request) {
     ).error;
   }
 
-  if (abierta) return NextResponse.redirect(new URL(siguiente, url.origin));
+  if (abierta) {
+    // Recién confirmada la cuenta: si se registró desde el probador de la
+    // landing, su cuarto ya abre con el tema que eligió.
+    await aplicarTemaInicial(supabase);
+    return NextResponse.redirect(new URL(siguiente, url.origin));
+  }
 
   const segmento = siguiente.split("/")[1];
   const locale = (routing.locales as readonly string[]).includes(segmento)

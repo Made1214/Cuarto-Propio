@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import marca from "@/assets/logo/marca.webp";
 import { Link } from "@/i18n/navigation";
+import { ControlesAcceso } from "./controles";
 
 /**
  * El marco de las pantallas de acceso (entrar, crear cuenta, recuperar y
@@ -17,6 +19,7 @@ export default async function AccesoLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "login" });
 
   const modulos = [
@@ -27,21 +30,29 @@ export default async function AccesoLayout({
   ] as const;
 
   return (
-    <main className="flex flex-1 flex-col bg-background text-foreground md:flex-row">
-      <section className="flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-6 pt-12 pb-7 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
-        <div className="flex items-center gap-2.5">
-          <Image
-            src={marca}
-            alt=""
-            width={40}
-            height={40}
-            className="h-10 w-10 shrink-0 rounded-theme border-(length:--borde) border-ink object-cover"
-          />
-          <span className="font-pixel text-base tracking-wide">
-            CUARTO PROPIO
-          </span>
+    <main id="contenido" className="flex flex-1 flex-col bg-background text-foreground md:flex-row">
+      {/* En el celular el panel es solo una barra (marca + idioma + modo):
+          antes ocupaba media pantalla y el botón de entrar quedaba abajo del
+          pliegue. Desde tablet vuelve a ser la columna con qué es la app. */}
+      <section className="flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-2 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/" aria-label={t("volverInicio")} className="flex min-h-11 items-center gap-2.5">
+            <Image
+              src={marca}
+              alt=""
+              width={40}
+              height={40}
+              className="h-9 w-9 shrink-0 rounded-theme border-(length:--borde) border-ink object-cover md:h-10 md:w-10"
+            />
+            <span className="font-pixel text-sm tracking-wide md:text-base">
+              CUARTO PROPIO
+            </span>
+          </Link>
+          <Suspense fallback={null}>
+            <ControlesAcceso />
+          </Suspense>
         </div>
-        <p className="font-diario text-[22px] leading-snug md:text-4xl md:leading-tight md:font-bold">
+        <p className="hidden font-diario text-4xl leading-tight font-bold md:block">
           {t("lema")}
         </p>
         <ul className="mt-2 hidden grid-cols-2 gap-3.5 md:grid">
@@ -62,7 +73,7 @@ export default async function AccesoLayout({
         </p>
       </section>
 
-      <div className="flex flex-1 justify-center px-6 py-8 md:items-center">
+      <div className="flex flex-1 justify-center px-5 py-6 md:items-center md:px-6 md:py-8">
         <div className="flex w-full max-w-100 flex-col gap-8">
           {children}
           <nav

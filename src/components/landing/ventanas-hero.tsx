@@ -98,6 +98,7 @@ export function VentanasHero() {
                 src={logo}
                 alt={t("altLogo")}
                 sizes="192px"
+                quality={90}
                 draggable={false}
                 className="h-full w-full object-cover object-[50%_58%]"
               />
@@ -185,7 +186,7 @@ function Ventana({
           type="button"
           onClick={alCerrar}
           aria-label={t("cerrarVentana")}
-          className="rounded px-1.5 text-xs hover:bg-black/15"
+          className="flex h-7 min-w-7 items-center justify-center rounded text-sm hover:bg-black/15"
         >
           ✕
         </button>

@@ -1,3 +1,4 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import {
@@ -158,6 +159,11 @@ export const viewport: Viewport = {
   themeColor: "#5B3F73",
 };
 
+/** Un prerender por idioma de las páginas que no dependen de la sesión. */
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -170,6 +176,10 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  // Fija el idioma para esta request sin leer headers: así las páginas
+  // públicas (landing, términos, privacidad, recuperar) se prerenderizan.
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "comun" });
 
   return (
     <html
@@ -186,6 +196,15 @@ export default async function LocaleLayout({
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_MODO }} />
       </head>
       <body className="min-h-full flex flex-col">
+        {/* Para teclado y lector de pantalla: saltar la barra y llegar
+            directo a lo de esta página. Cada pantalla marca su <main> con
+            `id="contenido"`. */}
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:border-2 focus:border-ink focus:bg-card focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-ink"
+        >
+          {t("saltarContenido")}
+        </a>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

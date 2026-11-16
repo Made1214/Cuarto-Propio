@@ -150,6 +150,7 @@ export function EntradaForm({
                 dateStyle: "short",
                 timeStyle: "short",
               }),
+              hace: format.relativeTime(new Date(borrador.guardadoEn)),
             })}
           </p>
           <button

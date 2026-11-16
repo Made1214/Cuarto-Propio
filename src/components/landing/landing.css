@@ -1,7 +1,8 @@
 /*
- * Landing de Cuarto Propio: sus cuatro temas de demostración (Whimsical,
- * Retro 98, Fairy, Emo) con tokens propios. Viven SOLO acá, colgados de
- * `.landing[data-theme]`: no tocan los temas de la app (src/lib/temas/).
+ * Landing de Cuarto Propio: su identidad (Whimsical) con tokens propios.
+ * Vive SOLO acá, colgada de `.landing[data-theme]`: no toca los temas de la
+ * app (src/lib/temas/). Los temas reales se muestran en la maqueta del
+ * probador (probador.tsx), que usa los tokens de la app y no estos.
  *
  * El modo claro/oscuro es el mismo de la app (`data-modo` en el <html>, ver
  * src/lib/temas/modo.ts): claro por defecto, oscuro por preferencia del
@@ -43,99 +44,8 @@
   --sparkle-color-3: #74C7C3;
 }
 
-.landing[data-theme="retro"] {
-  --bg-page: #55AAAA;
-  --bg-surface: #C0C0C0;
-  --bg-surface-alt: #DFDFDF;
-  --bg-window-bar: #000080;
-  --text-primary: #111111;
-  --text-secondary: #333333;
-  --text-on-accent: #FFFFFF;
-  --text-window-bar: #FFFFFF;
-  --accent-primary: #008080;
-  --accent-secondary: #FF77BC;
-  --accent-tertiary: #FFE66D;
-  --btn-bg: #C0C0C0;
-  --btn-text: #000000;
-  --border-color: #000000;
-  --border-width: 2px;
-  --border-style: solid;
-  --radius-card: 2px;
-  --radius-pill: 2px;
-  --radius-inner: 0px;
-  --shadow-card: 4px 4px 0px #000000;
-  --shadow-btn: 3px 3px 0px #000000;
-  --font-literary: var(--font-lora), Georgia, serif;
-  --font-ui: var(--font-silkscreen), monospace;
-  --bg-pattern: linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px),
-  linear-gradient(to bottom, rgba(255,255,255,0.12) 1px, transparent 1px);
-  --bg-pattern-size: 32px 32px;
-  --sparkle-color-1: #FFE66D;
-  --sparkle-color-2: #FF77BC;
-  --sparkle-color-3: #FFFFFF;
-}
 
-.landing[data-theme="fairy"] {
-  --bg-page: #FDF6FF;
-  --bg-surface: #FFFFFF;
-  --bg-surface-alt: #F6EAFC;
-  --bg-window-bar: #E8C7F9;
-  --text-primary: #4A335C;
-  --text-secondary: #7B6091;
-  --text-on-accent: #4A335C;
-  --text-window-bar: #4A335C;
-  --accent-primary: #D4B2F5;
-  --accent-secondary: #FFC4E1;
-  --accent-tertiary: #B7F0DF;
-  --btn-bg: #B583E7;
-  --btn-text: #FFFFFF;
-  --border-color: #E7CCF8;
-  --border-width: 1.5px;
-  --border-style: solid;
-  --radius-card: 32px;
-  --radius-pill: 9999px;
-  --radius-inner: 20px;
-  --shadow-card: 0 14px 36px -6px rgba(181, 131, 231, 0.22);
-  --shadow-btn: 0 6px 20px -2px rgba(181, 131, 231, 0.45);
-  --font-literary: var(--font-cormorant), Georgia, serif;
-  --font-ui: var(--font-lora), Georgia, serif;
-  --bg-pattern: radial-gradient(rgba(212, 178, 245, 0.35) 2px, transparent 2px);
-  --bg-pattern-size: 28px 28px;
-  --sparkle-color-1: #FFC4E1;
-  --sparkle-color-2: #D4B2F5;
-  --sparkle-color-3: #B7F0DF;
-}
 
-.landing[data-theme="emo"] {
-  --bg-page: #F2EEEE;
-  --bg-surface: #FFFFFF;
-  --bg-surface-alt: #E5DDDD;
-  --bg-window-bar: #1A1216;
-  --text-primary: #171114;
-  --text-secondary: #4D3D44;
-  --text-on-accent: #FFFFFF;
-  --text-window-bar: #F5EBEB;
-  --accent-primary: #B81D38;
-  --accent-secondary: #2B2126;
-  --accent-tertiary: #8C2D40;
-  --btn-bg: #B81D38;
-  --btn-text: #FFFFFF;
-  --border-color: #1A1216;
-  --border-width: 2px;
-  --border-style: solid;
-  --radius-card: 10px;
-  --radius-pill: 6px;
-  --radius-inner: 6px;
-  --shadow-card: 0 10px 26px -6px rgba(26, 18, 22, 0.22);
-  --shadow-btn: 0 6px 18px -4px rgba(184, 29, 56, 0.45);
-  --font-literary: var(--font-cormorant), Georgia, serif;
-  --font-ui: var(--font-inter), system-ui, sans-serif;
-  --bg-pattern: repeating-linear-gradient(45deg, rgba(26,18,22,0.03) 0, rgba(26,18,22,0.03) 10px, transparent 10px, transparent 20px);
-  --bg-pattern-size: 28px 28px;
-  --sparkle-color-1: #B81D38;
-  --sparkle-color-2: #1A1216;
-  --sparkle-color-3: #8C2D40;
-}
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-modo="claro"]) .landing[data-theme="whimsical"] {
@@ -169,99 +79,8 @@
     --sparkle-color-3: #8ED9D4;
   }
 
-  :root:not([data-modo="claro"]) .landing[data-theme="retro"] {
-    --bg-page: #182232;
-    --bg-surface: #2B303A;
-    --bg-surface-alt: #1F242D;
-    --bg-window-bar: #3B28CC;
-    --text-primary: #F2F4F8;
-    --text-secondary: #BCC5D3;
-    --text-on-accent: #111111;
-    --text-window-bar: #FFFFFF;
-    --accent-primary: #5CE1E6;
-    --accent-secondary: #FF77BC;
-    --accent-tertiary: #FFE66D;
-    --btn-bg: #3B28CC;
-    --btn-text: #FFFFFF;
-    --border-color: #7D899E;
-    --border-width: 2px;
-    --border-style: solid;
-    --radius-card: 2px;
-    --radius-pill: 2px;
-    --radius-inner: 0px;
-    --shadow-card: 4px 4px 0px #090C12;
-    --shadow-btn: 3px 3px 0px #090C12;
-    --font-literary: var(--font-lora), Georgia, serif;
-    --font-ui: var(--font-silkscreen), monospace;
-    --bg-pattern: linear-gradient(to right, rgba(92,225,230,0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(92,225,230,0.08) 1px, transparent 1px);
-    --bg-pattern-size: 32px 32px;
-    --sparkle-color-1: #5CE1E6;
-    --sparkle-color-2: #FF77BC;
-    --sparkle-color-3: #FFE66D;
-  }
 
-  :root:not([data-modo="claro"]) .landing[data-theme="fairy"] {
-    --bg-page: #241934;
-    --bg-surface: #312346;
-    --bg-surface-alt: #1E142C;
-    --bg-window-bar: #6A4B93;
-    --text-primary: #FAF2FF;
-    --text-secondary: #D9C3EC;
-    --text-on-accent: #241934;
-    --text-window-bar: #FAF2FF;
-    --accent-primary: #DFC2FA;
-    --accent-secondary: #FFCCE5;
-    --accent-tertiary: #B8F2E2;
-    --btn-bg: #9D6FD1;
-    --btn-text: #FFFFFF;
-    --border-color: #5D4282;
-    --border-width: 1.5px;
-    --border-style: solid;
-    --radius-card: 32px;
-    --radius-pill: 9999px;
-    --radius-inner: 20px;
-    --shadow-card: 0 14px 36px -6px rgba(12, 6, 22, 0.55);
-    --shadow-btn: 0 6px 20px -2px rgba(157, 111, 209, 0.5);
-    --font-literary: var(--font-cormorant), Georgia, serif;
-    --font-ui: var(--font-lora), Georgia, serif;
-    --bg-pattern: radial-gradient(rgba(223, 194, 250, 0.18) 2px, transparent 2px);
-    --bg-pattern-size: 28px 28px;
-    --sparkle-color-1: #FFCCE5;
-    --sparkle-color-2: #DFC2FA;
-    --sparkle-color-3: #B8F2E2;
-  }
 
-  :root:not([data-modo="claro"]) .landing[data-theme="emo"] {
-    --bg-page: #110D10;
-    --bg-surface: #1C1519;
-    --bg-surface-alt: #150F13;
-    --bg-window-bar: #7A1426;
-    --text-primary: #F3EAEB;
-    --text-secondary: #BCA8AE;
-    --text-on-accent: #FFFFFF;
-    --text-window-bar: #F3EAEB;
-    --accent-primary: #E02847;
-    --accent-secondary: #9E8B92;
-    --accent-tertiary: #B81D38;
-    --btn-bg: #D92341;
-    --btn-text: #FFFFFF;
-    --border-color: #4D2732;
-    --border-width: 1.5px;
-    --border-style: solid;
-    --radius-card: 10px;
-    --radius-pill: 6px;
-    --radius-inner: 6px;
-    --shadow-card: 0 14px 36px -6px rgba(0, 0, 0, 0.75);
-    --shadow-btn: 0 6px 20px -4px rgba(224, 40, 71, 0.5);
-    --font-literary: var(--font-cormorant), Georgia, serif;
-    --font-ui: var(--font-inter), system-ui, sans-serif;
-    --bg-pattern: repeating-linear-gradient(45deg, rgba(224,40,71,0.04) 0, rgba(224,40,71,0.04) 10px, transparent 10px, transparent 20px);
-    --bg-pattern-size: 28px 28px;
-    --sparkle-color-1: #E02847;
-    --sparkle-color-2: #F3EAEB;
-    --sparkle-color-3: #8C2D40;
-  }
 
 }
 
@@ -296,99 +115,8 @@
   --sparkle-color-3: #8ED9D4;
 }
 
-:root[data-modo="oscuro"] .landing[data-theme="retro"] {
-  --bg-page: #182232;
-  --bg-surface: #2B303A;
-  --bg-surface-alt: #1F242D;
-  --bg-window-bar: #3B28CC;
-  --text-primary: #F2F4F8;
-  --text-secondary: #BCC5D3;
-  --text-on-accent: #111111;
-  --text-window-bar: #FFFFFF;
-  --accent-primary: #5CE1E6;
-  --accent-secondary: #FF77BC;
-  --accent-tertiary: #FFE66D;
-  --btn-bg: #3B28CC;
-  --btn-text: #FFFFFF;
-  --border-color: #7D899E;
-  --border-width: 2px;
-  --border-style: solid;
-  --radius-card: 2px;
-  --radius-pill: 2px;
-  --radius-inner: 0px;
-  --shadow-card: 4px 4px 0px #090C12;
-  --shadow-btn: 3px 3px 0px #090C12;
-  --font-literary: var(--font-lora), Georgia, serif;
-  --font-ui: var(--font-silkscreen), monospace;
-  --bg-pattern: linear-gradient(to right, rgba(92,225,230,0.08) 1px, transparent 1px),
-  linear-gradient(to bottom, rgba(92,225,230,0.08) 1px, transparent 1px);
-  --bg-pattern-size: 32px 32px;
-  --sparkle-color-1: #5CE1E6;
-  --sparkle-color-2: #FF77BC;
-  --sparkle-color-3: #FFE66D;
-}
 
-:root[data-modo="oscuro"] .landing[data-theme="fairy"] {
-  --bg-page: #241934;
-  --bg-surface: #312346;
-  --bg-surface-alt: #1E142C;
-  --bg-window-bar: #6A4B93;
-  --text-primary: #FAF2FF;
-  --text-secondary: #D9C3EC;
-  --text-on-accent: #241934;
-  --text-window-bar: #FAF2FF;
-  --accent-primary: #DFC2FA;
-  --accent-secondary: #FFCCE5;
-  --accent-tertiary: #B8F2E2;
-  --btn-bg: #9D6FD1;
-  --btn-text: #FFFFFF;
-  --border-color: #5D4282;
-  --border-width: 1.5px;
-  --border-style: solid;
-  --radius-card: 32px;
-  --radius-pill: 9999px;
-  --radius-inner: 20px;
-  --shadow-card: 0 14px 36px -6px rgba(12, 6, 22, 0.55);
-  --shadow-btn: 0 6px 20px -2px rgba(157, 111, 209, 0.5);
-  --font-literary: var(--font-cormorant), Georgia, serif;
-  --font-ui: var(--font-lora), Georgia, serif;
-  --bg-pattern: radial-gradient(rgba(223, 194, 250, 0.18) 2px, transparent 2px);
-  --bg-pattern-size: 28px 28px;
-  --sparkle-color-1: #FFCCE5;
-  --sparkle-color-2: #DFC2FA;
-  --sparkle-color-3: #B8F2E2;
-}
 
-:root[data-modo="oscuro"] .landing[data-theme="emo"] {
-  --bg-page: #110D10;
-  --bg-surface: #1C1519;
-  --bg-surface-alt: #150F13;
-  --bg-window-bar: #7A1426;
-  --text-primary: #F3EAEB;
-  --text-secondary: #BCA8AE;
-  --text-on-accent: #FFFFFF;
-  --text-window-bar: #F3EAEB;
-  --accent-primary: #E02847;
-  --accent-secondary: #9E8B92;
-  --accent-tertiary: #B81D38;
-  --btn-bg: #D92341;
-  --btn-text: #FFFFFF;
-  --border-color: #4D2732;
-  --border-width: 1.5px;
-  --border-style: solid;
-  --radius-card: 10px;
-  --radius-pill: 6px;
-  --radius-inner: 6px;
-  --shadow-card: 0 14px 36px -6px rgba(0, 0, 0, 0.75);
-  --shadow-btn: 0 6px 20px -4px rgba(224, 40, 71, 0.5);
-  --font-literary: var(--font-cormorant), Georgia, serif;
-  --font-ui: var(--font-inter), system-ui, sans-serif;
-  --bg-pattern: repeating-linear-gradient(45deg, rgba(224,40,71,0.04) 0, rgba(224,40,71,0.04) 10px, transparent 10px, transparent 20px);
-  --bg-pattern-size: 28px 28px;
-  --sparkle-color-1: #E02847;
-  --sparkle-color-2: #F3EAEB;
-  --sparkle-color-3: #8C2D40;
-}
 
 .landing {
   background-color: var(--bg-page);
@@ -415,17 +143,6 @@
   font-family: var(--font-ui);
 }
 
-/* Título gótico para Emo, cursiva para Fairy. */
-.landing[data-theme="emo"] .hero-title,
-.landing[data-theme="emo"] .section-title {
-  font-family: var(--font-pirata), var(--font-literary);
-  letter-spacing: 0.03em;
-}
-
-.landing[data-theme="fairy"] .hero-title,
-.landing[data-theme="fairy"] .section-title {
-  font-style: italic;
-}
 
 .landing .theme-card {
   background-color: var(--bg-surface);
@@ -531,10 +248,10 @@
    (`data-js`): sin JS, o antes de hidratar, todo se ve. */
 .landing[data-js] .reveal-section {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(12px);
   transition:
-    opacity 0.7s ease-out,
-    transform 0.7s ease-out;
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out;
 }
 
 .landing[data-js] .reveal-section.is-visible {
@@ -584,5 +301,28 @@
   .landing *,
   .landing {
     transition-duration: 0.05s !important;
+  }
+}
+
+/* Fundido del probador al elegir un tema (View Transitions): solo la
+   maqueta, el resto de la página no se mueve. */
+::view-transition-group(muestra-tema) {
+  animation-duration: 0.35s;
+}
+
+.muestra-tema,
+.muestra-tema * {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    border-radius 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .muestra-tema,
+  .muestra-tema * {
+    transition: none;
   }
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
+import { textoAlternativo } from "@/lib/imagenes/hashtags";
 import type { ImagenEnVitrina } from "@/lib/imagenes/types";
 import { BotonesVentana } from "./iconos";
 
@@ -50,7 +51,7 @@ export async function VentanaImagen({
         {imagen.miniaturaUrl ? (
           <Image
             src={imagen.miniaturaUrl}
-            alt={titulo || t("sinTitulo")}
+            alt={textoAlternativo(titulo, imagen.descripcion, t("sinTitulo"))}
             width={imagen.ancho ?? 800}
             height={imagen.alto ?? 800}
             // Sin el optimizador de Next a propósito: `sharp` ya dejó esta

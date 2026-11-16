@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
 /** Marco simple para las páginas legales: públicas, para leer con calma,
@@ -11,6 +11,7 @@ export default async function LegalLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "legal" });
 
   return (
@@ -37,7 +38,7 @@ export default async function LegalLayout({
           </Link>
         </nav>
       </header>
-      <main className="mx-auto w-full max-w-2xl px-5 py-10">{children}</main>
+      <main id="contenido" className="mx-auto w-full max-w-2xl px-5 py-10">{children}</main>
     </div>
   );
 }

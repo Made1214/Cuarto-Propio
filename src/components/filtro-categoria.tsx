@@ -44,7 +44,7 @@ export function FiltroCategoria({
 
   return (
     <nav aria-label={t("filtrarCategoria")} className="tema-fila-chips -mx-5 sm:mx-0">
-      <ul className="flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+      <ul className="fila-deslizable flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
         <li>
           <Link
             href={{ pathname, query: conservar ?? {} }}

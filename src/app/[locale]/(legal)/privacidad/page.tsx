@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DocumentoLegal } from "../documento-legal";
 
 export async function generateMetadata({
@@ -18,5 +18,6 @@ export default async function Page({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   return <DocumentoLegal locale={locale} documento="privacidad" />;
 }

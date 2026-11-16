@@ -29,3 +29,25 @@ export function useModo(): [ModoPreferido, (modo: ModoPreferido) => void] {
 
   return [modo, aplicarModo];
 }
+
+function suscribirSistema(alCambiar: () => void) {
+  const consulta = window.matchMedia("(prefers-color-scheme: dark)");
+  consulta.addEventListener("change", alCambiar);
+  return () => consulta.removeEventListener("change", alCambiar);
+}
+
+/**
+ * Claro ↔ oscuro con un solo botón. Es el mismo ajuste del perfil de la app
+ * (se guarda en este dispositivo): si estaba en «auto», el primer toque fija
+ * lo contrario de lo que se está viendo.
+ */
+export function useAlternarModo(): [boolean, () => void] {
+  const [modo, elegir] = useModo();
+  const sistemaOscuro = useSyncExternalStore(
+    suscribirSistema,
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+    () => false,
+  );
+  const oscuro = modo === "auto" ? sistemaOscuro : modo === "oscuro";
+  return [oscuro, () => elegir(oscuro ? "claro" : "oscuro")];
+}

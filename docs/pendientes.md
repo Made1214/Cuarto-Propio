@@ -1,6 +1,6 @@
 # Pendientes — para seguir en otro chat
 
-Última revisión: 2026-11-15 · rama revisada: `dev` (sobre `c44103b`, más CI y colores de categoría)
+Última revisión: 2026-11-16 · rama revisada: `dev` (sobre `1d57869`, más la revisión de rendimiento, navegación e interfaz)
 
 > **Regla de trabajo:** cada vez que se revise el estado del proyecto, primero
 > se hace `git fetch` y se analiza `origin/dev` (diff contra `main`, `tsc`,
@@ -51,6 +51,26 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 4. ~~Revisar las alertas de `npm audit`~~ (hecho; quedan 10 moderadas de herramientas, sección 4).
 5. ~~Tests automatizados~~ (unitarios hechos; falta la prueba de punta a punta, sección 5).
 6. **Diseño pendiente** (sección 3): Fairy, la columna de filtros del Diario en escritorio y otros detalles.
+
+## 0. Revisión de rendimiento, navegación e interfaz (2026-11-16)
+
+Hecho en esta ronda (falta probarlo con la base real, ver la lista de abajo):
+
+- **Landing:** sin cambio de tema en toda la página ni botón flotante. Ahora hay un **probador** con los temas reales (Retro, Whimsical, Softsignal, Void y Fairy "pronto"), letra, acento y cursor, y el botón "Crear mi cuarto con …" lleva el tema al registro. La landing, términos, privacidad y recuperar son estáticas. Ya no se descargan Cormorant ni Pirata One.
+- **Acceso:** `?next=` al mandar al login (se vuelve a donde se iba), logo con enlace al inicio, idioma y modo claro/oscuro en las pantallas de acceso, títulos de pestaña propios, "Entrando…" mientras se envía y, en el celular, el panel decorativo es solo una barra.
+- **404 propia** con la marca, en el idioma de la URL.
+- **App:** atajo a Personalización (pincel) en la barra; Listas plegadas cuando hay más de 6 (cada dispositivo recuerda las abiertas), botón "Eliminar lista" abajo y separado de la ✕ de los ítems, y botones de 44 px en pantallas táctiles; texto alternativo de la Vitrina sin nombres de archivo; borradores de más de 7 días se descartan solos y el aviso dice hace cuánto; filtros que se deslizan con el borde desvanecido; enlace "Saltar al contenido".
+
+Para probar con la base real:
+
+- [ ] Crear una cuenta desde el probador (p. ej. con Void), confirmar el correo y ver que el cuarto abre en Void.
+- [ ] Abrir `/es/listas` sin sesión, entrar y comprobar que vuelve a Listas.
+- [ ] Listas con más de 6: que arranquen plegadas, que abrir/plegar se recuerde al recargar.
+
+Pendiente:
+
+- [ ] **Miniaturas viejas:** las piezas y la foto de perfil subidas antes del cambio de tamaños siguen con la miniatura de 800 px. Correr `npx tsx scripts/regenerar-miniaturas.ts --aplicar` con la clave secreta en `.env.local` (primero sin `--aplicar` para ver qué haría).
+- [ ] **Rutas en inglés** (`/en/registro`, `/en/terminos`): se podrían traducir con `pathnames` de next-intl, pero obliga a tipar todos los enlaces de la app. Se dejó para después.
 
 ## 1. Probar con la base real
 

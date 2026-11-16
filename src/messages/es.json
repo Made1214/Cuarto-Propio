@@ -21,7 +21,8 @@
     "filtrarCategoria": "Filtrar por categoría",
     "todas": "Todas",
     "avisoStorage": "Tu espacio está al {porcentaje} %: {usado} de {limite}. Cuando se llene no vas a poder subir más fotos ni audios.",
-    "avisoStorageLleno": "Tu espacio está lleno ({usado} de {limite}). Para subir más fotos o audios hay que liberar espacio o pasar a un plan con más almacenamiento."
+    "avisoStorageLleno": "Tu espacio está lleno ({usado} de {limite}). Para subir más fotos o audios hay que liberar espacio o pasar a un plan con más almacenamiento.",
+    "personalizar": "Personalizar mi cuarto"
   },
   "perfil": {
     "titulo": "Perfil",
@@ -118,7 +119,19 @@
     "legal": "Al crear tu cuenta aceptas los <terminos>términos de uso</terminos> y la <privacidad>política de privacidad</privacidad>.",
     "terminos": "Términos de uso",
     "privacidad": "Privacidad",
-    "documentos": "Documentos"
+    "documentos": "Documentos",
+    "cambiarIdioma": "Cambiar idioma / Switch language",
+    "modoClaroOscuro": "Alternar modo claro u oscuro",
+    "volverInicio": "Cuarto Propio, volver al inicio",
+    "entrando": "Entrando…",
+    "creando": "Creando tu cuarto…",
+    "enviando": "Enviando…",
+    "guardando": "Guardando…",
+    "temaElegido": "Tu cuarto va a empezar con el tema {tema}.",
+    "metaEntrar": "Iniciar sesión",
+    "metaCrear": "Crear cuenta",
+    "metaRecuperar": "Recuperar contraseña",
+    "metaRestablecer": "Nueva contraseña"
   },
   "diario": {
     "titulo": "Diario",
@@ -138,7 +151,7 @@
     "tituloDemasiadoLargo": "El título no puede pasar de {maximo} caracteres.",
     "limpiarFiltros": "Limpiar filtros",
     "resultados": "{cantidad, plural, =0 {sin entradas} one {# entrada} other {# entradas}}",
-    "borradorEncontrado": "Tienes un borrador sin guardar del {fecha}.",
+    "borradorEncontrado": "Tienes un borrador sin guardar de {hace} ({fecha}).",
     "restaurarBorrador": "Restaurar",
     "descartarBorrador": "Descartar",
     "categoriaPlaceholder": "Categoría (opcional)",
@@ -222,7 +235,11 @@
     "eliminarConfirmar": "¿Eliminar esta lista? No se puede deshacer.",
     "errorGuardar": "No se pudo guardar el cambio. Prueba de nuevo.",
     "progresoTexto": "{hechos} de {total} hechos",
-    "agregar": "Agregar"
+    "agregar": "Agregar",
+    "cantidadItems": "{total, plural, =0 {Sin ítems} one {# ítem} other {# ítems}}",
+    "abrirLista": "Abrir lista",
+    "plegarLista": "Plegar lista",
+    "eliminarLista": "Eliminar lista"
   },
   "vitrina": {
     "titulo": "Vitrina",
@@ -536,12 +553,8 @@
   "landing": {
     "nav": {
       "login": "Iniciar sesión",
-      "signup": "Crear cuenta"
-    },
-    "switcher": {
-      "title": "Decora este cuarto",
-      "autoScroll": "Cambiar tema al bajar",
-      "btn": "Cambiar de tema"
+      "signup": "Crear cuenta",
+      "loginCorto": "Entrar"
     },
     "hero": {
       "badge": "Un refugio digital privado • Sin algoritmos ni likes",
@@ -620,14 +633,7 @@
     "mod5": {
       "pill": "05 • Personalización total",
       "title": "Tu cuarto cambia contigo. Pruébalo aquí mismo.",
-      "desc": "Elige un tema completo, cambia los colores de acento, alterna entre modo claro y oscuro, o activa los destellos en tu cursor. Toda esta página reaccionará al instante.",
-      "step1": "1. Tema de diseño",
-      "step2": "2. Color de acento",
-      "step2Hint": "Cambia el color principal y los destellos.",
-      "step3": "3. Ambiente y cursor",
-      "modeBtn": "Alternar Claro / Oscuro",
-      "sparkleBtn": "Destellos en cursor: ON",
-      "sparkleBtnOff": "Destellos en cursor: OFF"
+      "desc": "Estos son los temas que vas a encontrar en Personalización. Baja (o toca uno) y mira cómo se viste tu diario; después cambia la letra, el color de acento y el cursor."
     },
     "privacy": {
       "title": "Es tuyo. No es una red social. No vendemos ni entrenamos con tu contenido.",
@@ -656,18 +662,68 @@
     "idiomaPie": "🌐 Español / English",
     "cambiarIdioma": "Cambiar idioma / Switch language",
     "modoClaroOscuro": "Alternar modo claro u oscuro",
-    "selector": "Selector de diseño y tema visual",
-    "cerrarSelector": "Cerrar selector",
     "cerrarVentana": "Cerrar ventana",
     "reproducir": "Reproducir o pausar muestra",
     "ideas": "Ideas",
     "rec": "● REC",
     "masonry": "✦ masonry",
-    "acentos": {
-      "verde": "Verde pastel",
-      "rosa": "Rosado pastel",
-      "turquesa": "Turquesa",
-      "rojo": "Rojo cereza"
+    "probador": {
+      "temas": {
+        "retro": "Ventanas de escritorio de los 98: bordes gruesos, esquinas rectas y sombra dura. El tema con el que empieza la app.",
+        "whimsical": "Pastel y cálido, inspirado en los blogs de antes: bordes suaves, sombra difusa y letra literaria.",
+        "softsignal": "Un aparato retro de plástico: carcasa crema, teclas con lucecita y fechas en pantallas LCD verdes.",
+        "void": "Y2K emo: ventanitas de los 2000, estrellas, brillos rosa fuerte y títulos cromados.",
+        "fairy": "Pastel soñado, cursiva y brillos. Todavía lo estamos diseñando."
+      },
+      "pronto": "pronto",
+      "asiSeVeria": "Así se vería tu cuarto en tema {tema}",
+      "maquetaAlt": "Vista previa de la app con el tema {tema}: la barra de navegación, el título Diario y dos entradas",
+      "temasGrupo": "Elegir tema",
+      "letra": "Letra",
+      "acento": "Acento",
+      "cursor": "Cursor",
+      "modo": "Modo",
+      "delTema": "Del tema",
+      "cursorNormal": "Normal",
+      "cursorAyuda": "Pasa el mouse por la maqueta",
+      "cursores": {
+        "corazon": "Cursor de corazón",
+        "estrella": "Cursor de estrella",
+        "lapiz": "Cursor de lápiz"
+      },
+      "acentos": {
+        "0": "Acento frambuesa",
+        "1": "Acento verde bosque",
+        "2": "Acento azul",
+        "3": "Acento naranja"
+      },
+      "cta": "Crear mi cuarto con {tema}",
+      "ctaNota": "Tu cuenta empieza con este tema. Lo cambias cuando quieras.",
+      "maqueta": {
+        "diario": "Diario",
+        "listas": "Listas",
+        "vitrina": "Vitrina",
+        "audio": "Audio",
+        "todas": "Todas",
+        "cat1": "Días lentos",
+        "cat2": "Lecturas",
+        "dia1": "vie",
+        "dia2": "mar",
+        "titulo1": "Pan tostado con mermelada de higo",
+        "texto1": "Hoy no hice nada extraordinario y aun así sentí que el día valió la pena.",
+        "titulo2": "Notas sobre «Un cuarto propio»",
+        "texto2": "Cerrar la puerta para escuchar por fin lo que una misma piensa."
+      }
     }
+  },
+  "comun": {
+    "saltarContenido": "Saltar al contenido"
+  },
+  "noEncontrado": {
+    "meta": "Página no encontrada",
+    "titulo": "Esta puerta no lleva a ningún cuarto",
+    "texto": "La página que buscas no existe o cambió de lugar. Quizá el enlace estaba incompleto.",
+    "inicio": "Volver al inicio",
+    "diario": "Ir a mi diario"
   }
 }

@@ -67,9 +67,24 @@ export default async function proxy(request: NextRequest) {
       : false;
 
     if (ruta && esPrivada && !response.headers.has("location")) {
-      const destino = NextResponse.redirect(new URL(`/${ruta.locale}/login`, request.url));
+      // Se anota a dónde iba (`?next=`) para volver ahí después de entrar.
+      const login = new URL(`/${ruta.locale}/login`, request.url);
+      login.searchParams.set("next", `${ruta.resto}${request.nextUrl.search}`);
+      const destino = NextResponse.redirect(login);
       // Las cookies que haya escrito el intento de refresco (p. ej. borrar
       // una sesión inválida) viajan también con la redirección.
+      response.cookies.getAll().forEach((cookie) => destino.cookies.set(cookie));
+      return destino;
+    }
+  }
+
+  // Con sesión, la landing no tiene nada que ofrecer: directo al diario. Va
+  // acá y no en la página para que la landing se pueda prerenderizar (sin
+  // leer cookies) y salga al instante desde la caché.
+  if (conSesion && request.method === "GET") {
+    const ruta = rutaSinIdioma(request.nextUrl.pathname);
+    if (ruta && ruta.resto === "/" && !response.headers.has("location")) {
+      const destino = NextResponse.redirect(new URL(`/${ruta.locale}/diario`, request.url));
       response.cookies.getAll().forEach((cookie) => destino.cookies.set(cookie));
       return destino;
     }
