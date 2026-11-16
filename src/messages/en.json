@@ -43,7 +43,26 @@
     "email": "Email",
     "password": "Password",
     "entrar": "Sign in",
-    "error": "Could not sign in. Check your details and try again."
+    "error": "Could not sign in. Check your details and try again.",
+    "modulos": {
+      "titulo": "What's waiting inside",
+      "diario": {
+        "titulo": "Journal",
+        "descripcion": "Your thoughts, with formatting."
+      },
+      "listas": {
+        "titulo": "Lists",
+        "descripcion": "Books, ideas, to-dos."
+      },
+      "vitrina": {
+        "titulo": "Showcase",
+        "descripcion": "Your art, on display."
+      },
+      "audio": {
+        "titulo": "Audio",
+        "descripcion": "What you'd rather say out loud."
+      }
+    }
   },
   "diario": {
     "titulo": "Journal",

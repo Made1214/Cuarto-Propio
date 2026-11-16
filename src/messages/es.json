@@ -43,7 +43,26 @@
     "email": "Correo electrónico",
     "password": "Contraseña",
     "entrar": "Entrar",
-    "error": "No se pudo iniciar sesión. Revisa tus datos e intenta de nuevo."
+    "error": "No se pudo iniciar sesión. Revisa tus datos e intenta de nuevo.",
+    "modulos": {
+      "titulo": "Lo que te espera adentro",
+      "diario": {
+        "titulo": "Diario",
+        "descripcion": "Lo que piensas, con formato."
+      },
+      "listas": {
+        "titulo": "Listas",
+        "descripcion": "Libros, ideas, pendientes."
+      },
+      "vitrina": {
+        "titulo": "Vitrina",
+        "descripcion": "Tu arte, en exhibición."
+      },
+      "audio": {
+        "titulo": "Audio",
+        "descripcion": "Lo que prefieres decir en voz alta."
+      }
+    }
   },
   "diario": {
     "titulo": "Diario",

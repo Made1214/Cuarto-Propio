@@ -153,7 +153,39 @@ body {
   }
 }
 
+/* Cinta de módulos del login: corre sola hacia la izquierda y se detiene al
+   pasar el mouse (o al enfocar con teclado) para poder leerla. Los bordes se
+   desvanecen con una máscara y no con un degradado de color, así funciona
+   sobre cualquier fondo y en cualquier modo. */
+.marquee-mascara {
+  mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+}
+
+.marquee-cinta {
+  animation: marquee-corre 32s linear infinite;
+}
+
+.marquee-mascara:hover .marquee-cinta,
+.marquee-mascara:focus-within .marquee-cinta {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-corre {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  /* Sin movimiento: la cinta queda quieta y se recorre deslizando. */
+  .marquee-mascara {
+    overflow-x: auto;
+  }
+
+  .marquee-cinta {
+    animation: none;
+  }
+
   .ventana-dialogo[open],
   .ventana-dialogo[open]::backdrop,
   .panel-lateral[open],
