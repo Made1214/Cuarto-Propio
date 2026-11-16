@@ -4,8 +4,9 @@ import { FiltroCategoria } from "@/components/filtro-categoria";
 import { Link } from "@/i18n/navigation";
 import { colorCategoria } from "@/lib/categorias/color";
 import { listarConFiltroCategoria } from "@/lib/categorias/filtro";
-import { listarEntradas } from "@/lib/diario/queries";
+import { contarEntradasDiario, listarEntradas, mesValido } from "@/lib/diario/queries";
 import { Buscador } from "./buscador";
+import { ColumnaFiltros, SIN_CATEGORIA } from "./columna-filtros";
 import { ResultadosBusqueda, ZonaBusqueda } from "./busqueda-pendiente";
 
 export default async function DiarioPage({
@@ -13,34 +14,46 @@ export default async function DiarioPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; categoria?: string; hasta?: string }>;
+  searchParams: Promise<{ q?: string; categoria?: string; mes?: string; hasta?: string }>;
 }) {
   const { locale } = await params;
-  const { q, categoria: categoriaUrl, hasta } = await searchParams;
+  const { q, categoria: categoriaUrl, mes: mesUrl, hasta } = await searchParams;
   const t = await getTranslations({ locale, namespace: "diario" });
   const format = await getFormatter({ locale });
 
   const busqueda = q?.trim() ?? "";
 
-  const {
-    categorias,
-    categoriaActual,
-    resultado: pagina,
-  } = await listarConFiltroCategoria(categoriaUrl, (categoriaId) =>
-    // El total solo se cuenta si se va a mostrar, o sea, al filtrar.
-    listarEntradas({ categoriaId, busqueda: q, hasta, contar: Boolean(busqueda || categoriaId) }),
-  );
+  // `?categoria=ninguna` es "sin categoría"; `?mes=` solo vale con forma YYYY-MM.
+  const sinCategoria = categoriaUrl === SIN_CATEGORIA;
+  const mes = mesValido(mesUrl);
+
+  const [{ categorias, categoriaActual, resultado: pagina }, conteos] = await Promise.all([
+    listarConFiltroCategoria(sinCategoria ? undefined : categoriaUrl, (categoriaId) =>
+      // El total solo se cuenta si se va a mostrar, o sea, al filtrar.
+      listarEntradas({
+        categoriaId,
+        sinCategoria,
+        mes,
+        busqueda: q,
+        hasta,
+        contar: Boolean(busqueda || categoriaId || sinCategoria || mes),
+      }),
+    ),
+    contarEntradasDiario(),
+  ]);
 
   // De acá en más, solo la categoría que de verdad existe: un id roto en la
   // URL se trata como si no hubiera filtro (ver `listarConFiltroCategoria`).
   const categoria = categoriaActual?.id;
-  const hayFiltro = Boolean(busqueda || categoria);
+  const categoriaParam = sinCategoria ? SIN_CATEGORIA : categoria;
+  const hayFiltro = Boolean(busqueda || categoriaParam || mes);
   const entradas = pagina.filas;
   // Los filtros vigentes viajan con el "cargar más"; `hasta` no viaja en los
   // links de filtro, así que cambiar de filtro vuelve a la primera tanda.
   const filtrosActuales: Record<string, string> = {
     ...(busqueda ? { q: busqueda } : {}),
-    ...(categoria ? { categoria } : {}),
+    ...(categoriaParam ? { categoria: categoriaParam } : {}),
+    ...(mes ? { mes } : {}),
   };
 
   // Agrupado por mes: un diario se recorre por épocas, no como una lista
@@ -63,8 +76,8 @@ export default async function DiarioPage({
 
   return (
     <ZonaBusqueda>
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
-        <div className="flex items-end justify-between gap-4">
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-1 gap-x-10 gap-y-5 lg:max-w-280 lg:grid-cols-[16.25rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:content-start">
+        <div className="flex items-end lg:col-start-2 justify-between gap-4">
           <div>
             <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
@@ -81,20 +94,27 @@ export default async function DiarioPage({
           </Link>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <Buscador valorInicial={busqueda} categoria={categoria} />
+        <ColumnaFiltros
+          buscador={<Buscador valorInicial={busqueda} categoria={categoriaParam} mes={mes} />}
+          categorias={categorias}
+          conteos={conteos}
+          actuales={{ q: busqueda || undefined, categoria: categoriaParam, mes }}
+        />
 
+        {/* Por debajo de `lg` la columna es solo el buscador y los chips la
+            completan; desde `lg` las categorías van en la columna. */}
+        <div className="empty:hidden lg:hidden">
           <FiltroCategoria
             pathname="/diario"
             categorias={categorias}
             categoriaActualId={categoria ?? null}
-            conservar={busqueda ? { q: busqueda } : undefined}
+            conservar={{ ...(busqueda ? { q: busqueda } : {}), ...(mes ? { mes } : {}) }}
           />
         </div>
 
         {/* Todo lo que responde a la búsqueda se atenúa mientras viaja la
             nueva (ver `ZonaBusqueda`). */}
-        <ResultadosBusqueda>
+        <ResultadosBusqueda className="lg:col-start-2">
           {/* Cuántas entradas quedan con el filtro, y cómo salirse de todo
               de una vez. La categoría ya se ve marcada en los chips. */}
           {hayFiltro ? (

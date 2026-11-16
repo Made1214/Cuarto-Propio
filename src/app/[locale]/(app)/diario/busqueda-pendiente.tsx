@@ -30,13 +30,13 @@ export function useTransicionBusqueda(): TransicionBusqueda {
 /** Los resultados, atenuados mientras la búsqueda viaja. El atenuado espera
  * un instante antes de entrar (y sale sin espera): si la respuesta llega
  * enseguida, no parpadea. */
-export function ResultadosBusqueda({ children }: { children: React.ReactNode }) {
+export function ResultadosBusqueda({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const { pendiente } = useTransicionBusqueda();
   return (
     <div
       data-pendiente={pendiente}
       aria-busy={pendiente}
-      className="flex flex-col gap-6 transition-opacity duration-200 data-[pendiente=true]:opacity-50 data-[pendiente=true]:delay-150"
+      className={`flex flex-col gap-6 ${className} transition-opacity duration-200 data-[pendiente=true]:opacity-50 data-[pendiente=true]:delay-150`}
     >
       {children}
     </div>

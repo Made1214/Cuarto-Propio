@@ -145,6 +145,10 @@
   },
   "diario": {
     "titulo": "Diario",
+    "todasEntradas": "Todas",
+    "categorias": "Categorías",
+    "porMes": "Por mes",
+    "filtros": "Filtros del diario",
     "subtitulo": "Lo que escribiste, lo más reciente primero.",
     "vacio": "Todavía no hay entradas. Escribe la primera.",
     "sinResultados": "No encontramos entradas con ese filtro.",

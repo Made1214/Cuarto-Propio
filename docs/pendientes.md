@@ -144,7 +144,7 @@ Falta verlo con la base real, junto con lo de la sección 1.
 
 - [ ] **Fairy:** diseñar el tema (pastel soñado, cursiva, brillos), primero en Claude Design. Está reservado en `TEMAS_PLANEADOS`.
 - [ ] **Softsignal y Void en el resto de las pantallas:** si hace falta, ajustarlos donde algo no se vea bien. Saldrá de la prueba de la sección 1.
-- [ ] **Filtros del Diario en escritorio:** columna lateral, como en el prototipo. Hoy usa los mismos chips que el celular.
+- [x] ~~**Filtros del Diario en escritorio:**~~ hecho. Desde `lg` el Diario va en dos columnas: a la izquierda el buscador, las categorías con su conteo (más «Sin categoría») y los meses con entradas; en celular y tablet siguen los chips. Filtros nuevos en la URL: `mes=YYYY-MM` y `categoria=ninguna`. Falta verlo con la base real.
 - [ ] **Ficha de pieza:** pasar "Eliminar" a un menú "⋯". Hoy vive en la pantalla de edición, con confirmación.
 
 ## 4. Mantenimiento

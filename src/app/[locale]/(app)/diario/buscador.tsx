@@ -13,7 +13,15 @@ const RESPIRO_MS = 250;
 /** Busca mientras se escribe, sin botón: el texto se manda a la URL después
  * de un respiro corto. El campo es local, así que el foco y el cursor
  * sobreviven a cada refresco. */
-export function Buscador({ valorInicial, categoria }: { valorInicial: string; categoria?: string }) {
+export function Buscador({
+  valorInicial,
+  categoria,
+  mes,
+}: {
+  valorInicial: string;
+  categoria?: string;
+  mes?: string;
+}) {
   const t = useTranslations("diario");
   const router = useRouter();
   const pathname = usePathname();
@@ -49,6 +57,7 @@ export function Buscador({ valorInicial, categoria }: { valorInicial: string; ca
       const query: Record<string, string> = {};
       if (termino) query.q = termino;
       if (categoria) query.categoria = categoria;
+      if (mes) query.mes = mes;
       // En una transición: la lista vieja se queda en pantalla (en vez del
       // esqueleto de `loading.tsx`) hasta que llegan los resultados, e
       // `isPending` avisa mientras tanto.
@@ -56,7 +65,7 @@ export function Buscador({ valorInicial, categoria }: { valorInicial: string; ca
     }, RESPIRO_MS);
 
     return () => window.clearTimeout(id);
-  }, [termino, enviado, categoria, pathname, router, startTransition]);
+  }, [termino, enviado, categoria, mes, pathname, router, startTransition]);
 
   // Desde la primera tecla hasta que llegan los resultados, sin hueco entre el
   // respiro y la respuesta del servidor.

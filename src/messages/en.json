@@ -145,6 +145,10 @@
   },
   "diario": {
     "titulo": "Journal",
+    "todasEntradas": "All",
+    "categorias": "Categories",
+    "porMes": "By month",
+    "filtros": "Journal filters",
     "subtitulo": "What you wrote, most recent first.",
     "vacio": "No entries yet. Write the first one.",
     "sinResultados": "No entries match that filter.",
