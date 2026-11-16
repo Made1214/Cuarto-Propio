@@ -45,12 +45,41 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 
 ## Orden sugerido
 
+0. **Bloqueos de lanzamiento** (sección «Antes de lanzar»). Salieron de la auditoría del 2026-11-16 sobre `b2e67d9`.
 1. **Probar todo con la base real** (sección 1). Es lo más importante: casi nada de lo último se probó con datos de verdad.
 2. **Operativo pendiente** (sección 2): Redirect URLs de Auth, backups y el correo de contacto de los textos legales.
 3. **Fusionar `dev` en `main` y desplegar en Vercel.**
 4. ~~Revisar las alertas de `npm audit`~~ (hecho; quedan 10 moderadas de herramientas, sección 4).
 5. ~~Tests automatizados~~ (unitarios hechos; falta la prueba de punta a punta, sección 5).
 6. **Diseño pendiente** (sección 3): Fairy, la columna de filtros del Diario en escritorio y otros detalles.
+
+## Antes de lanzar (auditoría del 2026-11-16)
+
+El porqué y la evidencia de cada punto están en [`lanzamiento.md`](./lanzamiento.md).
+
+Bloqueos:
+
+- [ ] **Subidas de más de 4,5 MB:** Vercel las rechaza. Grabar audio a ~32 kbps, reducir las imágenes en el navegador y bajar los topes del código.
+- [ ] **Borrador del diario:** no borrarlo hasta confirmar el guardado; si falla, el texto sigue en pantalla.
+- [ ] **Bloqueo de login:** quitar a `anon` el permiso de `registrar_fallo_login`, o contar por correo e IP.
+- [ ] **SMTP propio** en Supabase (lo hace la usuaria): sin esto no llegan los correos a otras personas.
+- [ ] **Tope de storage por cuenta** en las rutas de subida, con `uso_storage()`.
+- [ ] **Backups:** el plan gratuito no los tiene. Decidir entre copia semanal gratuita, plan Pro o aceptar el riesgo.
+- [ ] **Tarea diaria** que evite la pausa del proyecto gratuito.
+
+Experiencia:
+
+- [ ] Ficha y edición de entrada sin desborde en 360 px (Eliminar queda fuera de pantalla).
+- [ ] Fechas en la zona horaria de la usuaria.
+- [ ] Barra de formato del editor siempre a la vista.
+- [ ] No guardar entradas sin texto.
+- [ ] Nombres de lista y títulos de audio en varias líneas.
+- [ ] Agrandar casillas, agarre de ítems y selectores de color.
+- [ ] Barra del editor usable con teclado.
+- [ ] Categorías sin distinguir mayúsculas.
+- [ ] Pantalla encendida mientras se graba.
+- [ ] Migración de RLS con `(select auth.uid())`.
+- [ ] Prueba de RLS con dos cuentas antes de abrir el registro.
 
 ## 0. Revisión de rendimiento, navegación e interfaz (2026-11-16)
 
@@ -106,7 +135,7 @@ Falta verlo con la base real, junto con lo de la sección 1.
   - `https://<dominio>/api/auth/confirmar`
   - `http://localhost:3000/api/auth/confirmar`
 - [ ] **Correo de contacto:** completar `[CORREO DE CONTACTO]` en los textos legales (`src/messages/es.json` y `en.json`, sección `legal`) y releerlos. Son una base en lenguaje simple, no asesoría legal.
-- [ ] **Backups:** activar los backups automáticos en Supabase.
+- [ ] **Backups:** el plan gratuito no los incluye; ver «Antes de lanzar».
 - [ ] **Vercel:** desplegar con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - [ ] **Contraseñas filtradas** (opcional): activar "Leaked password protection" en Supabase → Authentication → Passwords. Puede no estar en el plan gratuito.
 - [ ] **Sesión de 30 días:** decidir si alcanza el comportamiento actual. Hoy la sesión queda abierta mientras se use. El vencimiento por inactividad se configura en Supabase → Authentication → Sessions, que es de planes pagos.
