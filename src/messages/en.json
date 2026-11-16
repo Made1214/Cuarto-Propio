@@ -177,7 +177,11 @@
     "nueva": "New",
     "conLaPalabra": "with “{palabra}”",
     "campoTitulo": "Title",
-    "borradorGuardado": "Draft saved on this device · {hora}"
+    "borradorGuardado": "Draft saved on this device · {hora}",
+    "guardando": "Saving…",
+    "contenidoRequerido": "Your entry is still blank — write something (or add an image) before saving.",
+    "errorGuardar": "We couldn't save it. What you wrote is still here — try again in a moment.",
+    "sesionVencida": "Your session expired and we couldn't save. What you wrote is kept as a draft on this device — sign in again to get it back."
   },
   "dialogos": {
     "cerrar": "Close",
@@ -383,7 +387,7 @@
         },
         {
           "titulo": "Service limits",
-          "texto": "This is a personal project in its first stage, running on free plans: it may have occasional downtime and a storage limit (we'll warn you when you get close). Photos can be up to 25 MB and audio up to 50 MB or 10 minutes.\nThere's no trash: deleting is permanent. Data export isn't available yet."
+          "texto": "This is a personal project in its first stage, running on free plans: it may have occasional downtime and a storage limit (we'll warn you when you get close). Photos can be up to 25 MB and each audio note can last up to 10 minutes.\nThere's no trash: deleting is permanent. Data export isn't available yet."
         },
         {
           "titulo": "No warranty",

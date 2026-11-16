@@ -6,13 +6,16 @@ import {
   CLASE_CHIP_INACTIVO,
 } from "@/components/filtro-categoria";
 import type { JSONContent } from "@tiptap/core";
+import { unstable_rethrow } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { TiptapEditor } from "@/components/tiptap-editor";
 import { colorCategoria } from "@/lib/categorias/color";
 import { useValidacionNativa } from "@/lib/formularios/validacion-nativa";
 import { borrarBorrador, guardarBorrador, leerBorrador, type Borrador } from "@/lib/diario/borrador";
+import { contenidoVacio } from "@/lib/diario/contenido";
 import type { Categoria, EntradaActionState } from "@/lib/diario/types";
+import { useAvisarGuardando } from "./guardar-boton";
 
 const TITULO_MAXIMO = 100;
 
@@ -44,7 +47,8 @@ export function EntradaForm({
 }: EntradaFormProps) {
   const t = useTranslations("diario");
   const format = useFormatter();
-  const [estado, enviarAction] = useActionState(action, undefined);
+  const [estado, enviarAction, guardando] = useActionState(enviar, undefined);
+  useAvisarGuardando(guardando);
   // El globo del título vacío dice lo mismo que el aviso de la Server
   // Action (que es la que atrapa el título hecho solo de espacios).
   const validacion = useValidacionNativa({
@@ -79,6 +83,47 @@ export function EntradaForm({
     categoriaTexto !== categoriaInicial ||
     JSON.stringify(contenido) !== JSON.stringify(contenidoInicial);
 
+  /**
+   * Envuelve la Server Action para que un guardado fallido nunca se lleve lo
+   * escrito:
+   * - El borrador local se borra solo cuando el guardado se CONFIRMÓ. La
+   *   action solo redirige si la base guardó, y Next avisa esa redirección
+   *   rechazando la promesa con su error de navegación: ese es el momento
+   *   exacto de limpiar (y se vuelve a lanzar para que Next navegue). Borrarlo
+   *   al enviar, como antes, dejaba sin red si la base fallaba.
+   * - Si lo que falla es el viaje mismo (sin conexión), la promesa se rechaza
+   *   con un error cualquiera: se muestra el aviso en vez de dejar que suba
+   *   al límite de error, que reemplazaría la pantalla.
+   */
+  async function enviar(estadoPrevio: EntradaActionState, formData: FormData): Promise<EntradaActionState> {
+    // Mismo chequeo que la action, antes del viaje: una entrada sin texto ni
+    // imágenes no se guarda.
+    if (contenidoVacio(leerContenido(formData))) return { error: t("contenidoRequerido") };
+
+    enviando.current = true;
+    try {
+      const resultado = await action(estadoPrevio, formData);
+      if (resultado?.error) fallo();
+      return resultado;
+    } catch (error) {
+      try {
+        unstable_rethrow(error);
+      } catch {
+        borrarBorrador(claveBorrador);
+        throw error;
+      }
+      fallo();
+      return { error: t("errorGuardar") };
+    }
+  }
+
+  /** No se guardó: vuelve el aviso al cerrar la pestaña y el borrador local
+   * queda al día (el autoguardado se pausa mientras se envía). */
+  function fallo() {
+    enviando.current = false;
+    if (sucio) guardarBorrador(claveBorrador, { titulo, categoria: categoriaTexto, contenido });
+  }
+
   useEffect(() => {
     // Lectura única del almacenamiento del navegador al montar: es un
     // sistema externo, no estado derivado, y solo interesa la foto inicial
@@ -90,6 +135,9 @@ export function EntradaForm({
   useEffect(() => {
     if (!sucio) return;
     const id = window.setTimeout(() => {
+      // Mientras se guarda no: si el guardado sale bien, el borrador recién
+      // borrado no tiene que volver a aparecer.
+      if (enviando.current) return;
       guardarBorrador(claveBorrador, { titulo, categoria: categoriaTexto, contenido });
       setGuardadoEn(new Date());
     }, 600);
@@ -130,10 +178,6 @@ export function EntradaForm({
       id={formId}
       action={enviarAction}
       {...validacion}
-      onSubmit={() => {
-        enviando.current = true;
-        borrarBorrador(claveBorrador);
-      }}
       className="flex flex-col gap-4"
     >
       {estado?.error ? (
@@ -250,4 +294,13 @@ export function EntradaForm({
       />
     </form>
   );
+}
+
+/** El documento del editor tal como viaja en el formulario (campo oculto). */
+function leerContenido(formData: FormData): JSONContent | null {
+  try {
+    return JSON.parse(String(formData.get("contenido") ?? "")) as JSONContent;
+  } catch {
+    return null;
+  }
 }

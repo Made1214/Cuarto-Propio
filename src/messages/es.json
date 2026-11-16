@@ -177,7 +177,11 @@
     "nueva": "Nueva",
     "conLaPalabra": "con «{palabra}»",
     "campoTitulo": "Título",
-    "borradorGuardado": "Borrador guardado en este dispositivo · {hora}"
+    "borradorGuardado": "Borrador guardado en este dispositivo · {hora}",
+    "guardando": "Guardando…",
+    "contenidoRequerido": "Tu entrada todavía está en blanco: escribe algo (o suma una imagen) antes de guardar.",
+    "errorGuardar": "No se pudo guardar. Lo que escribiste sigue aquí: prueba de nuevo en un ratito.",
+    "sesionVencida": "Se venció tu sesión y no se pudo guardar. Lo que escribiste quedó como borrador en este dispositivo: vuelve a entrar y lo recuperas."
   },
   "dialogos": {
     "cerrar": "Cerrar",
@@ -383,7 +387,7 @@
         },
         {
           "titulo": "Límites del servicio",
-          "texto": "Es un proyecto personal en su primera etapa y funciona sobre planes gratuitos: puede tener caídas ocasionales y un límite de espacio (te avisaremos cuando te acerques). Las fotos pueden pesar hasta 25 MB y los audios hasta 50 MB o 10 minutos.\nNo hay papelera: borrar es permanente. Todavía no hay exportación de datos."
+          "texto": "Es un proyecto personal en su primera etapa y funciona sobre planes gratuitos: puede tener caídas ocasionales y un límite de espacio (te avisaremos cuando te acerques). Las fotos pueden pesar hasta 25 MB y cada nota de audio puede durar hasta 10 minutos.\nNo hay papelera: borrar es permanente. Todavía no hay exportación de datos."
         },
         {
           "titulo": "Sin garantías",

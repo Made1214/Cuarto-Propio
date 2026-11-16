@@ -59,20 +59,19 @@ El porqué y la evidencia de cada punto están en [`lanzamiento.md`](./lanzamien
 
 Bloqueos:
 
-- [ ] **Subidas de más de 4,5 MB:** Vercel las rechaza. Grabar audio a ~32 kbps, reducir las imágenes en el navegador y bajar los topes del código.
-- [ ] **Borrador del diario:** no borrarlo hasta confirmar el guardado; si falla, el texto sigue en pantalla.
-- [ ] **Bloqueo de login:** quitar a `anon` el permiso de `registrar_fallo_login`, o contar por correo e IP.
+- [x] ~~**Subidas de más de 4,5 MB:**~~ el audio se graba a 32 kbps (10 min ≈ 2,4 MB), las imágenes se reducen en el navegador antes de subir y el tope del servidor es 4 MB. Probado con una foto de 10,5 MB. **Falta probar en Safari de iPhone.**
+- [x] ~~**Borrador del diario:**~~ ya no se borra hasta confirmar el guardado; si falla, el texto sigue en pantalla con aviso y reintento. Probado en navegador con el servidor caído.
+- [x] ~~**Bloqueo de login:**~~ cuenta por correo e IP (migración `0012`). **La `0012` no está aplicada en Supabase:** hasta entonces el login funciona sin bloqueo. Aplicarla junto con el despliegue de este código. Solución completa pendiente: registrar los fallos con la clave secreta y quitar el permiso a `anon`.
 - [ ] **SMTP propio** en Supabase (lo hace la usuaria): sin esto no llegan los correos a otras personas.
 - [ ] **Tope de storage por cuenta** en las rutas de subida, con `uso_storage()`.
-- [ ] **Backups:** el plan gratuito no los tiene. Decidir entre copia semanal gratuita, plan Pro o aceptar el riesgo.
-- [ ] **Tarea diaria** que evite la pausa del proyecto gratuito.
+- [ ] **Backups y tarea contra la pausa del proyecto gratuito:** aplazados hasta que haya presupuesto (decisión del 2026-11-16).
 
 Experiencia:
 
 - [ ] Ficha y edición de entrada sin desborde en 360 px (Eliminar queda fuera de pantalla).
 - [ ] Fechas en la zona horaria de la usuaria.
 - [ ] Barra de formato del editor siempre a la vista.
-- [ ] No guardar entradas sin texto.
+- [x] ~~No guardar entradas sin texto.~~ Además el botón dice «Guardando…» y una entrada editada se ve al instante (antes hacía falta recargar).
 - [ ] Nombres de lista y títulos de audio en varias líneas.
 - [ ] Agrandar casillas, agarre de ítems y selectores de color.
 - [ ] Barra del editor usable con teclado.
