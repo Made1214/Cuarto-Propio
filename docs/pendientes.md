@@ -133,6 +133,9 @@ Falta verlo con la base real, junto con lo de la sección 1.
 - [ ] **Redirect URLs de Auth.** Sin esto no funcionan los correos de confirmar cuenta ni recuperar contraseña. En Supabase → Authentication → URL Configuration → Redirect URLs, agregar:
   - `https://<dominio>/api/auth/confirmar`
   - `http://localhost:3000/api/auth/confirmar`
+
+  Y en **Site URL**, el dominio de producción (no `localhost`): si un enlace no pasa la lista, Supabase manda a la Site URL.
+- [ ] **Plantillas de correo.** Pegar `supabase/templates/confirmar-cuenta.html` en Authentication → Emails → Confirm signup y `supabase/templates/recuperar-contrasena.html` en Reset password (el asunto va en el comentario de cada archivo). Con la plantilla por defecto el enlace solo funciona en el mismo navegador del registro (PKCE) y abrirlo en otro dispositivo da «El enlace venció o ya se usó».
 - [ ] **Correo de contacto:** completar `[CORREO DE CONTACTO]` en los textos legales (`src/messages/es.json` y `en.json`, sección `legal`) y releerlos. Son una base en lenguaje simple, no asesoría legal.
 - [ ] **Backups:** el plan gratuito no los incluye; ver «Antes de lanzar».
 - [ ] **Vercel:** desplegar con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`.

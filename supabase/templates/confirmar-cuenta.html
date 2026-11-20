@@ -1,0 +1,13 @@
+<!--
+  Supabase → Authentication → Emails → Confirm signup
+  Asunto: Confirma tu cuarto
+
+  El enlace usa token_hash (no el ?code= de PKCE) para que funcione aunque se
+  abra en otro dispositivo o navegador que el del registro. {{ .RedirectTo }}
+  ya es `https://<dominio>/api/auth/confirmar?next=/<idioma>/diario`; por eso
+  lo que sigue empieza con `&`. Requiere que esa URL esté en Redirect URLs.
+-->
+<h2>Tu cuarto está casi listo</h2>
+<p>Solo falta confirmar que este correo es tuyo.</p>
+<p><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email">Confirmar mi correo</a></p>
+<p>Si no creaste una cuenta en Cuarto Propio, ignora este mensaje.</p>

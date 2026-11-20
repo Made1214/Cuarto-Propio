@@ -31,7 +31,7 @@ Next.js (App Router) · TypeScript · Tailwind CSS · Supabase (Postgres + Auth 
 
    O bien pegar el contenido de `supabase/migrations/0001_esquema_completo.sql` en el SQL Editor del dashboard de Supabase y ejecutarlo una sola vez.
 
-4. En Supabase → Authentication → URL Configuration, agregar `http://localhost:3000/api/auth/confirmar` a las Redirect URLs (y la del dominio real al desplegar). La cuenta se crea desde la propia app, en `/registro`, y se confirma con el correo que manda Supabase.
+4. En Supabase → Authentication → URL Configuration, agregar `http://localhost:3000/api/auth/confirmar` a las Redirect URLs (y la del dominio real al desplegar). La cuenta se crea desde la propia app, en `/registro`, y se confirma con el correo que manda Supabase. En Authentication → Emails, reemplazar las plantillas de «Confirm signup» y «Reset password» por las de `supabase/templates/` (en español y con enlaces que funcionan en cualquier dispositivo).
 
 5. Levantar el servidor de desarrollo:
 
