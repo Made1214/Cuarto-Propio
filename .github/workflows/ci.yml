@@ -30,7 +30,11 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Tipos
-        run: npx tsc --noEmit
+        # next-env.d.ts (tipos de imágenes importadas, rutas) no se versiona:
+        # se genera con `next typegen` antes de revisar los tipos.
+        run: |
+          npx next typegen
+          npx tsc --noEmit
       - name: Tests
         run: npm test
       - name: Build
