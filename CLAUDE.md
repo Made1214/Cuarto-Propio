@@ -345,6 +345,10 @@ Todos los commits van a nombre de **Made1214** (`116743110+Made1214@users.norepl
 
 **Cuarto Propio** (inspirado en "Un cuarto propio" de Virginia Woolf) — nombre ya decidido, usar en toda la interfaz, metadata y repositorio.
 
+## Autoría de commits y PRs
+
+Todo commit, PR y comentario en GitHub sale a nombre de Made1214 (`Made1214 <116743110+Made1214@users.noreply.github.com>`), como autora y como committer. Sin `Co-Authored-By`, sin `Claude-Session`, sin "Generated with Claude Code" ni ninguna otra mención a Claude en mensajes de commit, descripciones de PR o comentarios. Antes del primer commit de cada sesión, configurar `git config user.name` y `git config user.email` con esos datos.
+
 ## Estado actual del código
 
 Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpetas. Para el esquema de base de datos explicado a fondo (qué guarda cada tabla, cómo funciona RLS, Storage, la búsqueda por palabra clave y las migraciones), ver `docs/base-de-datos.md`.
