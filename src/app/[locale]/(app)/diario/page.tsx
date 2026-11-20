@@ -1,196 +1,236 @@
 import { getFormatter, getTranslations } from "next-intl/server";
+import { CargarMas, FinDeLista } from "@/components/cargar-mas";
+import { FiltroCategoria } from "@/components/filtro-categoria";
 import { Link } from "@/i18n/navigation";
 import { colorCategoria } from "@/lib/categorias/color";
-import { listarCategorias } from "@/lib/categorias/queries";
-import { listarEntradas } from "@/lib/diario/queries";
+import { listarConFiltroCategoria } from "@/lib/categorias/filtro";
+import { contarEntradasDiario, listarEntradas, mesValido } from "@/lib/diario/queries";
+import { Buscador } from "./buscador";
+import { ColumnaFiltros, SIN_CATEGORIA } from "./columna-filtros";
+import { ResultadosBusqueda, ZonaBusqueda } from "./busqueda-pendiente";
 
 export default async function DiarioPage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; categoria?: string }>;
+  searchParams: Promise<{ q?: string; categoria?: string; mes?: string; hasta?: string }>;
 }) {
   const { locale } = await params;
-  const { q, categoria } = await searchParams;
+  const { q, categoria: categoriaUrl, mes: mesUrl, hasta } = await searchParams;
   const t = await getTranslations({ locale, namespace: "diario" });
   const format = await getFormatter({ locale });
 
-  const [categorias, entradas] = await Promise.all([
-    listarCategorias(),
-    listarEntradas({ categoriaId: categoria, busqueda: q }),
+  const busqueda = q?.trim() ?? "";
+
+  // `?categoria=ninguna` es "sin categoría"; `?mes=` solo vale con forma YYYY-MM.
+  const sinCategoria = categoriaUrl === SIN_CATEGORIA;
+  const mes = mesValido(mesUrl);
+
+  const [{ categorias, categoriaActual, resultado: pagina }, conteos] = await Promise.all([
+    listarConFiltroCategoria(sinCategoria ? undefined : categoriaUrl, (categoriaId) =>
+      // El total solo se cuenta si se va a mostrar, o sea, al filtrar.
+      listarEntradas({
+        categoriaId,
+        sinCategoria,
+        mes,
+        busqueda: q,
+        hasta,
+        contar: Boolean(busqueda || categoriaId || sinCategoria || mes),
+      }),
+    ),
+    contarEntradasDiario(),
   ]);
 
-  const hayFiltro = Boolean(q?.trim() || categoria);
-  const categoriaActual = categorias.find((cat) => cat.id === categoria) ?? null;
+  // De acá en más, solo la categoría que de verdad existe: un id roto en la
+  // URL se trata como si no hubiera filtro (ver `listarConFiltroCategoria`).
+  const categoria = categoriaActual?.id;
+  const categoriaParam = sinCategoria ? SIN_CATEGORIA : categoria;
+  const hayFiltro = Boolean(busqueda || categoriaParam || mes);
+  const entradas = pagina.filas;
+  // Los filtros vigentes viajan con el "cargar más"; `hasta` no viaja en los
+  // links de filtro, así que cambiar de filtro vuelve a la primera tanda.
+  const filtrosActuales: Record<string, string> = {
+    ...(busqueda ? { q: busqueda } : {}),
+    ...(categoriaParam ? { categoria: categoriaParam } : {}),
+    ...(mes ? { mes } : {}),
+  };
+
+  // Agrupado por mes: un diario se recorre por épocas, no como una lista
+  // plana. Las entradas ya vienen de más nueva a más vieja.
+  const grupos: { clave: string; etiqueta: string; entradas: typeof entradas }[] = [];
+  for (const entrada of entradas) {
+    const fecha = new Date(entrada.fecha);
+    const clave = `${fecha.getFullYear()}-${fecha.getMonth()}`;
+    const ultimo = grupos.at(-1);
+    if (ultimo?.clave === clave) {
+      ultimo.entradas.push(entrada);
+    } else {
+      grupos.push({
+        clave,
+        etiqueta: format.dateTime(fecha, { month: "long", year: "numeric" }),
+        entradas: [entrada],
+      });
+    }
+  }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <div className="flex items-end justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <svg width="20" height="20" viewBox="0 0 10 10" aria-hidden="true" className="mt-1 shrink-0">
-            <rect x="4" y="0" width="2" height="2" fill="var(--secondary-turquoise)" />
-            <rect x="2" y="2" width="6" height="2" fill="var(--secondary-turquoise)" />
-            <rect x="0" y="4" width="10" height="2" fill="var(--secondary-turquoise)" />
-            <rect x="2" y="6" width="6" height="2" fill="var(--secondary-turquoise)" />
-            <rect x="4" y="8" width="2" height="2" fill="var(--secondary-turquoise)" />
-          </svg>
+    <ZonaBusqueda>
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-1 gap-x-10 gap-y-5 lg:max-w-280 lg:grid-cols-[16.25rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:content-start">
+        <div className="flex items-end lg:col-start-2 justify-between gap-4">
           <div>
-            <h1 className="font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
+            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
             <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
           </div>
-        </div>
-        <Link
-          href="/diario/nueva"
-          className="flex shrink-0 items-center gap-2 border-2 border-ink bg-primary-green px-4 py-2.5 font-pixel text-xs tracking-wide text-ink-strong shadow-[4px_4px_0_var(--ink)] transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          {t("nuevaEntrada").toUpperCase()}
-        </Link>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <form method="get" className="flex items-center gap-3">
-          <div className="relative">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted/70">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-3.5-3.5" />
-            </svg>
-            <input
-              type="search"
-              name="q"
-              defaultValue={q ?? ""}
-              placeholder={t("buscarPlaceholder")}
-              className="w-65 rounded-theme border-2 border-ink bg-card py-2.5 pr-3 pl-9 text-sm leading-none outline-none"
-            />
-          </div>
-          <input type="hidden" name="categoria" value={categoria ?? ""} />
-          <button
-            type="submit"
-            className="border-2 border-ink bg-card px-4 py-2.5 font-pixel text-xs leading-none tracking-wide text-ink transition-transform hover:bg-secondary-turquoise/15 active:translate-x-0.5 active:translate-y-0.5"
+          <Link
+            href="/diario/nueva"
+            className="flex h-11 shrink-0 items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
           >
-            {t("buscar").toUpperCase()}
-          </button>
-        </form>
-
-        <span className="h-6 w-0.75 bg-ink" aria-hidden="true" />
-
-        {/* Desplegable en vez de chips: con muchas categorías, los chips se
-            desbordan y no caben bien en una fila — el desplegable siempre
-            se ve prolijo, sin importar cuántas categorías haya. */}
-        <details className="group relative">
-          <summary className="marker:content-none flex w-72 cursor-pointer list-none items-center justify-between gap-2 border-2 border-ink bg-card px-4 py-2.5 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10 [&::-webkit-details-marker]:hidden">
-            <span className="flex min-w-0 items-center gap-2">
-              {categoriaActual ? (
-                <span
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0 border-2 border-ink-strong"
-                  style={{ background: colorCategoria(categorias, categoriaActual.id) }}
-                />
-              ) : (
-                <svg width="12" height="12" viewBox="0 0 10 10" aria-hidden="true" className="shrink-0">
-                  <rect x="0" y="0" width="4" height="4" fill="var(--secondary-purple)" />
-                  <rect x="6" y="0" width="4" height="4" fill="var(--secondary-purple)" />
-                  <rect x="0" y="6" width="4" height="4" fill="var(--secondary-purple)" />
-                  <rect x="6" y="6" width="4" height="4" fill="var(--secondary-purple)" />
-                </svg>
-              )}
-              <span className="truncate">
-                {(categoriaActual?.nombre ?? t("todasLasCategorias")).toUpperCase()}
-              </span>
-            </span>
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              className="shrink-0 transition-transform group-open:rotate-180"
-            >
-              <path d="M6 9l6 6 6-6" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
             </svg>
-          </summary>
-          <div className="absolute z-20 mt-2 flex w-72 flex-col border-2 border-ink bg-card p-1 shadow-[4px_4px_0_var(--ink)]">
-            <Link
-              href={{ pathname: "/diario", query: q ? { q } : {} }}
-              className="flex items-center gap-2 px-3 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
-            >
-              <svg width="12" height="12" viewBox="0 0 10 10" aria-hidden="true" className="shrink-0">
-                <rect x="0" y="0" width="4" height="4" fill="var(--secondary-purple)" />
-                <rect x="6" y="0" width="4" height="4" fill="var(--secondary-purple)" />
-                <rect x="0" y="6" width="4" height="4" fill="var(--secondary-purple)" />
-                <rect x="6" y="6" width="4" height="4" fill="var(--secondary-purple)" />
-              </svg>
-              {t("todasLasCategorias").toUpperCase()}
-            </Link>
-            {categorias.map((cat) => (
-              <Link
-                key={cat.id}
-                href={{ pathname: "/diario", query: q ? { categoria: cat.id, q } : { categoria: cat.id } }}
-                className="flex items-center gap-2 px-3 py-2 font-pixel text-xs tracking-wide text-ink transition-colors hover:bg-secondary-purple/10"
-              >
-                <span
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0 border-2 border-ink-strong"
-                  style={{ background: colorCategoria(categorias, cat.id) }}
-                />
-                <span className="truncate">{cat.nombre.toUpperCase()}</span>
-              </Link>
-            ))}
-          </div>
-        </details>
-      </div>
+            <span className="hidden sm:inline">{t("nuevaEntrada")}</span>
+            <span className="sm:hidden">{t("nueva")}</span>
+          </Link>
+        </div>
 
-      {entradas.length === 0 ? (
-        <p className="text-muted/70">{hayFiltro ? t("sinResultados") : t("vacio")}</p>
-      ) : (
-        <ul className="flex flex-col gap-5">
-          {entradas.map((entrada) => (
-            <li key={entrada.id}>
-              <Link
-                href={`/diario/${entrada.codigo}`}
-                className="relative block border-2 border-ink bg-card p-6 shadow-[5px_5px_0_var(--ink)] transition-transform hover:-translate-y-0.5"
-              >
-                {entrada.categoria ? (
-                  <span
-                    aria-hidden="true"
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 border-2 border-ink-strong border-t-0 border-r-0"
-                    style={{ background: colorCategoria(categorias, entrada.categoria.id) }}
-                  />
-                ) : null}
-                <div className="flex items-center justify-between gap-3">
-                  <time
-                    dateTime={entrada.fecha}
-                    className="font-pixel text-xs tracking-wide text-muted/70"
-                  >
-                    {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" }).toUpperCase()}
-                  </time>
-                  {entrada.categoria ? (
-                    <span
-                      className="border-2 border-ink-strong px-2.5 py-1 font-pixel text-xs tracking-wide text-ink-strong"
-                      style={{ background: colorCategoria(categorias, entrada.categoria.id) }}
-                    >
-                      {entrada.categoria.nombre.toUpperCase()}
-                    </span>
-                  ) : null}
-                </div>
-                <h2 className="mt-2 font-diario text-xl font-semibold">
-                  {entrada.titulo || t("sinTitulo")}
-                </h2>
-                {entrada.extracto ? (
-                  <p className="mt-1 line-clamp-2 text-sm text-muted/70">{entrada.extracto}</p>
-                ) : null}
+        <ColumnaFiltros
+          buscador={<Buscador valorInicial={busqueda} categoria={categoriaParam} mes={mes} />}
+          categorias={categorias}
+          conteos={conteos}
+          actuales={{ q: busqueda || undefined, categoria: categoriaParam, mes }}
+        />
+
+        {/* Por debajo de `lg` la columna es solo el buscador y los chips la
+            completan; desde `lg` las categorías van en la columna. */}
+        <div className="empty:hidden lg:hidden">
+          <FiltroCategoria
+            pathname="/diario"
+            categorias={categorias}
+            categoriaActualId={categoria ?? null}
+            conservar={{ ...(busqueda ? { q: busqueda } : {}), ...(mes ? { mes } : {}) }}
+          />
+        </div>
+
+        {/* Todo lo que responde a la búsqueda se atenúa mientras viaja la
+            nueva (ver `ZonaBusqueda`). */}
+        <ResultadosBusqueda className="lg:col-start-2">
+          {/* Cuántas entradas quedan con el filtro, y cómo salirse de todo
+              de una vez. La categoría ya se ve marcada en los chips. */}
+          {hayFiltro ? (
+            <p className="text-sm text-muted/80">
+              <span className="font-semibold tabular-nums">
+                {t("resultados", { cantidad: pagina.total ?? entradas.length })}
+              </span>
+              {busqueda ? <> {t("conLaPalabra", { palabra: busqueda })}</> : null}
+              {" · "}
+              <Link href="/diario" className="font-semibold text-secondary-purple underline-offset-2 hover:underline">
+                {t("limpiarFiltros")}
               </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+            </p>
+          ) : null}
+
+          {entradas.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 border-(length:--borde) border-dashed border-ink/40 bg-card/30 px-6 py-12 text-center">
+              <svg width="28" height="28" viewBox="0 0 10 10" aria-hidden="true" className="text-secondary-purple">
+                <rect x="4" y="0" width="2" height="2" fill="currentColor" />
+                <rect x="2" y="2" width="6" height="2" fill="currentColor" />
+                <rect x="0" y="4" width="10" height="2" fill="currentColor" />
+                <rect x="2" y="6" width="6" height="2" fill="currentColor" />
+                <rect x="4" y="8" width="2" height="2" fill="currentColor" />
+              </svg>
+              <p className="text-muted/70">{hayFiltro ? t("sinResultados") : t("vacio")}</p>
+              {hayFiltro ? (
+                <Link
+                  href="/diario"
+                  className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
+                >
+                  {t("limpiarFiltros")}
+                </Link>
+              ) : (
+                <Link
+                  href="/diario/nueva"
+                  className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-pink px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-[filter] hover:brightness-95"
+                >
+                  {t("nuevaEntrada")}
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-8">
+              {grupos.map((grupo) => (
+                <section key={grupo.clave} className="flex flex-col gap-4">
+                  <h2 className="flex items-center gap-3">
+                    <span className="rotulo">
+                      {grupo.etiqueta}
+                    </span>
+                    <span className="h-0.5 flex-1 bg-ink/15" aria-hidden="true" />
+                    <span className="text-xs text-muted/75">
+                      {t("resultados", { cantidad: grupo.entradas.length })}
+                    </span>
+                  </h2>
+
+                  <ul className="flex flex-col gap-5">
+                    {grupo.entradas.map((entrada) => (
+                      <li key={entrada.id}>
+                        {/* La fecha es el ancla visual de la tarjeta (el
+                            diario se recorre por días), la categoría va como
+                            un punto de color sobre el título y el extracto
+                            en la letra del diario. */}
+                        <Link
+                          href={`/diario/${entrada.codigo}`}
+                          className="tema-panel flex gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco transition-transform hover:-translate-y-0.5 sm:gap-5 sm:p-5"
+                        >
+                          <time
+                            dateTime={entrada.fecha}
+                            className="tema-lcd flex w-11 shrink-0 flex-col items-center pt-0.5 sm:w-13"
+                          >
+                            <span className="font-pixel text-[22px] leading-none sm:text-[26px]">
+                              {format.dateTime(new Date(entrada.fecha), { day: "2-digit" })}
+                            </span>
+                            <span className="mt-1.5 text-[11px] font-semibold text-secondary-purple uppercase">
+                              {format.dateTime(new Date(entrada.fecha), { weekday: "short" }).replace(".", "")}
+                            </span>
+                          </time>
+                          <div className="flex min-w-0 flex-1 flex-col gap-1">
+                            {entrada.categoria ? (
+                              <span className="flex items-center gap-1.5 text-xs font-medium">
+                                <span
+                                  aria-hidden="true"
+                                  className="h-2 w-2 shrink-0 border-[1.5px] border-ink-strong"
+                                  style={{ background: colorCategoria(categorias, entrada.categoria.id) }}
+                                />
+                                <span className="truncate">{entrada.categoria.nombre}</span>
+                              </span>
+                            ) : null}
+                            <h3 className="font-diario text-lg leading-snug font-semibold sm:text-xl">
+                              {entrada.titulo || t("sinTitulo")}
+                            </h3>
+                            {entrada.extracto ? (
+                              <p className="line-clamp-2 font-diario text-[15px] leading-relaxed text-muted/80">
+                                {entrada.extracto}
+                              </p>
+                            ) : null}
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+
+              {pagina.siguiente ? (
+                <CargarMas
+                  pathname="/diario"
+                  query={{ ...filtrosActuales, hasta: pagina.siguiente }}
+                />
+              ) : pagina.conCursor ? (
+                <FinDeLista />
+              ) : null}
+            </div>
+          )}
+        </ResultadosBusqueda>
+      </div>
+    </ZonaBusqueda>
   );
 }

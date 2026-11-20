@@ -28,7 +28,7 @@ flowchart LR
   entradas["entradas (diario)"]
   listas["listas"]
   items["items_lista"]
-  imagenes["imagenes (galería)"]
+  imagenes["imagenes (Vitrina)"]
   audios["audios"]
   temas["temas"]
 
@@ -58,14 +58,20 @@ Extiende la tabla de usuarios de Supabase Auth con datos propios del producto. T
 | --- | --- |
 | `id` | Tu id de usuario (el mismo de Supabase Auth) |
 | `nombre` | Tu nombre |
-| `foto_perfil_path` | Ruta del archivo de tu foto de perfil en Storage |
+| `foto_perfil_path` | Miniatura de tu foto de perfil en Storage (la que se ve en el avatar) |
+| `foto_perfil_completa_path` | Versión completa de esa misma foto |
 | `tema_activo_id` | Qué fila de `temas` está activa ahora |
+| `bienvenida_vista_en` | Cuándo cerraste el mensaje de bienvenida (`NULL` = todavía no lo viste) |
 
 Se crea sola la primera vez que te registrás (ver "Lo que la base hace sola" más abajo).
 
+La foto pasa por el mismo pipeline que la Vitrina —miniatura + versión completa con `sharp`—, por eso son dos rutas y no una: guardar solo la miniatura dejaría la otra suelta en Storage, sin nadie que la mencione para poder borrarla después. Los archivos viven en el bucket `imagenes`, en `usuario_id/perfil/`.
+
+El modo claro/oscuro **no** está acá: es una preferencia de cada dispositivo y vive en el `localStorage` del navegador (`src/lib/temas/modo.ts`). Lo que sí va a vivir en la base es el tema de diseño elegido (`temas`), que es otra cosa.
+
 ### `categorias`
 
-Tus propias categorías —no hay categorías globales compartidas entre usuarios—, usadas por el Diario, la Galería y el Audio.
+Tus propias categorías —no hay categorías globales compartidas entre usuarios—, usadas por el Diario, las Listas, la Vitrina y el Audio.
 
 | Columna | Qué guarda |
 | --- | --- |
@@ -101,7 +107,7 @@ Las listas son checklists simples: un nombre, y adentro, ítems con texto + marc
 
 Los ítems no tienen `usuario_id` propio —se sabe de quién son a través de su lista—, y por eso se explican distinto en la sección de seguridad.
 
-### `imagenes` — la Galería
+### `imagenes` — la Vitrina
 
 | Columna | Qué guarda |
 | --- | --- |
@@ -110,13 +116,15 @@ Los ítems no tienen `usuario_id` propio —se sabe de quién son a través de s
 | `miniatura_path`, `completa_path` | Las dos versiones que genera `sharp` al subir: una liviana para la cuadrícula, una grande para el detalle |
 | `ancho`, `alto` | Dimensiones de la imagen |
 | `categoria_id` | Categoría opcional |
+| `codigo` | Código corto y opaco para la URL (`/vitrina/x7k2m9pl`), para no exponer la UUID |
 
 ### `audios`
 
 | Columna | Qué guarda |
 | --- | --- |
 | `archivo_path` | Ruta del archivo de audio en Storage |
-| `duracion_segundos` | Duración de la nota |
+| `titulo` | Opcional: vacío se guarda como `NULL` y la app muestra un título por defecto con la fecha y la hora, armado al mostrarlo para que salga en el idioma de la interfaz |
+| `duracion_segundos` | Duración de la nota, medida por el navegador al grabar |
 | `transcripcion` | Texto transcripto (no se usa en Fase 1, queda listo para Fase 2) |
 | `categoria_id` | Categoría opcional |
 
@@ -127,10 +135,28 @@ Guarda tu personalización visual. Hoy solo se usa el color básico; el resto (c
 | Columna | Qué guarda |
 | --- | --- |
 | `nombre` | Nombre del tema ("Mi tema") |
-| `colores` | Paleta de colores, como JSON |
+| `colores` | Colores propios, guardados **por tema** y por modo: `{ temas: { retro: { claro: {…}, oscuro: {…} }, void: {…} } }`. Solo los seis que se eligen a mano; el resto se calcula |
 | `cursor` | Cursor del mouse elegido |
 | `iconos` | Set de iconos, como JSON |
-| `tipografia` | Tipografía elegida |
+| `tipografia` | Letras elegidas, también **por tema**: texto con JSON `{ temas: { retro: { diario, interfaz } } }` |
+
+### `intentos_login`
+
+Cuenta los fallos de login seguidos por **correo e IP**, para bloquear 15 minutos ese par tras 5 contraseñas equivocadas (además de los límites por IP que ya trae Supabase Auth). Es la única tabla sin `usuario_id`: los intentos pasan **antes** de que haya sesión. La clave primaria es `(email, ip)`.
+
+| Columna | Qué guarda |
+| --- | --- |
+| `email` | El correo intentado, en minúsculas (hasta 320 caracteres) |
+| `ip` | La IP desde la que se intentó, en forma canónica, o `desconocida` si no llegó una IP válida (en local) |
+| `fallidos` | Cuántos fallos seguidos lleva |
+| `bloqueado_hasta` | Hasta cuándo está bloqueada (`NULL` = no lo está) |
+| `actualizado_en` | El último intento: un fallo de hace más de 15 minutos ya no cuenta como "seguido" |
+
+Tiene RLS activo y **ninguna** política: nadie la lee ni la escribe directo. Solo se toca con tres funciones `security definer`: `login_bloqueado_hasta(email, ip)` y `registrar_fallo_login(email, ip)` (las llama el login antes y después de intentar, con la IP que el servidor lee de `x-forwarded-for` — ver `src/lib/auth/ip.ts`) y `limpiar_intentos_login()` (tras entrar bien, solo con sesión y solo sobre el correo propio, desde todas las IP — así nadie puede borrar el bloqueo de otra cuenta). Las dos primeras normalizan la IP con `normalizar_ip_login`, una función interna que no se expone por la API, y `registrar_fallo_login` borra de paso las filas de más de un día para que la tabla no crezca sin fin.
+
+**Por qué por correo e IP** (migración 0012): con el contador solo por correo, y `registrar_fallo_login` llamable sin sesión (tiene que serlo: los fallos pasan antes de entrar), cualquiera que supiera el correo de una usuaria podía llamar a la función cinco veces con la clave pública y dejarla fuera de su cuenta cada 15 minutos. Contando por par, esos fallos bloquean solo la IP de quien ataca.
+
+**Límite conocido:** la función sigue siendo llamable sin sesión y la IP la manda quien llama, así que alguien que conozca el correo **y** la IP de la víctima todavía podría bloquearla; y quien rote de IP no acumula el bloqueo (para eso quedan los límites por IP de Supabase Auth). Lo completo es registrar los fallos desde el servidor con la clave secreta de Supabase y quitarle a `anon` el permiso sobre estas funciones — queda para cuando la app tenga esa variable de entorno.
 
 ## Seguridad: Row Level Security
 
@@ -165,13 +191,17 @@ Las fotos y los audios no se guardan en la base de datos —ahí solo vive la ru
 | `imagenes` | Miniatura + versión completa de cada foto |
 | `audios` | Las notas de voz |
 
-Privados quiere decir que no tienen una URL pública fija: para mostrarlos hay que pedirle a Supabase una URL firmada, que expira sola. La regla de quién puede leer/subir/borrar cada archivo es la misma idea que RLS, pero aplicada a la carpeta:
+Privados quiere decir que no tienen una URL pública fija: para mostrarlos hay que pedirle a Supabase una URL firmada, que expira sola. Cada firma dura 24 horas y la app reutiliza la misma URL mientras le queden 12 horas o más, para que el navegador cachee el archivo en vez de bajarlo en cada visita (ver `src/lib/storage/firmas.ts`). La regla de quién puede leer/subir/borrar cada archivo es la misma idea que RLS, pero aplicada a la carpeta:
 
 ```sql
 using (bucket_id = 'imagenes' and (storage.foldername(name))[1] = auth.uid()::text)
 ```
 
 En la práctica esto obliga a que **todo archivo se guarde dentro de una carpeta con tu `usuario_id`** (por ejemplo `af3.../foto-1.webp`) —si se subiera fuera de esa carpeta, nadie podría leerlo, ni vos.
+
+### Imágenes del Diario
+
+Las fotos dentro de una entrada no tienen tabla propia: viven en el JSON de `entradas.contenido` (nodos `image`) y sus archivos en el bucket `imagenes`, carpeta `usuario_id/diario/`, con el mismo pipeline de la Vitrina (miniatura + completa). El JSON guarda una URL estable de la app (`/api/diario/imagen?ruta=…`), no la URL firmada de Storage, que vence: esa ruta comprueba que el archivo sea de quien lo pide, firma en el momento y redirige. Al editar una entrada se borran de Storage las fotos que se quitaron, y al borrar la entrada, todas las suyas.
 
 ## Lo que la base hace sola
 
@@ -207,8 +237,24 @@ Cuando buscás "calma" en el Diario, la consulta compara contra `busqueda`, no c
 
 El esquema no se edita a mano en el dashboard de Supabase —vive como archivos `.sql` en `supabase/migrations/`, que se aplican en orden y nunca se modifican una vez creados (un cambio nuevo es siempre un archivo nuevo).
 
-Hoy es un solo archivo: `0001_esquema_completo.sql`, que crea las 8 tablas (con `categoria_id` en listas y `titulo` en audios ya incluidos, no como parche aparte), sus relaciones e índices, la búsqueda por palabra clave (`contenido_texto` + `busqueda`), RLS con sus políticas, el trigger que crea el perfil al registrarte, `updated_at` automático, y los buckets de Storage (`imagenes`, `audios`) con sus políticas de acceso por carpeta. El proyecto todavía no corrió contra una base de datos real, así que no hacía falta mantener el historial de pasos intermedios en el que se fue armando.
+El primero, `0001_esquema_completo.sql`, crea las 8 tablas (con `categoria_id` en listas y `titulo` en audios ya incluidos, no como parche aparte), sus relaciones e índices, la búsqueda por palabra clave (`contenido_texto` + `busqueda`), RLS con sus políticas, el trigger que crea el perfil al registrarte, `updated_at` automático, y los buckets de Storage (`imagenes`, `audios`) con sus políticas de acceso por carpeta. Los que siguen son los cambios que fue pidiendo cada módulo al construirse:
 
-De acá en adelante, cualquier cambio de esquema (por ejemplo al construir Galería o Personalización) se agrega como un archivo nuevo (`0002_...`, `0003_...`), nunca editando este.
+| Archivo | Qué agrega |
+| --- | --- |
+| `0002_temas_preset.sql` | `temas.preset`: de qué tema con nombre parte una fila (`NULL` = tema hecho a mano) |
+| `0003_codigo_entradas.sql` | `entradas.codigo`, el código corto de las URLs del Diario |
+| `0004_codigo_listas.sql` | Lo mismo para `listas` |
+| `0005_items_casilla_opcional.sql` | La casilla de un ítem pasa a ser opcional (`items_lista.con_casilla`) |
+| `0006_listas_con_casillas.sql` | La casilla deja de ser por ítem: ahora la lista entera es de notas o de casillas (`listas.con_casillas`) |
+| `0007_codigo_imagenes.sql` | `imagenes.codigo`, el código corto de las URLs de la Vitrina |
+| `0008_perfil_foto.sql` | `perfiles.foto_perfil_completa_path`: la segunda versión de la foto de perfil, la que faltaba para no dejar archivos sueltos |
+| `0009_intentos_login.sql` | Tabla `intentos_login` y sus tres funciones: bloqueo de 15 minutos tras 5 fallos de login seguidos |
+| `0010_bienvenida_y_storage.sql` | `perfiles.bienvenida_vista_en` (el mensaje de bienvenida sale una sola vez por cuenta) y la función `uso_storage()`, que suma lo que ocupan tus fotos y audios para el medidor del perfil y el aviso de espacio |
+| `0011_endurecer_funciones.sql` | Ajustes que pidió el revisor de seguridad de Supabase: las funciones que solo sirven con sesión dejan de poder llamarse sin sesión, la función del trigger de perfiles deja de estar expuesta por la API y `set_updated_at` fija su `search_path` |
+| `0012_intentos_login_por_ip.sql` | El bloqueo de login pasa a contarse por correo **e** IP (clave `(email, ip)`), las funciones reciben la IP y se borran las firmas viejas de un solo argumento, para que no se pueda dejar fuera a otra persona sabiendo solo su correo |
+
+Las migraciones 0001–0011 están aplicadas en el proyecto de Supabase "Cuarto Propio" (0009–0011 se aplicaron con el conector de Supabase el 2026-11-15). Si en otro proyecto 0009 o 0010 todavía no están aplicadas, la app sigue funcionando: el login entra sin el bloqueo propio, y la bienvenida y el medidor de espacio simplemente no aparecen. La 0012 todavía **no** está aplicada: hasta que se aplique, el código nuevo llama a funciones de dos argumentos que no existen y el login entra sin el bloqueo propio (y lo mismo al revés, si se aplica antes de desplegar el código).
+
+Cada cambio de esquema nuevo (por ejemplo al construir Personalización) se agrega como un archivo nuevo, nunca editando uno ya aplicado.
 
 Para aplicarlo en un proyecto de Supabase nuevo: con la Supabase CLI, `supabase db push`; o pegando el archivo en el SQL Editor del dashboard. El detalle de setup completo está en el `README.md` del repositorio.

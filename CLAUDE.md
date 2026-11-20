@@ -2,7 +2,7 @@
 
 # Cuarto Propio
 
-Espacio personal para escribir, coleccionar y archivar la vida cotidiana: diario/blog con categorías, listas personalizables, galería de fotografía propia estilo Pinterest, y notas de audio (reverse journaling). Estética whimsical inspirada en blogspot, con personalización profunda (colores, iconos, cursor, foto de perfil).
+Espacio personal para escribir, coleccionar y archivar la vida cotidiana: diario/blog con categorías, listas personalizables, Vitrina (galería de fotografía y arte propio estilo Pinterest), y notas de audio (reverse journaling). Estética whimsical inspirada en blogspot, con personalización profunda (colores, iconos, cursor, foto de perfil).
 
 Empieza como proyecto personal de un solo usuario, pero el modelo de datos y la arquitectura están pensados desde el día uno para poder escalar a multiusuario/comercial sin reescribir nada.
 
@@ -12,11 +12,11 @@ Empieza como proyecto personal de un solo usuario, pero el modelo de datos y la 
 
 Todo el modelo de datos cuelga de `usuario_id`, incluso con una sola usuaria activa — ese es el eje que permite pasar de "app personal" a "app multiusuario" cambiando solo lógica de acceso, no la estructura de datos (ver Multi-tenancy más abajo).
 
-Sobre ese eje cuelgan cuatro colecciones de contenido independientes — diario, listas, galería, audio — que no se mezclan entre sí, pero comparten un segundo eje transversal: la Categoría (relación simple, una sola por elemento). Los hashtags son una etiqueta fina exclusiva de la galería; no compiten con las categorías ni las reemplazan.
+Sobre ese eje cuelgan cuatro colecciones de contenido independientes — diario, listas, vitrina, audio — que no se mezclan entre sí, pero comparten un segundo eje transversal: la Categoría (relación simple, una sola por elemento). Los hashtags son una etiqueta fina exclusiva de la Vitrina; no compiten con las categorías ni las reemplazan.
 
 Los tres tipos de contenido "editorial" (diario, imagen, audio) comparten la misma forma — título, categoría única, fecha — pensados para reutilizar el mismo componente de "tarjeta de contenido" en los tres módulos en vez de construir tres UIs distintas. El título deja de estar vacío distinto en cada uno: en el diario es obligatorio (no se guarda sin título); en audio, si se deja vacío, se completa solo con un default tipo fecha/hora.
 
-El pipeline de subida de imágenes (miniatura + versión completa con `sharp`) es un solo componente reutilizado en tres lugares: galería, imágenes incrustadas en el diario, y foto de perfil — no una implementación distinta por módulo.
+El pipeline de subida de imágenes (miniatura + versión completa con `sharp`) es un solo componente reutilizado en tres lugares: Vitrina, imágenes incrustadas en el diario, y foto de perfil — no una implementación distinta por módulo.
 
 La Personalización (entidad "Tema visual") vive fuera de las cuatro colecciones de contenido: es configuración transversal, no contenido, y debe modelarse como una tabla/entidad separada, no mezclada con las demás.
 
@@ -51,11 +51,11 @@ Objetivo de costo: **$0/mes** mientras el uso sea personal (free tiers de Vercel
 
 - **Diario / Blog**: entradas de texto con editor enriquecido (Tiptap, imágenes incrustadas), organizadas por categorías propias del usuario. Filtrado y búsqueda por categoría o palabra clave.
 - **Listas personalizables**: colecciones tipo checklist simple (texto + marcado), sin campos personalizados por ahora. El usuario crea sus propias listas (ej. "Disfraces que quiero hacer", "Libros leídos").
-- **Galería estilo Pinterest**: solo imágenes propias del usuario. Al subir: título, descripción, hashtags. Vista en cuadrícula masonry, filtrable por hashtag.
+- **Vitrina (galería estilo Pinterest)**: solo imágenes propias del usuario. Al subir: título, descripción, hashtags. Vista en cuadrícula masonry, filtrable por hashtag.
 - **Audio / Reverse journaling**: notas de voz que se archivan como entradas independientes.
 - **Personalización**: tema de color, cursor del mouse, iconos de la interfaz, foto de perfil, tipografía — todo configurable por el usuario.
 
-Diario, listas, galería y audio son **módulos independientes** (no una única "entrada combinada"), pero comparten el mismo sistema de categorías para poder cruzarlos en búsquedas (los hashtags son específicos de la galería).
+Diario, listas, Vitrina y audio son **módulos independientes** (no una única "entrada combinada"), pero comparten el mismo sistema de categorías para poder cruzarlos en búsquedas (los hashtags son específicos de la Vitrina).
 
 Navegación principal: **cronológica, estilo blog** (entradas más recientes primero) — no por tableros/categorías.
 
@@ -87,12 +87,12 @@ Formato: *Como [usuaria], quiero [acción], para [beneficio]*, con criterios de 
 - Como usuaria, quiero agregar ítems y marcarlos como completados, para llevar seguimiento.
   - Given una lista abierta, When agrego texto y confirmo, Then el ítem aparece sin marcar; When toco su checkbox, Then cambia de estado y se guarda al instante.
 
-**Galería estilo Pinterest**
+**Vitrina (galería estilo Pinterest)**
 
-- Como usuaria, quiero subir una foto propia con título, descripción y hashtags, para archivarla en mi galería.
+- Como usuaria, quiero subir una foto propia con título, descripción y hashtags, para archivarla en mi vitrina.
   - Given que subo una imagen, When completo título, descripción y al menos un hashtag, Then aparece en la cuadrícula masonry con su miniatura optimizada.
   - Given que intento subir un archivo que no es imagen soportada, When lo confirmo, Then el sistema lo rechaza con un mensaje de formato no soportado.
-- Como usuaria, quiero filtrar la galería por hashtag, para encontrar fotos relacionadas rápido.
+- Como usuaria, quiero filtrar la vitrina por hashtag, para encontrar fotos relacionadas rápido.
   - Given fotos con distintos hashtags, When toco uno, Then veo solo las fotos que lo tienen.
 
 **Audio / Reverse journaling**
@@ -137,7 +137,7 @@ Formato: *Como [usuaria], quiero [acción], para [beneficio]*, con criterios de 
 - **Longitudes**: título de imagen, audio o entrada de diario hasta 100 caracteres, descripción hasta 500 caracteres (evitar que rompan el layout de la cuadrícula).
 - **Nombres de lista**: campo requerido; sí se permiten nombres duplicados (no bloquear a la usuaria por esto).
 - **Hashtags**: se normalizan a minúsculas (`#Viajes` y `#viajes` son el mismo hashtag).
-- **Estados vacíos**: cada sección (diario, listas, galería, audio) muestra un mensaje/CTA claro cuando no hay contenido todavía, invitando a crear el primero — nunca una pantalla en blanco sin explicación.
+- **Estados vacíos**: cada sección (diario, listas, vitrina, audio) muestra un mensaje/CTA claro cuando no hay contenido todavía, invitando a crear el primero — nunca una pantalla en blanco sin explicación.
 - **Sesión**: expira tras inactividad prolongada (ej. 30 días con "recordar sesión" activo por defecto, acorde a una app de uso personal frecuente).
 - **Subidas fallidas**: si se pierde la conexión a mitad de una subida de imagen/audio, se muestra un error claro y se puede reintentar sin perder el resto de la entrada.
 
@@ -160,7 +160,7 @@ Relaciones principales:
 | Imagen / Pin | id, archivo (miniatura + versión completa), título, descripción, hashtags, categoría, fecha, usuario |
 | Audio | id, archivo, título, duración, categoría, transcripción (opcional, no en Fase 1), fecha, usuario |
 | Categoría | id, nombre, usuario (categorías propias, no globales) |
-| Tema visual | id, colores, cursor (preset o archivo propio), iconos (preset o archivo propio), tipografía, usuario |
+| Tema visual | id, preset (opcional, ver Temas de diseño), colores, cursor (preset o archivo propio), iconos (preset o archivo propio), tipografía, usuario |
 
 ### Procesamiento de imágenes
 
@@ -168,19 +168,23 @@ Al subir una foto se generan **dos versiones** (con `sharp`), nunca una sola com
 
 | Versión | Uso | Tamaño aproximado |
 | --- | --- | --- |
-| Miniatura optimizada | Cuadrícula masonry de la galería | ~500–800 px de ancho, WebP |
+| Miniatura optimizada | Cuadrícula masonry de la Vitrina | ~500–800 px de ancho, WebP |
 | Versión completa | Ficha de la imagen (zoom/detalle) | Hasta ~2000 px de ancho |
 
 No hay un límite de tamaño estricto de cara al usuario — la compresión automática se encarga de que toda foto entre.
 
-Este mismo pipeline (miniatura + versión completa) se reutiliza en **toda** la app para cualquier imagen: fotos de la galería, imágenes insertadas dentro de una entrada de diario, y la foto de perfil — un solo componente de subida de imágenes, no una implementación distinta por módulo.
+Este mismo pipeline (miniatura + versión completa) se reutiliza en **toda** la app para cualquier imagen: fotos de la Vitrina, imágenes insertadas dentro de una entrada de diario, y la foto de perfil — un solo componente de subida de imágenes, no una implementación distinta por módulo.
 
 ## Decisiones de producto ya confirmadas (no volver a preguntar)
 
 - Login activo desde la Fase 1, aunque al inicio exista un solo usuario.
 - Existe pantalla pública de registro (crear cuenta) además del login — no es una cuenta creada a mano desde el dashboard de Supabase. Mitigado por verificación de email obligatoria (ya incluida con Supabase Auth).
-- Diario, galería y audios son módulos independientes que comparten categorías/hashtags (no entradas combinadas).
-- Cada entrada de diario, imagen, lista o audio pertenece a **una sola** categoría (relación simple, no multi-select) — los hashtags (solo en galería) cubren la necesidad de etiquetar con varias cosas a la vez.
+- Las fotos de la Vitrina se llaman **piezas** y el verbo de subirlas es **exhibir** (en inglés, *pieces* / *display*) — el equivalente del "pin" de Pinterest, en el vocabulario de una vitrina.
+- Ver una pieza y editarla son dos pantallas distintas: la ficha (`/vitrina/[codigo]`) solo muestra, y se edita desde el lápiz, en `/vitrina/[codigo]/editar` — mismo patrón que el Diario.
+- En la cuadrícula, debajo de cada pieza va **solo el título** (y si no tiene, nada): hashtags y categoría son para filtrar desde la barra de arriba, no para llenar la pared de texto.
+- La sección de imágenes se llama **Vitrina** (en inglés, *Showcase*) — no "Galería" ni "Tablero": subraya que es obra propia en exhibición, no un tablero de cosas ajenas recolectadas como en Pinterest. Se usa así en la navegación, en la URL (`/vitrina`) y en los textos; el nombre técnico de la tabla sigue siendo `imagenes`.
+- Diario, Vitrina y audios son módulos independientes que comparten categorías/hashtags (no entradas combinadas).
+- Cada entrada de diario, imagen, lista o audio pertenece a **una sola** categoría (relación simple, no multi-select) — los hashtags (solo en la Vitrina) cubren la necesidad de etiquetar con varias cosas a la vez.
 - Las listas son checklist simple: texto + marcado (sin campos personalizados).
 - El diario usa editor de texto enriquecido (rich text / Tiptap), no markdown plano.
 - Navegación principal cronológica, estilo blog.
@@ -196,14 +200,14 @@ Este mismo pipeline (miniatura + versión completa) se reutiliza en **toda** la 
 
 - Audio: hasta 10 minutos por nota, formato MP3/M4A. Se graba comprimido desde el navegador (ej. WebM/Opus, ~1MB por minuto) — la duración máxima ya acota el tamaño, no hace falta un paso de compresión adicional como en imágenes.
 - Formatos de imagen: JPG/PNG/WebP.
-- Foto de perfil: pasa por el mismo pipeline que la galería (miniatura + versión completa), mismos formatos soportados.
+- Foto de perfil: pasa por el mismo pipeline que la Vitrina (miniatura + versión completa), mismos formatos soportados.
 - Tema claro/oscuro: por defecto sigue la preferencia del sistema operativo ("Automático"), con opción de fijarlo manualmente en Personalización.
-- Categorías: se crean al vuelo desde cualquier módulo (diario, listas, galería, audio) al escribir un nombre nuevo — no hace falta una pantalla dedicada de gestión en la Fase 1. Si se borra una categoría en uso, sus elementos quedan sin categoría (no se borran ni se bloquea el borrado).
+- Categorías: se crean al vuelo desde cualquier módulo (diario, listas, vitrina, audio) al escribir un nombre nuevo — no hace falta una pantalla dedicada de gestión en la Fase 1. Si se borra una categoría en uso, sus elementos quedan sin categoría (no se borran ni se bloquea el borrado).
 - Hashtags: solo letras, números y guion bajo, sin espacios ni símbolos (formato típico de hashtag); sin límite de cantidad por imagen.
 - Tamaño máximo del archivo original antes de comprimir: 25MB para imágenes, 50MB para audio — un tope generoso solo para evitar abuso accidental, no una restricción real de cara al uso normal.
 - Editor de diario (Tiptap): negritas, cursiva, títulos (H1-H3), listas, citas, enlaces e imágenes incrustadas — sin tablas ni bloques de código, no hacen falta para un diario personal.
 - Ítems de lista: se pueden reordenar (drag & drop) y eliminar individualmente, además de marcarse como completados.
-- Galería: se pueden subir varias fotos a la vez (batch upload), cada una con su propio título/descripción/hashtags después de subir.
+- Vitrina: se pueden subir varias fotos a la vez (batch upload), y cada una se describe **antes** de subir — el diálogo de exhibir pide título (obligatorio, precargado con el nombre del archivo), descripción y hashtags, y recién entonces se suben. Una pieza ya colgada rara vez se vuelve a describir.
 - Rate limiting de login: bloqueo temporal de 15 minutos tras 5 intentos fallidos seguidos.
 
 ## Antes de empezar (checklist operativo — esto no lo puede resolver Claude, lo necesitas tú)
@@ -246,12 +250,35 @@ Por qué combinan (para no perder el criterio si se ajusta algo después): verde
 
 Tipografía sugerida: una serif cálida (ej. Georgia/Lora) para el cuerpo del diario, dando ese aire literario; sans-serif simple (ej. Inter) para la interfaz (botones, menús, navegación).
 
+## Temas de diseño (sistema de presets — construido)
+
+Más allá de "claro/oscuro/automático" (que es un modo dentro de un tema), la app va a ofrecer **temas de diseño completos y con nombre** (ej. Retro, Fairy, Emo) seleccionables desde Personalización (`/personalizacion`, enlazada desde el panel de perfil) — cada uno cambia no solo el color, sino la tipografía y el "lenguaje de forma" (bordes, radio, sombra) de toda la interfaz. Esto documenta la arquitectura para que cada tema nuevo sea agregar valores, no rediseñar el sistema.
+
+**Contrato de un tema** (`src/lib/temas/types.ts`, tipo `TemaDiseno`): paleta de color en variantes claro/oscuro, tipografía del diario (lo que la usuaria escribe) por separado de la tipografía de interfaz (nav, botones, etiquetas) — ambas como id del set curado de `src/lib/temas/fuentes.ts` —, y tokens de forma (`radio`, `anchoBorde`, `sombra`: "suave" o "dura" + su offset). Los componentes leen estos tokens como variables CSS — `border-(length:--borde)`, `border-(length:--borde-grueso)`, `rounded-theme`, `shadow-marco-sm` / `shadow-marco` / `shadow-marco-lg`, `font-sans`, `font-diario` —, nunca valores sueltos. Hay dos niveles de tema: **de tokens** (Retro, Whimsical: solo un objeto de valores, sin tocar componentes) y **con hoja propia** (Softsignal, Void: además de los valores, un bloque en `temas.css` — ver abajo).
+
+**Temas ya definidos en código** (`src/lib/temas/presets.ts`):
+- **Retro** (por defecto desde el rediseño UX): ventanas de escritorio Y2K (Windows 98 / DreamWorld OS), bordes gruesos, esquinas rectas, sombra sólida desplazada sin blur. La fuente pixelada (Silkscreen) queda para la marca y los rótulos cortos (`font-pixel`); la interfaz va en Inter por legibilidad, y quien quiera el pixel en toda la interfaz lo elige en Tipografía. Prototipado en: https://claude.ai/artifact/CmEHbvcrAWAxnaUN2tRjK3
+- **Whimsical**: la paleta de "Identidad visual" de arriba, esquinas redondeadas (16 px), borde fino y sombra difusa — el look blogspot original.
+
+- **Softsignal**: la app como un aparato retro de plástico — carcasa crema (grafito en oscuro), secciones como teclas con lucecita, buscador y fechas en pantallas LCD verdes, títulos en dígitos de LCD, letra mono (IBM Plex Mono). Prototipo: https://claude.ai/artifact/15MYgygMMQ2fTFM8PWmimc
+- **Void**: Y2K emo — todo en ventanitas de escritorio de los 2000 con barra de título, fondo estrellado con franjas de cuadros, títulos en letra cromada (Rubik itálica), interfaz en Pixelify Sans, acentos rosa con brillo; lila pastel en claro y negro estrellado en oscuro. Reemplaza al "Emo" que estaba reservado. Mismo prototipo.
+
+Softsignal y Void cambian el estilo de toda la interfaz, no solo los tokens: además de sus valores en `presets.ts`, tienen su hoja `src/app/[locale]/temas.css`, colgada de `[data-tema="…"]` (atributo que pone el layout de `(app)` con el preset activo). Los componentes solo llevan clases "gancho" sin estilo propio (`tema-pagina`, `tema-barra`, `tema-marca`, `tema-nav-link`, `tema-nav-inferior`, `tema-crear`, `tema-contenido`, `tema-titulo`, `tema-panel`, `tema-lcd`, `tema-campo`, `tema-chip`, `tema-chip-activo`, `tema-fila-chips`); un tema nuevo con estilo propio agrega su bloque en `temas.css` sin tocar componentes, y declara sus colores como variables (`--ss-*`, `--vd-*`) para que sigan a los colores propios. La estructura de las pantallas es la misma en todos los temas. En pantallas muy anchas (`2xl`) estos dos temas suman paneles decorativos a los costados con datos reales del cuarto (conteos, última nota de audio, calendario; `src/components/decoracion-tema/`), y Void una barra de tareas abajo desde `lg`.
+
+**Tema con nombre decidido, todavía sin diseñar** (reservado en `TEMAS_PLANEADOS`, no seleccionable): **Fairy** (pastel soñado, cursiva, brillos).
+
+**La personalización es por tema** (decisión confirmada): cada tema con nombre guarda sus propios colores y letras. Cambiar de tema no borra nada, y al volver a uno se lo encuentra como se dejó. En la base, `temas.colores` y `temas.tipografia` son `{ temas: { retro: …, void: … } }` (`porTema` en `config.ts`; las filas viejas, con un solo juego suelto, se leen como del tema que estaba activo). Cursor e iconos no son del tema: valen para todos.
+
+**Los colores salen del tema** (decisión confirmada): la usuaria elige seis colores (los cuatro acentos, fondo y texto) y **todo** lo demás se recalcula a partir de ellos, con una sola regla — cada color derivado guarda respecto de su color base la misma distancia que tiene en el preset (`src/lib/temas/derivados.ts`). Así la tarjeta acompaña al fondo y los bordes al texto (en Void, al acento: `tintaSigue`), y en Softsignal y Void también la carcasa, las pantallas LCD, las barras de título y el cromo (tabla `VARIABLES_TEMA`, cuyos valores de partida tienen que coincidir con `temas.css` — hay un test que lo comprueba). Lo mismo con las letras: una letra elegida a mano llega también a los rótulos pixelados y a los títulos que cada tema dibuja con letra propia (`--fuente-rotulo`, `--fuente-titulo`); sin elección, cada tema usa las suyas. No agregar un color o una letra fijos en un componente o en `temas.css`: si un tema necesita un color nuevo, entra en `VARIABLES_TEMA` con su base.
+
+**Estado real:** construido. Cada cuenta tiene una fila en `temas` (apuntada por `perfiles.tema_activo_id`, se crea al primer cambio) con el preset activo, los colores propios por tema y por modo, la tipografía por tema, cursor e iconos. El layout de la app la lee (`src/lib/temas/queries.ts`), la valida (`config.ts`: solo colores #RRGGBB, ids de listas cerradas y PNG en base64 generados por el servidor) y la inyecta como un `<style>` con variables CSS (`css.ts`) antes del contenido, así el primer pintado ya sale con el tema. Las pantallas sin sesión (acceso, términos, privacidad) usan el tema de fábrica. Plan de mejoras pendientes: `docs/analisis-y-plan.md`.
+
 ## Marketing y posicionamiento (para más adelante, no bloquea el desarrollo de la Fase 1)
 
 - **Audiencia**: personas a las que les gusta llevar un diario/journaling, coleccionar recuerdos visuales (estilo Pinterest) y quieren un espacio propio, privado y personalizable — no otra red social.
 - **Propuesta de valor**: "todo lo que ya haces en 4 apps distintas (notas, Pinterest, notas de voz, fotos) en un solo espacio que es tuyo y se ve como tú quieras."
 - **Tono de voz**: cálido, íntimo, literario, nunca corporativo — como escribirle a una amiga, no como una app de productividad.
-- **Diferenciador frente a apps de diario existentes**: la personalización visual profunda (colores, cursor, iconos, tipografía) y la combinación diario + galería + audio en un solo lugar, en vez de herramientas separadas.
+- **Diferenciador frente a apps de diario existentes**: la personalización visual profunda (colores, cursor, iconos, tipografía) y la combinación diario + vitrina + audio en un solo lugar, en vez de herramientas separadas.
 
 ## Requerimientos no funcionales (por categoría)
 
@@ -268,7 +295,7 @@ Tipografía sugerida: una serif cálida (ej. Georgia/Lora) para el cuerpo del di
 - Recuperación de contraseña y verificación de email desde la Fase 1 (incluido con Supabase Auth, sin trabajo extra).
 
 **Rendimiento**
-- La galería usa miniaturas (no la versión completa) en la cuadrícula, con carga progresiva/lazy loading.
+- La Vitrina usa miniaturas (no la versión completa) en la cuadrícula, con carga progresiva/lazy loading.
 - Objetivo de carga inicial: bajo 3 segundos en una conexión normal.
 
 **Confiabilidad**
@@ -289,7 +316,7 @@ Tipografía sugerida: una serif cálida (ej. Georgia/Lora) para el cuerpo del di
 
 **Mantenibilidad**
 - TypeScript en todo el proyecto (frontend y rutas API) para reducir errores durante el desarrollo.
-- Estructura de carpetas organizada por feature (diario, listas, galería, audio, personalización), no por tipo de archivo — más fácil de navegar para quien retome el código.
+- Estructura de carpetas organizada por feature (diario, listas, vitrina, audio, personalización), no por tipo de archivo — más fácil de navegar para quien retome el código.
 
 **Privacidad y cumplimiento**
 - El contenido es personal/íntimo por naturaleza — nunca usarlo para entrenamiento, analítica de terceros o publicidad.
@@ -304,23 +331,44 @@ Cada tabla lleva `usuario_id` y las consultas siempre filtran por ese campo — 
 
 | Fase | Alcance |
 | --- | --- |
-| **Fase 1 — MVP personal (ESTA FASE)** | Diario con categorías, listas personalizables, galería con hashtags/título/descripción, subida de audio, tema de color básico configurable, editor enriquecido, login activo, interfaz bilingüe. Un solo usuario real. |
-| Fase 2 — Escalable (no construir aún) | Cuentas múltiples (multiusuario real), temas guardables y más personalización (cursor, iconos, tipografía), transcripción de audio, búsqueda por hashtag/categoría entre todo el contenido. |
+| **Fase 1 — MVP personal (ESTA FASE)** | Diario con categorías, listas personalizables, vitrina con hashtags/título/descripción, subida de audio, personalización por tema (temas con nombre, colores, tipografía, cursor e iconos), editor enriquecido, login activo, interfaz bilingüe. Un solo usuario real. |
+| Fase 2 — Escalable (no construir aún) | Cuentas múltiples (multiusuario real), temas guardables (varias combinaciones con nombre por cuenta), transcripción de audio, búsqueda por hashtag/categoría entre todo el contenido. |
 | Fase 3 — Comercial (no construir aún) | Perfiles públicos/privados, planes de pago o límites por cuenta, posible descubrimiento de galerías de otros usuarios, moderación de contenido. |
 
 Recomendación original: construir la Fase 1 completa como uso personal real durante unas semanas antes de decidir si vale la pena invertir en la Fase 2.
+
+## Commits
+
+Todos los commits van a nombre de **Made1214** (`116743110+Made1214@users.noreply.github.com`), y **sin** líneas de coautoría ni de sesión de Claude (`Co-Authored-By: Claude…`, `Claude-Session: …`) en el mensaje.
 
 ## Nombre del proyecto
 
 **Cuarto Propio** (inspirado en "Un cuarto propio" de Virginia Woolf) — nombre ya decidido, usar en toda la interfaz, metadata y repositorio.
 
+## Autoría de commits y PRs
+
+Todo commit, PR y comentario en GitHub sale a nombre de Made1214 (`Made1214 <116743110+Made1214@users.noreply.github.com>`), como autora y como committer. Sin `Co-Authored-By`, sin `Claude-Session`, sin "Generated with Claude Code" ni ninguna otra mención a Claude en mensajes de commit, descripciones de PR o comentarios. Antes del primer commit de cada sesión, configurar `git config user.name` y `git config user.email` con esos datos.
+
 ## Estado actual del código
 
 Ver `README.md` para instrucciones de setup y un mapa de la estructura de carpetas. Para el esquema de base de datos explicado a fondo (qué guarda cada tabla, cómo funciona RLS, Storage, la búsqueda por palabra clave y las migraciones), ver `docs/base-de-datos.md`.
 
-**Módulos construidos hasta ahora:** login/logout (Supabase Auth), y Diario (categorías por texto libre, editor Tiptap con color/resaltado, listado cronológico con búsqueda y filtro por categoría, URLs con código corto por entrada). La lógica de categorías (consulta, resolución por nombre y asignación de color) vive en `src/lib/categorias/`, pensada para ser compartida por los módulos que vengan después. Listas, Galería, Audio y Personalización siguen como placeholders.
+**Módulos construidos hasta ahora:** login/logout (Supabase Auth), Diario (categorías por texto libre, editor Tiptap con color/resaltado, listado cronológico con búsqueda y filtro por categoría), Listas (tablero estilo Trello en una sola página — cada lista es una columna con sus ítems visibles, sin pantalla de detalle separada: nombre y categoría editables en el momento, agregar/marcar/eliminar ítems y crear/borrar listas, todo inline con refresco en el momento; filtro por categoría) y **Vitrina** (cuadrícula masonry de ventanitas Y2K, exhibir por lotes describiendo cada pieza antes de subirla, ficha de solo lectura con pantalla de edición aparte, relacionadas por hashtag/categoría, filtros y borrado con confirmación), **Audio** (grabación en el navegador con MediaRecorder, corte automático a los 10 minutos, subida con reintento sin perder la grabación, listado cronológico con título y categoría editables en el momento, filtro por categoría, borrado con confirmación). La lógica de categorías (consulta, resolución por nombre y asignación de color) vive compartida en `src/lib/categorias/`, usada por los cuatro módulos, y el selector de categoría de una tarjeta es un solo componente compartido (`src/components/categoria-selector.tsx`) entre Listas y Audio; el pipeline de imágenes (`src/lib/imagenes/procesar.ts` + `almacenamiento.ts`) es un solo componente reutilizado por la Vitrina, la foto de perfil y las imágenes incrustadas del diario (botón «Imagen» del editor, o pegar/soltar una foto; `/api/diario/imagen`, `src/lib/diario/imagenes.ts`).
+
+**Perfil** (reemplaza a la pantalla de Ajustes, que ya no existe): un panel lateral que sale del borde derecho al tocar el avatar del navbar (`src/components/perfil/`, sobre `<dialog>` nativo como el resto de las ventanitas). Adentro: foto de perfil (mismo pipeline de imágenes, carpeta `perfil` del bucket `imagenes`, vía `/api/perfil/foto`), nombre editable en el momento, email, modo claro/oscuro/automático, idioma, el enlace a Personalización (`/personalizacion`), el medidor de espacio y cerrar sesión. El modo de color se aplica con `data-modo` en el `<html>` y un script inline en el `<head>` que lo pone antes del primer pintado (`src/lib/temas/modo.ts`); la preferencia vive en `localStorage`, no en la base, porque es de cada dispositivo y no de la cuenta.
+
+**Navegación (rediseño UX, prototipo en https://claude.ai/artifact/JE2kJ9N9H9LaSSLo4s3k4a):** una sola barra morada arriba (marca, secciones con ícono desde tablet, botón «Crear» y avatar); en el celular las secciones van en una barra fija abajo con «Crear» levantado en el medio (`src/components/nav-secciones.tsx`). «Crear» abre una ventanita con las cuatro acciones — Escribir, Exhibir, Grabar, Nueva lista — que en el celular sube como hoja y en escritorio se abre al centro con atajos 1–4 (`src/components/menu-crear.tsx`). En escritorio (desde `lg`) el Diario suma una columna de filtros a la izquierda (`diario/columna-filtros.tsx`): buscador, categorías con conteo —incluida «Sin categoría», `?categoria=ninguna`— y meses con entradas (`?mes=YYYY-MM`); los conteos salen de `contarEntradasDiario` (`src/lib/diario/queries.ts`). El filtro por categoría de los cuatro módulos es una fila de chips con el color de cada categoría (`src/components/filtro-categoria.tsx`, que también exporta las clases de chip que usan los hashtags de la Vitrina). Navegación, botones y etiquetas usan Inter legible; la fuente pixelada queda para la marca y los rótulos cortos. Los botones, rótulos y textos de apoyo de todas las pantallas salen de un vocabulario de clases compartido en `src/app/[locale]/globals.css` (`boton` + `boton-rosa` / `boton-verde` / `boton-turquesa` / `boton-morado` / `boton-chico`, `rotulo`, `apoyo`, `aviso`, `enlace-volver`, `punto-categoria`), armado solo con los tokens del tema: un botón nuevo usa esas clases en vez de repetir utilidades, así sale igual en las cuatro secciones y en los cuatro temas. Los atajos de la barra llevan el gancho `tema-barra-icono`.
+
+**Acceso** (`src/app/[locale]/(auth)/`): entrar (`/login`), crear cuenta (`/registro`, con requisitos de contraseña visibles mientras se escribe — 8 caracteres, una letra, un número, validados también en la Server Action, `src/lib/auth/contrasena.ts`), recuperar contraseña (`/recuperar`) y elegir una nueva (`/restablecer`). El registro responde lo mismo exista o no el correo. Los enlaces de los correos de Supabase pasan por `/api/auth/confirmar`, que canjea el código por sesión y redirige; para que funcionen, en Supabase → Authentication → URL Configuration hay que agregar `https://<dominio>/api/auth/confirmar` (y `http://localhost:3000/api/auth/confirmar` para desarrollo) a las Redirect URLs.
+
+**Seguridad de acceso y cumplimiento:** bloqueo de 15 minutos tras 5 fallos de login seguidos sobre la misma cuenta (tabla `intentos_login`, migración 0009; si la migración falta, el login funciona sin el bloqueo). Páginas públicas de términos (`/terminos`) y privacidad (`/privacidad`), con el texto en los mensajes (`legal`) y un `[CORREO DE CONTACTO]` que hay que completar antes de publicar. Mensaje de bienvenida una sola vez por cuenta (`perfiles.bienvenida_vista_en`) y medidor de espacio en el perfil, con aviso en toda la app desde el 80 % del GB del free tier (`uso_storage()`, migración 0010; `src/lib/storage/limites.ts`).
+
+**PWA:** manifest (`src/app/manifest.ts`), íconos en `public/icons/` (corazón pixelado, generados con `node scripts/generar-iconos.mjs public/icons`) y metadatos de iOS. A propósito sin service worker: Fase 1 no tiene modo offline.
+
+**Personalización** (`/personalizacion`, `src/lib/temas/`): tema con nombre (Retro / Whimsical / Softsignal / Void; cada uno recuerda sus propios colores y letras), colores propios del modo que se está viendo con vista previa en vivo —incluidos los derivados: tarjetas, bordes y las piezas propias de Softsignal y Void— y aviso de contraste bajo según WCAG que deja guardar igual (`contraste.ts`), tipografía del diario y de la interfaz por separado (set curado, cargado con `next/font` sin precarga; «Volver a las letras del tema» la restablece), cursor (set curado en `public/cursores/`, generado con `node scripts/generar-cursores.mjs public/cursores`, o uno propio) e iconos de las secciones (set Trazo o Pixel, o una imagen propia por sección, vía `IconosProvider` / `IconoSeccion`). Los cursores e iconos propios se suben por `/api/personalizacion/imagen`: sharp valida el tipo real, los reduce a PNG de 32/64 px y se guardan como `data:` en la fila del tema (no en Storage). El modo claro/oscuro/automático sigue en el panel de perfil.
 
 **Implicaciones de este documento que todavía no están reflejadas en el código** (a resolver cuando se retome cada módulo, no automáticamente):
-- No hay pantalla de registro público ni de recuperación de contraseña — hoy solo existe login. Este documento ahora pide ambas.
-- No hay rate limiting de intentos de login todavía.
-- La paleta de colores confirmada en "Identidad visual" no está aplicada como tema por defecto (la interfaz actual usa los grises por defecto de Tailwind).
+- La transcripción de audio no está (ni tiene que estar: es Fase 2). La columna `audios.transcripcion` existe y queda vacía.
+
+**Marca y landing:** el logo (la ilustración de la muchacha con el gato y el wordmark) vive en `src/assets/logo/` (`logo.webp` completo; `marca.webp`, recorte de la cara para la barra de la app, la de acceso, el favicon y los íconos de la PWA en `public/icons/`). `src/app/opengraph-image.jpg` es la imagen al compartir. La raíz `/` muestra la landing (`src/components/landing/`) a quien no tiene sesión; a quien sí, el proxy (`src/proxy.ts`) la manda al diario antes de renderizar, así la landing es estática (prerenderizada por idioma, igual que términos, privacidad y recuperar). La página entera conserva una sola identidad (Whimsical, tokens propios en `landing.css`, colgados de `.landing[data-theme]`); los temas se muestran en el **probador** (`probador.tsx`), una maqueta de la app que se viste con los temas **reales** de Personalización (Retro, Whimsical, Softsignal, Void, más Fairy como "pronto") usando `generarCssTema(config, alcance)` y las mismas clases y decoración de `temas.css` — así lo que se promete en la landing es lo que se encuentra adentro. Mientras está en pantalla, la maqueta rota sola por los temas cada 4,5 s (se pausa con el mouse encima y se detiene del todo al primer clic dentro del probador; con «reducir movimiento» no rota). Se puede probar también letra, acento y cursor. El botón "Crear mi cuarto con …" lleva a `/registro?tema=<preset>`; ese tema viaja en los metadatos de la cuenta (`tema_inicial`) y se aplica la primera vez que hay sesión (`src/lib/temas/inicial.ts`, desde `/api/auth/confirmar` o el primer login), solo si la cuenta todavía no tiene fila de tema.
+

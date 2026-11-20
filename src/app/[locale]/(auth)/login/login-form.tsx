@@ -2,54 +2,58 @@
 
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
-import { login } from "./actions";
+import { Link } from "@/i18n/navigation";
+import {
+  AvisoAcceso,
+  CampoContrasena,
+  CLASE_BOTON,
+  CLASE_CAMPO,
+  CLASE_ETIQUETA,
+} from "../componentes";
+import { login, type EstadoAcceso } from "./actions";
 
-type ActionState = { error?: string } | undefined;
-
-export function LoginForm({ locale }: { locale: string }) {
+export function LoginForm({ locale, siguiente }: { locale: string; siguiente: string | null }) {
   const t = useTranslations("login");
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
+  const [state, formAction, pending] = useActionState<EstadoAcceso, FormData>(
     (_prevState, formData) => login(locale, formData),
     undefined,
   );
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium">
-          {t("email")}
-        </label>
+      {siguiente ? <input type="hidden" name="next" value={siguiente} /> : null}
+      <label className={CLASE_ETIQUETA}>
+        {t("email")}
         <input
-          id="email"
           name="email"
           type="email"
           required
           autoComplete="email"
-          className="rounded-md border border-black/10 px-3 py-2 outline-none focus:border-black/30 dark:border-white/15 dark:focus:border-white/30"
+          placeholder="tu@correo.com"
+          className={CLASE_CAMPO}
         />
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm font-medium">
-          {t("password")}
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          autoComplete="current-password"
-          className="rounded-md border border-black/10 px-3 py-2 outline-none focus:border-black/30 dark:border-white/15 dark:focus:border-white/30"
-        />
-      </div>
+      </label>
+      <CampoContrasena
+        id="password"
+        etiqueta={t("password")}
+        autoComplete="current-password"
+      />
+      <Link
+        href="/recuperar"
+        className="-mt-1 w-fit text-[13px] font-semibold text-secondary-purple underline-offset-2 hover:underline"
+      >
+        {t("olvide")}
+      </Link>
       {state?.error ? (
-        <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
+        <AvisoAcceso tipo="error">{state.error}</AvisoAcceso>
       ) : null}
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-full bg-foreground px-5 py-2 text-background transition-colors hover:bg-[#383838] disabled:opacity-60 dark:hover:bg-[#ccc]"
+        aria-busy={pending}
+        className={`${CLASE_BOTON} mt-1 bg-primary-green`}
       >
-        {t("entrar")}
+        {pending ? t("entrando") : t("entrar")}
       </button>
     </form>
   );

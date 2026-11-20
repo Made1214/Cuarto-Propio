@@ -24,6 +24,6 @@ export type Entrada = {
 };
 
 /** Resultado de crearEntrada/actualizarEntrada para useActionState: solo
- * lleva algo cuando la validación falla — el caso de éxito redirige, nunca
- * "vuelve" a renderizar el formulario. */
+ * lleva algo cuando algo falla (la validación, la base o la red) — el caso
+ * de éxito redirige, nunca "vuelve" a renderizar el formulario. */
 export type EntradaActionState = { error?: string } | undefined;

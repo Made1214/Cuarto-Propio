@@ -1,6 +1,29 @@
+import { Suspense } from "react";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { createClient } from "@/lib/supabase/server";
+import {
+  createClient,
+  obtenerUsuario,
+  type UsuarioSesion,
+} from "@/lib/supabase/server";
 import { Link, redirect } from "@/i18n/navigation";
+import { IconoPincel } from "@/components/perfil/iconos";
+import { DecoracionTema } from "@/components/decoracion-tema/decoracion-tema";
+import { IconosProvider } from "@/components/icono-seccion";
+import { MenuCrear } from "@/components/menu-crear";
+import { generarCssTema } from "@/lib/temas/css";
+import { obtenerConfigTema } from "@/lib/temas/queries";
+import { NavSecciones } from "@/components/nav-secciones";
+import { PanelPerfil } from "@/components/perfil/panel-perfil";
+import { Bienvenida } from "@/components/bienvenida";
+import { bienvenidaPendiente, obtenerPerfil } from "@/lib/perfil/queries";
+import { formatearBytes } from "@/lib/storage/formato";
+import {
+  LIMITE_STORAGE_BYTES,
+  obtenerUsoStorage,
+  UMBRAL_AVISO_STORAGE,
+} from "@/lib/storage/uso";
+import marca from "@/assets/logo/marca.webp";
 import { logout } from "../(auth)/login/actions";
 
 export default async function AppLayout({
@@ -11,75 +34,188 @@ export default async function AppLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Los dos en paralelo: ninguno depende del otro. `obtenerUsuario` verifica
+  // el JWT localmente (sin red, ver src/lib/supabase/server.ts), así que el
+  // chequeo de sesión ya no retrasa el primer byte como cuando era una ida al
+  // servidor de Auth.
+  const [usuario, t, tema] = await Promise.all([
+    obtenerUsuario(),
+    getTranslations({ locale, namespace: "nav" }),
+    obtenerConfigTema(),
+  ]);
 
-  if (!user) {
+  if (!usuario) {
+    // El proxy ya redirige al login sin sesión; esto queda como segunda línea
+    // de defensa por si una ruta privada se le escapa a su `matcher`.
+    // `redirect` corta la ejecución lanzando, pero su tipo no lo declara: el
+    // `return` es lo que le deja saber a TypeScript que más abajo `usuario`
+    // ya existe (lo necesita el perfil). En tiempo de ejecución nunca se
+    // alcanza.
     redirect({ href: "/login", locale });
+    return null;
   }
 
-  const t = await getTranslations({ locale, namespace: "nav" });
   const logoutWithLocale = logout.bind(null, locale);
 
+  // Ajustes ya no es un link más: todo lo que era esa pantalla (y más) vive
+  // ahora en el panel de perfil, que se abre desde el avatar de la derecha.
   const links = [
     { href: "/diario", label: t("diario") },
     { href: "/listas", label: t("listas") },
-    { href: "/galeria", label: t("galeria") },
+    { href: "/vitrina", label: t("vitrina") },
     { href: "/audio", label: t("audio") },
-    { href: "/ajustes", label: t("ajustes") },
   ] as const;
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-background text-foreground">
-      {/* Barra de título tipo ventana retro */}
-      <div className="flex h-12 items-center justify-between border-b-[3px] border-ink bg-secondary-purple px-5">
-        <div className="flex items-center gap-2.5">
-          <svg width="16" height="14" viewBox="0 0 14 12" aria-hidden="true">
-            <rect x="2" y="0" width="4" height="2" fill="var(--primary-pink)" />
-            <rect x="8" y="0" width="4" height="2" fill="var(--primary-pink)" />
-            <rect x="0" y="2" width="14" height="2" fill="var(--primary-pink)" />
-            <rect x="0" y="4" width="14" height="2" fill="var(--primary-pink)" />
-            <rect x="2" y="6" width="10" height="2" fill="var(--primary-pink)" />
-            <rect x="4" y="8" width="6" height="2" fill="var(--primary-pink)" />
-            <rect x="6" y="10" width="2" height="2" fill="var(--primary-pink)" />
-          </svg>
-          <span className="font-pixel text-xs tracking-wide text-background">
-            CUARTO_PROPIO
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="h-3 w-3 border-2 border-ink bg-primary-green" />
-          <span className="h-3 w-3 border-2 border-ink bg-secondary-turquoise" />
-          <span className="h-3 w-3 border-2 border-ink bg-primary-pink" />
-        </div>
-      </div>
+    <IconosProvider valor={tema.iconos}>
+      {/* El tema elegido en Personalización (colores, forma, letras, cursor):
+        pisa las variables por defecto de globals.css. Va antes que todo el
+        contenido, así el primer pintado ya sale con el tema. Solo lleva
+        valores validados (ver `generarCssTema`). */}
+      <style dangerouslySetInnerHTML={{ __html: generarCssTema(tema) }} />
+      {/* `data-tema`: los temas con estilo propio (Softsignal, Void) cuelgan
+          de acá su decoración en `temas.css`; los demás solo usan tokens. */}
+      <div
+        data-tema={tema.preset}
+        className="tema-pagina flex min-h-full flex-1 flex-col bg-background text-foreground"
+      >
+        {/* Una sola barra fija arriba: marca, secciones (desde tablet), Crear y
+          el avatar. Antes eran dos barras apiladas (título decorativo + menú)
+          que ocupaban 96 px fijos en el celular. z-30 para pasarle por encima
+          a los desplegables de las pantallas, que usan z-20. Los <dialog>
+          (perfil, Crear, ventanitas) no compiten: el navegador los pinta en
+          su capa superior, por encima de cualquier z-index. */}
+        <header className="tema-barra sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
+          <div className="flex items-center gap-2.5">
+            <Image
+              src={marca}
+              alt=""
+              width={32}
+              height={32}
+              className="h-7 w-7 shrink-0 rounded-theme border-(length:--borde) border-ink object-cover md:h-8 md:w-8"
+            />
+            <span className="tema-marca font-pixel text-sm tracking-wide text-background">
+              CUARTO PROPIO
+            </span>
+          </div>
 
-      {/* Barra de menú / navegación */}
-      <header className="flex h-12 items-center justify-between border-b-[3px] border-ink bg-card px-5">
-        <nav className="flex items-center gap-6">
-          {links.map((link) => (
+          <NavSecciones secciones={links} variante="barra" />
+
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="hidden md:block">
+              <MenuCrear variante="barra" />
+            </div>
+            {/* Personalización es de lo que más distingue a la app: un
+              acceso directo a la vista, no solo dentro del panel de perfil. */}
             <Link
-              key={link.href}
-              href={link.href}
-              className="font-pixel text-xs tracking-wide text-muted/70 transition-colors hover:text-secondary-purple"
+              href="/personalizacion"
+              aria-label={t("personalizar")}
+              title={t("personalizar")}
+              className="tema-barra-icono flex h-10 w-10 items-center justify-center border-(length:--borde) border-transparent rounded-theme text-background transition-colors hover:border-background/50 hover:bg-background/15 aria-[current=page]:border-background/60 aria-[current=page]:bg-background/20"
             >
-              {link.label.toUpperCase()}
+              <IconoPincel />
             </Link>
-          ))}
-        </nav>
-        <form action={logoutWithLocale}>
-          <button
-            type="submit"
-            className="border-2 border-ink bg-background px-3 py-1.5 font-pixel text-xs tracking-wide text-ink transition-transform active:translate-x-0.5 active:translate-y-0.5"
-          >
-            {t("cerrarSesion").toUpperCase()}
-          </button>
-        </form>
-      </header>
+            {/* El perfil (una consulta a la base, más la firma de la foto) llega
+              por streaming: sin este `Suspense`, la barra entera y el
+              esqueleto de la sección esperaban a que respondiera la base
+              antes de mandar el primer byte de la página. */}
+            <Suspense fallback={<AvatarCargando />}>
+              <AvatarPerfil usuario={usuario} cerrarSesion={logoutWithLocale} />
+            </Suspense>
+          </div>
+        </header>
 
-      <main className="flex flex-1 flex-col px-6 py-10">{children}</main>
-    </div>
+        {/* En el celular, abajo queda espacio para la barra de secciones fija
+          (más la zona segura del iPhone). */}
+        <main id="contenido" className="flex flex-1 flex-col px-5 pt-6 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:px-6 md:py-10">
+          {/* Bienvenida y aviso de espacio: cada uno su consulta, por
+            streaming, para no demorar la página. */}
+          <Suspense fallback={null}>
+            <AvisosCuenta usuarioId={usuario.id} locale={locale} />
+          </Suspense>
+          {/* El marco del contenido: en Softsignal es la carcasa del aparato,
+              en Void la ventana principal; en los demás temas no se ve. */}
+          <div className="tema-contenido flex flex-1 flex-col">{children}</div>
+        </main>
+
+        <Suspense fallback={null}>
+          <DecoracionTema preset={tema.preset} locale={locale} />
+        </Suspense>
+
+        <NavSecciones secciones={links} variante="inferior" />
+      </div>
+    </IconosProvider>
+  );
+}
+
+/**
+ * Lo que la cuenta tiene que avisar por su cuenta: la bienvenida la primera
+ * vez, y el espacio de Storage cuando pasa del 80 % del plan gratuito.
+ */
+async function AvisosCuenta({
+  usuarioId,
+  locale,
+}: {
+  usuarioId: string;
+  locale: string;
+}) {
+  const [pendiente, uso, t] = await Promise.all([
+    createClient().then((supabase) => bienvenidaPendiente(supabase, usuarioId)),
+    obtenerUsoStorage(),
+    getTranslations({ locale, namespace: "nav" }),
+  ]);
+
+  const fraccion = uso === null ? 0 : uso / LIMITE_STORAGE_BYTES;
+  const datos = {
+    porcentaje: Math.min(100, Math.round(fraccion * 100)),
+    usado: formatearBytes(uso ?? 0, locale),
+    limite: formatearBytes(LIMITE_STORAGE_BYTES, locale),
+  };
+
+  return (
+    <>
+      {pendiente ? <Bienvenida /> : null}
+      {fraccion >= UMBRAL_AVISO_STORAGE ? (
+        <p
+          role="status"
+          className="mx-auto mb-6 w-full max-w-3xl border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-3 text-sm leading-snug text-ink-strong"
+        >
+          {fraccion >= 1
+            ? t("avisoStorageLleno", datos)
+            : t("avisoStorage", datos)}
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+async function AvatarPerfil({
+  usuario,
+  cerrarSesion,
+}: {
+  usuario: UsuarioSesion;
+  cerrarSesion: () => Promise<void>;
+}) {
+  const [perfil, usoStorage] = await Promise.all([
+    createClient().then((supabase) => obtenerPerfil(supabase, usuario)),
+    obtenerUsoStorage(),
+  ]);
+  return (
+    <PanelPerfil
+      perfil={perfil}
+      usoStorage={usoStorage}
+      cerrarSesion={cerrarSesion}
+    />
+  );
+}
+
+/** Mismo tamaño y marco que el avatar de la barra (32 px), para que nada
+ * salte cuando llega el de verdad. */
+function AvatarCargando() {
+  return (
+    <span
+      aria-hidden="true"
+      className="m-1.5 h-8 w-8 shrink-0 border-(length:--borde) border-ink rounded-theme bg-primary-pink/40 motion-safe:animate-pulse"
+    />
   );
 }

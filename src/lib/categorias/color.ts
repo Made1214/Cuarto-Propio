@@ -1,41 +1,85 @@
 import type { Categoria } from "./types";
 
 /**
- * No hay color propio por categoría en el modelo de datos — se asigna por
- * POSICIÓN dentro de la lista de categorías del usuario (no por hash del
- * id). Un hash puro puede coincidir por pura estadística incluso con pocas
- * categorías (con 5 categorías y 12 colores, hay ~60% de probabilidad de
- * que dos caigan exactamente en el mismo color). Asignando por posición,
- * mientras haya `PALETA_CATEGORIA.length` categorías o menos, nunca se
- * repiten — a partir de ahí, sí, porque no hay más pasteles distinguibles
- * a simple vista para seguir sumando.
+ * Color de una categoría: una de las 12 variables `--cat-N` que define el
+ * tema activo (ver `src/lib/temas/categorias.ts`), así el color sigue al
+ * tema, al modo claro/oscuro y a los colores propios de la usuaria.
  *
- * Contrapartida: si se borra o agrega una categoría en el medio de la
- * lista, el color de las que quedan después puede correrse. Se acepta ese
- * costo a cambio de que, en el uso normal, nunca se repita un color.
+ * Qué número le toca a cada categoría no depende del orden en que se
+ * muestran (alfabético) ni de cuántas haya antes: se recorren por orden de
+ * creación y cada una toma el lugar que le da un hash de su id; si ya está
+ * ocupado, el siguiente libre. Consecuencias:
  *
- * Compartido entre módulos (diario, listas, galería, audio): todos usan
- * las mismas categorías del usuario, así que el mismo nombre de categoría
- * siempre se ve del mismo color sin importar desde qué módulo se mire.
+ * - Mientras haya 12 categorías o menos, nunca se repite un color.
+ * - Crear una categoría nueva no cambia el color de ninguna existente
+ *   (es la última en el orden de creación, así que solo ocupa un lugar libre).
+ * - Borrar una solo puede mover a las que chocaron con ella al asignarse,
+ *   no a todas las que venían después.
+ *
+ * Compartido entre módulos: todos usan las mismas categorías del usuario,
+ * así que una categoría se ve del mismo color desde cualquier sección.
  */
-const PALETA_CATEGORIA = [
-  "#F5B8C4", // rosa
-  "#F7C99B", // durazno
-  "#F0E29A", // amarillo pastel
-  "#B8E0B0", // verde
-  "#9BD9C9", // turquesa
-  "#A0D0EA", // celeste
-  "#AEB8F0", // periwinkle
-  "#CBAEEA", // lavanda
-  "#E0A8D8", // orquídea
-  "#F0A0A8", // coral
-  "#E0C9A0", // arena
-  "#A8E0D0", // aqua
+
+const CANTIDAD = 12;
+
+/** Respaldo si la página no tiene las variables del tema (no debería pasar
+ * dentro de la app; el layout siempre las inyecta). Pasteles del tema de
+ * fábrica en el mismo orden de tonos. */
+const RESPALDO = [
+  "#F5B8C4",
+  "#A0D0EA",
+  "#F0E29A",
+  "#CBAEEA",
+  "#B8E0B0",
+  "#F0A0A8",
+  "#9BD9C9",
+  "#E0A8D8",
+  "#F7C99B",
+  "#AEB8F0",
+  "#A8E0D0",
+  "#E0C9A0",
 ] as const;
 
+/** FNV-1a de 32 bits: estable entre servidor y navegador, sin dependencias. */
+function hash(texto: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < texto.length; i++) {
+    h ^= texto.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+function porCreacion(a: Categoria, b: Categoria): number {
+  // Sin fecha (una categoría recién escrita que todavía no volvió del
+  // servidor) va al final: es la más nueva.
+  const fa = a.creadoEn ?? "￿";
+  const fb = b.creadoEn ?? "￿";
+  if (fa !== fb) return fa < fb ? -1 : 1;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+
+/** Lugar (0–11) que le toca a cada categoría de la lista. */
+export function asignarIndices(categorias: Categoria[]): Map<string, number> {
+  const indices = new Map<string, number>();
+  const ocupados = new Set<number>();
+  for (const cat of [...categorias].sort(porCreacion)) {
+    let lugar = hash(cat.id) % CANTIDAD;
+    if (ocupados.size < CANTIDAD) {
+      while (ocupados.has(lugar)) lugar = (lugar + 1) % CANTIDAD;
+    }
+    ocupados.add(lugar);
+    indices.set(cat.id, lugar);
+  }
+  return indices;
+}
+
+export function indiceCategoria(categorias: Categoria[], id: string | null | undefined): number {
+  if (!id) return 0;
+  return asignarIndices(categorias).get(id) ?? hash(id) % CANTIDAD;
+}
+
 export function colorCategoria(categorias: Categoria[], id: string | null | undefined): string {
-  if (!id) return PALETA_CATEGORIA[0];
-  const indice = categorias.findIndex((cat) => cat.id === id);
-  if (indice === -1) return PALETA_CATEGORIA[0];
-  return PALETA_CATEGORIA[indice % PALETA_CATEGORIA.length];
+  const i = indiceCategoria(categorias, id);
+  return `var(--cat-${i}, ${RESPALDO[i]})`;
 }

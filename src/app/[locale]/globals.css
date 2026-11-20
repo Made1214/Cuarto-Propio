@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./temas.css";
 @plugin "@tailwindcss/typography";
 
 /*
@@ -7,6 +8,7 @@
  * sólida desplazada sin blur, tipografía pixelada en la interfaz.
  */
 :root {
+  color-scheme: light;
   --background: #fcf6f3;
   --foreground: #3d2c4f;
   --card: #ffffff;
@@ -17,10 +19,28 @@
      ENCIMA de un fondo pastel siempre necesita tinta oscura para contraste,
      nunca la tinta "de página" (que sí se invierte). */
   --ink-strong: #3d2c4f;
+  /* Velo detrás de las ventanas modales. Token propio y no `--ink` con alfa:
+     la tinta se invierte en modo oscuro y el velo terminaba siendo casi
+     blanco, aclarando la página en vez de apagarla. Un velo siempre oscurece. */
+  --velo: rgba(61, 44, 79, 0.5);
   --primary-green: #9bcfae;
   --primary-pink: #f0aec4;
   --secondary-turquoise: #74c7c3;
   --secondary-purple: #5b3f73;
+
+  /* Lenguaje de forma y tipografía del tema. Estos son los valores del tema
+     por defecto (Retro); el tema elegido en Personalización los pisa con un
+     <style> que inyecta el layout de la app (src/lib/temas/css.ts). Los
+     componentes nunca usan valores sueltos: `border-(length:--borde)`,
+     `rounded-theme`, `shadow-marco`, `font-sans`, `font-diario`. */
+  --borde: 2px;
+  --borde-grueso: 3px;
+  --radio: 0px;
+  --sombra-sm: 3px 3px 0 var(--ink);
+  --sombra: 4px 4px 0 var(--ink);
+  --sombra-lg: 8px 8px 0 var(--ink);
+  --fuente-interfaz: var(--font-inter);
+  --fuente-diario: var(--font-lora);
 }
 
 @theme inline {
@@ -30,23 +50,38 @@
   --color-muted: var(--muted);
   --color-ink: var(--ink);
   --color-ink-strong: var(--ink-strong);
+  --color-velo: var(--velo);
   --color-primary-green: var(--primary-green);
   --color-primary-pink: var(--primary-pink);
   --color-secondary-turquoise: var(--secondary-turquoise);
   --color-secondary-purple: var(--secondary-purple);
-  --font-sans: var(--font-inter);
-  --font-diario: var(--font-lora);
-  --font-pixel: var(--font-silkscreen);
-  --radius-theme: 6px;
+  --font-sans: var(--fuente-interfaz);
+  --font-diario: var(--fuente-diario);
+  --font-pixel: var(--fuente-rotulo, var(--font-silkscreen));
+  --radius-theme: var(--radio);
+  --shadow-marco-sm: var(--sombra-sm);
+  --shadow-marco: var(--sombra);
+  --shadow-marco-lg: var(--sombra-lg);
 }
 
+/*
+ * Modo oscuro. Van dos reglas y no una porque hay dos maneras de llegar a
+ * él: siguiendo al sistema (modo "automático", que es no haber elegido nada)
+ * o porque la usuaria lo fijó a mano desde su perfil — ver
+ * src/lib/temas/modo.ts. La regla del atributo va DESPUÉS para ganarle a la
+ * media query cuando el sistema dice una cosa y la usuaria pidió la otra.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-modo="claro"]) {
+    color-scheme: dark;
     --background: #2b2033;
     --foreground: #fbf4f2;
     --card: #43334f;
     --muted: #fbf4f2;
     --ink: #fbf4f2;
+    /* Más oscuro y más opaco que en modo claro: el velo tiene que apagar un
+       fondo que ya es oscuro, no apenas teñirlo. */
+    --velo: rgba(13, 8, 17, 0.66);
     --primary-green: #b8e0c6;
     --primary-pink: #f5c4d3;
     --secondary-turquoise: #8ed9d4;
@@ -54,10 +89,335 @@
   }
 }
 
+:root[data-modo="oscuro"] {
+  color-scheme: dark;
+  --background: #2b2033;
+  --foreground: #fbf4f2;
+  --card: #43334f;
+  --muted: #fbf4f2;
+  --ink: #fbf4f2;
+  --velo: rgba(13, 8, 17, 0.66);
+  --primary-green: #b8e0c6;
+  --primary-pink: #f5c4d3;
+  --secondary-turquoise: #8ed9d4;
+  --secondary-purple: #c9a8e0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--fuente-interfaz), system-ui, sans-serif;
+}
+
+/*
+ * Vocabulario compartido de botones y textos. Antes cada pantalla repetía su
+ * propia ristra de utilidades y terminaban distintos: «Nueva entrada» en
+ * Inter y «NUEVA LISTA» en pixel, «Guardar» de un alto y «EDITAR» de otro.
+ * Con estas clases un botón sale igual en las cuatro secciones y en los
+ * cuatro temas, porque todo lo que usan son los tokens del tema (borde,
+ * radio, sombra, tinta).
+ *
+ * Regla de tipografías (rediseño UX): la pixelada (`font-pixel`, `rotulo`)
+ * es solo para la marca y los rótulos cortos — barras de ventana, el mes del
+ * diario, el título de un bloque. Todo lo que se lee o se toca (botones,
+ * chips, fechas, enlaces) va en la letra de interfaz, en minúsculas.
+ */
+@layer components {
+  /* Botón base: fondo de tarjeta, con borde. «Cancelar», «Limpiar filtros». */
+  .boton {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: var(--borde) solid var(--ink);
+    border-radius: var(--radio);
+    background: var(--card);
+    /* El color del texto, no el de los bordes: en Void la tinta de los
+       bordes es un lila claro que como letra no se lee. */
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    transition:
+      transform 80ms ease-out,
+      filter 120ms ease-out,
+      background-color 120ms ease-out;
+  }
+
+  .boton:hover {
+    background: color-mix(in srgb, var(--secondary-purple) 10%, var(--card));
+  }
+
+  .boton:active {
+    transform: translate(2px, 2px);
+  }
+
+  .boton:disabled,
+  .boton[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  /* Botones de acción: color del tema y la sombra del tema, que se "hunde"
+     al tocar. Rosa = lo nuevo de la sección; verde = confirmar o guardar;
+     turquesa = imágenes y editar; morado = la acción más fuerte. La tinta
+     va fija (`--ink-strong`) porque estos fondos casi no cambian de
+     claridad entre modo claro y oscuro. */
+  .boton-rosa,
+  .boton-verde,
+  .boton-turquesa,
+  .boton-morado {
+    font-weight: 700;
+    color: var(--ink-strong);
+    box-shadow: var(--sombra-sm);
+  }
+
+  .boton-rosa,
+  .boton-rosa:hover {
+    background: var(--primary-pink);
+  }
+  .boton-verde,
+  .boton-verde:hover {
+    background: var(--primary-green);
+  }
+  .boton-turquesa,
+  .boton-turquesa:hover {
+    background: var(--secondary-turquoise);
+  }
+  .boton-morado,
+  .boton-morado:hover {
+    background: var(--secondary-purple);
+    color: var(--background);
+  }
+
+  .boton-rosa:hover,
+  .boton-verde:hover,
+  .boton-turquesa:hover,
+  .boton-morado:hover {
+    filter: brightness(0.95);
+  }
+
+  .boton-rosa:active,
+  .boton-verde:active,
+  .boton-turquesa:active,
+  .boton-morado:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+
+  /* Para adentro de una tarjeta o un aviso, donde uno de 44 px no entra. En
+     pantallas táctiles vuelve a 44 px: el dedo necesita ese alto. */
+  .boton-chico {
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  @media (pointer: coarse) {
+    .boton-chico {
+      min-height: 2.75rem;
+    }
+  }
+
+  /* Rótulo corto en la letra de rótulos del tema (pixel en Retro). */
+  .rotulo {
+    font-family: var(--fuente-rotulo, var(--font-silkscreen)), monospace;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    color: var(--secondary-purple);
+  }
+
+  /* Texto de apoyo: fechas, conteos, ayudas. */
+  .apoyo {
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, var(--muted) 72%, transparent);
+  }
+
+  /* Aviso en el lugar (un error de formulario, algo que no se guardó). */
+  .aviso {
+    padding: 0.5rem 0.75rem;
+    border: var(--borde) solid var(--ink-strong);
+    border-radius: var(--radio);
+    background: var(--primary-pink);
+    color: var(--ink-strong);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* Volver a la pantalla anterior («‹ Volver al diario»). */
+  .enlace-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    width: fit-content;
+    min-height: 2.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--secondary-purple);
+  }
+
+  .enlace-volver:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* El cuadradito de color de una categoría. El color va por `style`. */
+  .punto-categoria {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.625rem;
+    height: 0.625rem;
+    border: 1.5px solid var(--ink-strong);
+  }
+}
+
+/* La ventanita entra con un salto corto, como una ventana que se abre de
+   golpe en un escritorio viejo — sin desvanecidos largos. */
+.ventana-dialogo[open] {
+  animation: ventana-abre 140ms ease-out;
+}
+
+.ventana-dialogo[open]::backdrop {
+  animation: ventana-velo 140ms ease-out;
+}
+
+@keyframes ventana-abre {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+@keyframes ventana-velo {
+  from {
+    opacity: 0;
+  }
+}
+
+/* El panel de perfil entra deslizándose desde el borde derecho, como un
+   cajón que se saca — no salta al centro como las ventanitas modales. */
+.panel-lateral[open] {
+  animation: panel-entra 180ms ease-out;
+}
+
+.panel-lateral[open]::backdrop {
+  animation: ventana-velo 180ms ease-out;
+}
+
+@keyframes panel-entra {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+/* La ventanita de "Crear": en el celular sube desde abajo como una hoja (el
+   pulgar ya está ahí); desde tablet se abre al centro con el mismo salto
+   corto que las otras ventanitas. */
+.hoja-crear[open] {
+  animation: hoja-sube 180ms ease-out;
+}
+
+.hoja-crear[open]::backdrop {
+  animation: ventana-velo 180ms ease-out;
+}
+
+@media (min-width: 48rem) {
+  .hoja-crear[open] {
+    animation: ventana-abre 140ms ease-out;
+  }
+}
+
+@keyframes hoja-sube {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+/* Cursor de terminal que parpadea mientras algo carga (el link de la barra
+   recién tocado, el buscador del diario). Siempre está en el DOM y solo se
+   prende con `data-pendiente="true"`, así no mueve nada al aparecer. Arranca
+   invisible y recién se ve a los 120 ms: si la respuesta llega antes, no hay
+   destello. El parpadeo es a saltos (`steps`), como un cursor de verdad, no
+   un desvanecido. */
+.cursor-pendiente {
+  opacity: 0;
+}
+
+.cursor-pendiente[data-pendiente="true"] {
+  animation: cursor-parpadea 0.9s steps(1, end) 120ms infinite;
+}
+
+@keyframes cursor-parpadea {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Cinta de módulos del login: corre sola hacia la izquierda y se detiene al
+   pasar el mouse (o al enfocar con teclado) para poder leerla. Los bordes se
+   desvanecen con una máscara y no con un degradado de color, así funciona
+   sobre cualquier fondo y en cualquier modo. */
+.marquee-mascara {
+  mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+}
+
+.marquee-cinta {
+  animation: marquee-corre 32s linear infinite;
+}
+
+/* La segunda cinta va al revés y más lenta: dos ritmos distintos se leen
+   como movimiento tranquilo, no como una pared que corre. */
+.marquee-cinta-reversa {
+  animation-direction: reverse;
+  animation-duration: 44s;
+}
+
+.marquee-mascara:hover .marquee-cinta,
+.marquee-mascara:focus-within .marquee-cinta {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-corre {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sin movimiento: la cinta queda quieta y se recorre deslizando. */
+  .marquee-mascara {
+    overflow-x: auto;
+  }
+
+  .marquee-cinta {
+    animation: none;
+  }
+
+  .ventana-dialogo[open],
+  .ventana-dialogo[open]::backdrop,
+  .panel-lateral[open],
+  .panel-lateral[open]::backdrop,
+  .hoja-crear[open],
+  .hoja-crear[open]::backdrop {
+    animation: none;
+  }
+
+  /* Sin parpadeo: el cursor queda fijo mientras carga. */
+  .cursor-pendiente[data-pendiente="true"] {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 /* Cuerpo enriquecido del diario (Tiptap): usa la paleta del tema en vez de
@@ -72,7 +432,7 @@ body {
   --tw-prose-bullets: var(--secondary-turquoise);
   --tw-prose-counters: var(--secondary-turquoise);
   --tw-prose-hr: var(--ink);
-  font-family: var(--font-diario), Georgia, serif;
+  font-family: var(--fuente-diario), Georgia, serif;
 }
 
 .diario-prose blockquote {
@@ -80,7 +440,87 @@ body {
   border-left-width: 4px;
 }
 
+/* Fotos dentro de una entrada: del ancho del texto como máximo, con el
+   marco de la app. `width`/`height` del HTML reservan el lugar antes de que
+   carguen; `height: auto` mantiene la proporción al achicarse. */
+.diario-prose img.imagen-diario {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25em 0;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  background: var(--card);
+}
+
+.diario-prose .enlace-imagen-diario {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  cursor: zoom-in;
+}
+
+/* En el editor: marcada al seleccionarla (para borrarla con la tecla). */
+.diario-prose img.imagen-diario.ProseMirror-selectednode {
+  outline: 3px solid var(--secondary-turquoise);
+  outline-offset: 2px;
+}
+
 .diario-prose mark {
   border-radius: 2px;
   padding: 0 2px;
+}
+
+/*
+ * Filas de chips que en el celular se deslizan de lado (filtros de
+ * categoría y de hashtag): el borde derecho se desvanece para que se note
+ * que hay más. Donde el navegador sabe atar una animación al scroll, el
+ * desvanecido se va al llegar al final, así el último chip se ve entero.
+ */
+@property --fila-fundido {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 2.5rem;
+}
+
+@keyframes fila-deslizable-fin {
+  0%,
+  85% {
+    --fila-fundido: 2.5rem;
+  }
+  100% {
+    --fila-fundido: 0rem;
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .fila-deslizable {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--fila-fundido)), transparent);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .fila-deslizable {
+      animation: fila-deslizable-fin linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
+}
+
+/*
+ * El panel de marca de las pantallas de acceso. En claro es el morado de la
+ * barra; en oscuro ese "morado" es un lila claro (#c9a8e0, el acento que se
+ * lee sobre fondo oscuro) y el panel encandilaba al lado del formulario. En
+ * oscuro pasa a ser un morado profundo con el texto claro de la página.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) .acceso-panel {
+    background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
+    color: var(--foreground);
+  }
+}
+
+:root[data-modo="oscuro"] .acceso-panel {
+  background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
+  color: var(--foreground);
 }

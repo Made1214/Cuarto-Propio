@@ -1,0 +1,16 @@
+# Saltos de línea LF en el repo y en la copia de trabajo, sin importar el
+# sistema operativo — evita diferencias falsas de CRLF en Windows.
+* text=auto eol=lf
+
+# Binarios: nunca tocar sus bytes.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.mp3 binary
+*.m4a binary
+*.webm binary

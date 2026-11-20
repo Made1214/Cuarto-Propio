@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /** Busca una categoría por nombre para este usuario o la crea si no existe
- * — así cualquier módulo (diario, listas, galería, audio) puede asignar
+ * — así cualquier módulo (diario, listas, vitrina, audio) puede asignar
  * categorías al vuelo sin una pantalla dedicada de gestión. */
 export async function resolverCategoriaId(
   supabase: SupabaseClient,
