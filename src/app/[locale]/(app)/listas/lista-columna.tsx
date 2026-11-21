@@ -253,7 +253,7 @@ export function ListaColumna({
           aria-label={t("nombreLista")}
           // El borde punteado tenue dice "esto se puede cambiar" sin parecer
           // un formulario; al escribir se vuelve sólido.
-          className="min-w-0 flex-1 border-b-(length:--borde) border-dashed border-ink/20 bg-transparent py-1 font-diario text-lg leading-snug font-semibold outline-none hover:border-ink/40 focus:border-solid focus:border-ink"
+          className="min-w-0 flex-1 border-b-(length:--borde) border-dashed border-ink/20 bg-transparent py-1 pointer-coarse:py-2 font-diario text-lg leading-snug font-semibold outline-none hover:border-ink/40 focus:border-solid focus:border-ink"
         />
 
         <button

@@ -98,6 +98,16 @@ async function esperar(url, segundos = 180) {
   throw new Error(`No respondió ${url}`);
 }
 
+if (!args.url) {
+  // Un servidor que ya estuviera en el puerto podría apuntar a la base real
+  // (o ser de una corrida que quedó colgada): mejor avisar que usarlo.
+  const ocupado = await fetch(urlBase, { redirect: "manual" }).then(() => true, () => false);
+  if (ocupado) {
+    console.error(`Ya hay algo escuchando en ${urlBase}. Ciérralo, usa --puerto=otro o --url=${urlBase} si apunta al Supabase simulado.`);
+    process.exit(1);
+  }
+}
+
 const supabase = await iniciarSupabaseSimulado();
 let next;
 if (!args.url) {
