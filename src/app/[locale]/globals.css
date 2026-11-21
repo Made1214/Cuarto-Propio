@@ -110,6 +110,24 @@ body {
 }
 
 /*
+ * En el celular, iOS agranda la pantalla al tocar cualquier campo con letra
+ * de menos de 16 px (y no la vuelve a achicar sola): por eso al escribir en
+ * el login, el diario o un ítem de lista todo se corría y quedaba cortado.
+ * En pantallas táctiles los campos van a 16 px como mínimo — en escritorio
+ * conservan el tamaño del diseño. Va con !important porque los temas y las
+ * utilidades de cada campo fijan su propio tamaño. Sin `maximum-scale` en el
+ * viewport: eso le quitaría a Android el zoom con dos dedos.
+ */
+@media (pointer: coarse) {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]),
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
+/*
  * Vocabulario compartido de botones y textos. Antes cada pantalla repetía su
  * propia ristra de utilidades y terminaban distintos: «Nueva entrada» en
  * Inter y «NUEVA LISTA» en pixel, «Guardar» de un alto y «EDITAR» de otro.
