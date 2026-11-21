@@ -96,7 +96,7 @@ export function ItemFila({
       }}
       onDrop={(evento) => evento.preventDefault()}
       aria-busy={pendiente || undefined}
-      className={`flex items-start gap-1.5 py-1 transition-opacity ${arrastrando ? "opacity-40" : pendiente ? "opacity-60" : ""}`}
+      className={`flex items-start gap-1.5 border-b border-ink/10 py-1 transition-opacity last:border-b-0 ${arrastrando ? "opacity-40" : pendiente ? "opacity-60" : ""}`}
     >
       {/* El agarre se arrastra en escritorio, mueve con ↑/↓ desde el teclado
           y, al tocarlo, despliega las flechas — que en un celular es la
@@ -201,7 +201,7 @@ export function ItemFila({
         }}
         // overflow-hidden: si no, el textarea muestra su barra de scroll
         // (el alto se fija a scrollHeight, que no incluye los bordes).
-        className={`min-w-0 flex-1 resize-none overflow-hidden border-b-(length:--borde) border-transparent bg-transparent py-0.5 text-sm leading-normal outline-none focus:border-ink ${
+        className={`min-w-0 flex-1 resize-none overflow-hidden border-b-(length:--borde) border-transparent bg-transparent py-0.5 text-sm leading-normal outline-none focus:border-ink pointer-coarse:py-2.5 ${
           conCasillas && item.marcado ? "text-muted/60 line-through" : ""
         }`}
       />

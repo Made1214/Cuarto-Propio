@@ -11,7 +11,9 @@ import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
 import { listarRelacionadas, obtenerImagenPorCodigo } from "@/lib/imagenes/queries";
 import { textoAlternativo } from "@/lib/imagenes/hashtags";
 import type { ImagenEnVitrina } from "@/lib/imagenes/types";
-import { BotonesVentana, IconoLapiz, IconoVolver } from "../iconos";
+import { BotonesVentana, IconoLapiz } from "../iconos";
+import { VolverAVitrina } from "../posicion-vitrina";
+import { ParedMasonry } from "../pared-masonry";
 import { VentanaImagen } from "../ventana-imagen";
 import { FotoFicha } from "./foto-ficha";
 
@@ -79,13 +81,8 @@ export default async function ImagenPage({
           navegar, porque la ficha no está a la vista desde la posición de
           scroll de la cuadrícula. */}
       <ArribaAlRecargar />
-      <Link
-        href="/vitrina"
-        className="flex w-fit items-center gap-2 text-sm font-semibold text-muted/70 transition-colors hover:text-secondary-purple"
-      >
-        <IconoVolver />
-        {t("volver")}
-      </Link>
+      {/* Vuelve a la pared con los filtros y el scroll con que se la dejó. */}
+      <VolverAVitrina texto={t("volver")} />
 
       {/* En pantalla ancha la columna de relacionadas va POSICIONADA sobre
           el alto de la ventana (no como una columna más de la fila): así el
@@ -107,7 +104,7 @@ export default async function ImagenPage({
               href={`/vitrina/${imagen.codigo}/editar`}
               aria-label={t("editar")}
               title={t("editar")}
-              className="flex h-6 w-6 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong transition-[filter] hover:brightness-90"
+              className="flex h-9 w-9 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong transition-[filter] hover:brightness-90 sm:h-7 sm:w-7"
             >
               <IconoLapiz />
             </Link>
@@ -295,13 +292,16 @@ async function RelacionadasMasAbajo({
       <h2 className="rotulo">
         {t("masComoEsta")}
       </h2>
-      <div className="columns-[15rem] gap-5 lg:columns-[17rem]">
+      <ParedMasonry
+        medidas={masAbajo.map((otra) => ({
+          proporcion: otra.ancho && otra.alto ? otra.alto / otra.ancho : 1,
+          conTitulo: Boolean(otra.titulo?.trim()),
+        }))}
+      >
         {masAbajo.map((otra) => (
-          <div key={otra.id} className="mb-5 break-inside-avoid">
-            <VentanaImagen locale={locale} imagen={otra} />
-          </div>
+          <VentanaImagen key={otra.id} locale={locale} imagen={otra} />
         ))}
-      </div>
+      </ParedMasonry>
     </section>
   );
 }

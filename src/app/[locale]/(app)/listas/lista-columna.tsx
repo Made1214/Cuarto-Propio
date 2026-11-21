@@ -250,7 +250,10 @@ export function ListaColumna({
           onKeyDown={(evento) => {
             if (evento.key === "Enter") evento.currentTarget.blur();
           }}
-          className="min-w-0 flex-1 border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none focus:border-ink"
+          aria-label={t("nombreLista")}
+          // El borde punteado tenue dice "esto se puede cambiar" sin parecer
+          // un formulario; al escribir se vuelve sólido.
+          className="min-w-0 flex-1 border-b-(length:--borde) border-dashed border-ink/20 bg-transparent py-1 font-diario text-lg leading-snug font-semibold outline-none hover:border-ink/40 focus:border-solid focus:border-ink"
         />
 
         <button

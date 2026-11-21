@@ -1,13 +1,13 @@
 "use client";
 
-import { useOptimistic, useRef, useState, useTransition } from "react";
+import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { AvisoErrorAccion } from "@/components/aviso-error-accion";
 import { BotonConfirmar } from "@/components/boton-confirmar";
 import { CategoriaSelector } from "@/components/categoria-selector";
 import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import { asignarCategoriaAudio, eliminarAudio, renombrarAudio } from "@/lib/audio/actions";
-import { formatearDuracion } from "@/lib/audio/duracion";
+import { Reproductor } from "./reproductor";
 import { TITULO_MAXIMO } from "@/lib/audio/limites";
 import type { NotaAudioConUrl } from "@/lib/audio/types";
 import type { Categoria } from "@/lib/categorias/types";
@@ -30,7 +30,22 @@ export function NotaAudio({
   const format = useFormatter();
   const [, startTransition] = useTransition();
   const [error, setError] = useState<ErrorAccion | null>(null);
-  const tituloRef = useRef<HTMLInputElement>(null);
+  const tituloRef = useRef<HTMLTextAreaElement>(null);
+
+  // El título crece en renglones en vez de cortarse: en el celular, al lado
+  // del tacho, un título de tres palabras ya no entraba.
+  useEffect(() => {
+    const campo = tituloRef.current;
+    if (!campo) return;
+    const ajustar = () => {
+      campo.style.height = "auto";
+      campo.style.height = `${campo.scrollHeight}px`;
+    };
+    ajustar();
+    const observador = new ResizeObserver(ajustar);
+    observador.observe(campo);
+    return () => observador.disconnect();
+  }, []);
   // El título que se VE mientras viaja el cambio. El campo no es
   // controlado (lo escrito ya está en pantalla); esto sirve para no mandar
   // dos veces el mismo título si se vuelve a salir del campo antes de que
@@ -56,10 +71,14 @@ export function NotaAudio({
 
   return (
     <div className="tema-panel flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco">
-      <div className="flex items-center gap-1">
-        <input
+      <div className="flex items-start gap-1">
+        <textarea
           ref={tituloRef}
-          type="text"
+          rows={1}
+          onInput={(evento) => {
+            evento.currentTarget.style.height = "auto";
+            evento.currentTarget.style.height = `${evento.currentTarget.scrollHeight}px`;
+          }}
           defaultValue={nota.titulo ?? ""}
           maxLength={TITULO_MAXIMO}
           // Vacío es un estado válido: vuelve al título por defecto, que es
@@ -85,16 +104,14 @@ export function NotaAudio({
             });
           }}
           onKeyDown={(evento) => {
-            if (evento.key === "Enter") evento.currentTarget.blur();
+            if (evento.key === "Enter") {
+              evento.preventDefault();
+              evento.currentTarget.blur();
+            }
           }}
-          className="min-w-0 flex-1 border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg font-semibold outline-none placeholder:text-muted/50 focus:border-ink"
+          className="min-w-0 flex-1 resize-none overflow-hidden border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg leading-snug font-semibold outline-none placeholder:text-muted/50 focus:border-ink"
         />
 
-        {nota.duracionSegundos ? (
-          <span className="shrink-0 px-1 apoyo tabular-nums">
-            {formatearDuracion(nota.duracionSegundos)}
-          </span>
-        ) : null}
 
         <BotonConfirmar
           titulo={t("eliminar")}
@@ -111,7 +128,7 @@ export function NotaAudio({
               }
             });
           }}
-          className="flex h-7 w-7 shrink-0 items-center justify-center text-ink/35 transition-colors hover:bg-primary-pink/30 hover:text-ink"
+          className="flex h-9 w-9 shrink-0 items-center justify-center text-ink/45 transition-colors hover:bg-primary-pink/30 hover:text-ink pointer-coarse:h-11 pointer-coarse:w-11"
         >
           <IconoEliminar />
         </BotonConfirmar>
@@ -120,13 +137,7 @@ export function NotaAudio({
       <AvisoErrorAccion error={error} mensajeFallo={t("errorGuardar")} />
 
       {nota.url ? (
-        // Reproductor nativo a propósito: trae por sí solo teclado, lectores
-        // de pantalla y los controles del sistema en el celular. `metadata`
-        // para que una página con muchas notas no se baje todos los audios
-        // de golpe.
-        <audio controls preload="metadata" src={nota.url} className="w-full">
-          {t("sinReproductor")}
-        </audio>
+        <Reproductor src={nota.url} duracion={nota.duracionSegundos ?? null} />
       ) : (
         <p className="border-(length:--borde) border-dashed border-ink/40 px-3 py-4 text-center apoyo text-xs">
           {t("noSePudoCargar")}

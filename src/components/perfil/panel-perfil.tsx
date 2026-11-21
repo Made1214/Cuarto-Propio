@@ -53,6 +53,8 @@ export function PanelPerfil({
   const [abierto, setAbierto] = useState(false);
   const [, startTransition] = useTransition();
   const [errorNombre, setErrorNombre] = useState<ErrorAccion | null>(null);
+  // Se guarda al salir del campo, sin botón: una marquita confirma que quedó.
+  const [nombreGuardado, setNombreGuardado] = useState(false);
 
   useEffect(() => {
     const panel = ref.current;
@@ -130,6 +132,7 @@ export function PanelPerfil({
                   const valor = evento.target.value.trim();
                   if (valor === (perfil.nombre ?? "")) return;
                   setErrorNombre(null);
+                  setNombreGuardado(false);
                   startTransition(async () => {
                     try {
                       await renombrarPerfil(valor);
@@ -142,17 +145,27 @@ export function PanelPerfil({
                       return;
                     }
                     router.refresh();
+                    startTransition(() => setNombreGuardado(true));
+                    window.setTimeout(() => setNombreGuardado(false), 2500);
                   });
                 }}
                 onKeyDown={(evento) => {
                   if (evento.key === "Enter") evento.currentTarget.blur();
                 }}
-                className="border-(length:--borde) border-ink rounded-theme bg-background px-3 py-2 font-diario text-base outline-none placeholder:text-muted/50"
+                className="h-11 border-(length:--borde) border-ink rounded-theme bg-background px-3 font-diario text-base outline-none placeholder:text-muted/50 focus:border-secondary-purple"
               />
               <AvisoErrorAccion
                 error={errorNombre}
                 mensajeFallo={t("errorNombre")}
               />
+              {nombreGuardado ? (
+                <p role="status" className="flex items-center gap-1.5 text-xs font-semibold text-muted/80">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M4 12l5 5L20 6" />
+                  </svg>
+                  {t("nombreGuardado")}
+                </p>
+              ) : null}
               {perfil.email ? (
                 <p className="truncate pt-0.5 text-xs text-muted/70">
                   {perfil.email}
@@ -203,7 +216,7 @@ export function PanelPerfil({
 
           <form
             action={cerrarSesion}
-            className="flex shrink-0 flex-col gap-3 border-t-(length:--borde-grueso) border-ink bg-background px-5 py-4"
+            className="flex shrink-0 flex-col gap-3 border-t-(length:--borde-grueso) border-ink bg-background px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
           >
             <button
               type="submit"

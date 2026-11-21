@@ -3,7 +3,8 @@
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import type { JSONContent } from "@tiptap/core";
 import { useTranslations } from "next-intl";
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { DialogoEnlace } from "@/components/dialogo-enlace";
 import {
   IconoCita,
@@ -25,10 +26,19 @@ import {
 import { reducirImagen } from "@/lib/imagenes/reducir";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
 
+/** Botones de formato: 40 px en pantallas táctiles (el dedo), 32 en
+ * escritorio. Ver `.boton-formato` en globals.css. */
+const CLASE_BOTON_FORMATO =
+  "boton-formato flex shrink-0 items-center justify-center rounded-theme border-(length:--borde) border-ink transition-colors";
+const ACTIVO = "bg-secondary-purple text-background";
+const INACTIVO = "bg-card text-ink hover:bg-secondary-turquoise/25";
+
 type ErrorImagen = "formato" | "tamano" | "sesion" | "fallo";
 
 /** Lo que devuelve `/api/diario/imagen` al subir. */
 type ImagenSubida = { src: string; completa: string; ancho: number; alto: number };
+
+const sinSuscripcion = () => () => {};
 
 const CONTENIDO_VACIO: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
 const COLOR_TEXTO_DEFECTO = "#171717";
@@ -39,9 +49,16 @@ type TiptapEditorProps = {
   contenidoInicial?: JSONContent | null;
   /** Para que el formulario pueda guardar un borrador de lo que se escribe. */
   onCambio?: (json: JSONContent) => void;
+  /**
+   * `id` de un elemento de la página donde dibujar la barra de formato. El
+   * Diario la pone dentro de su barra de acciones pegada arriba, así sigue a
+   * mano mientras se escribe una entrada larga (antes quedaba arriba del
+   * texto y se perdía al bajar). Sin él, la barra va arriba del editor.
+   */
+  barraEn?: string;
 };
 
-export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorProps) {
+export function TiptapEditor({ name, contenidoInicial, onCambio, barraEn }: TiptapEditorProps) {
   const [json, setJson] = useState<JSONContent>(contenidoInicial ?? CONTENIDO_VACIO);
   // Fuerza un re-render en CADA transacción, no solo cuando cambia el
   // contenido o la selección. Sin esto, marcar negrita/cursiva con el
@@ -82,14 +99,23 @@ export function TiptapEditor({ name, contenidoInicial, onCambio }: TiptapEditorP
         return true;
       },
       attributes: {
-        class: "diario-prose prose max-w-none min-h-[240px] focus:outline-none",
+        // Alto generoso desde el principio: escribir no tiene que sentirse
+        // como llenar un campito.
+        class: "diario-prose prose max-w-none min-h-[40svh] focus:outline-none",
       },
     },
   });
 
+  const destinoBarra = useSyncExternalStore(
+    sinSuscripcion,
+    () => (barraEn ? document.getElementById(barraEn) : null),
+    () => null,
+  );
+  const barra = <Barra editor={editor} subirRef={subirRef} />;
+
   return (
     <div className="flex flex-col gap-2">
-      <Barra editor={editor} subirRef={subirRef} />
+      {destinoBarra ? createPortal(barra, destinoBarra) : barra}
       <div className="rounded-theme border-(length:--borde) border-ink bg-card px-4 py-3">
         <EditorContent editor={editor} />
       </div>
@@ -110,6 +136,7 @@ function Barra({
   const archivoRef = useRef<HTMLInputElement>(null);
   const [subiendo, setSubiendo] = useState(false);
   const [errorImagen, setErrorImagen] = useState<ErrorImagen | null>(null);
+  const [masAbierto, setMasAbierto] = useState(false);
   /** La foto que falló, para reintentar sin volver a elegirla
    * (CLAUDE.md → Confiabilidad: reintentar sin perder el resto). */
   const [pendiente, setPendiente] = useState<File | null>(null);
@@ -241,133 +268,160 @@ function Barra({
   const colorTexto = (editor.getAttributes("textStyle").color as string | undefined) ?? COLOR_TEXTO_DEFECTO;
   const colorResaltado = (editor.getAttributes("highlight").color as string | undefined) ?? COLOR_RESALTADO_DEFECTO;
 
-  return (
-    <div className="flex flex-wrap items-center gap-1">
-      {botones.map((boton) => (
+  function secundarios() {
+    return (
+      <>
+        {botones.filter((b) => !principales.has(b.clave)).map(boton)}
+        <label title={t("colorTexto")} className={`${CLASE_BOTON_FORMATO} ${INACTIVO} cursor-pointer gap-1.5 font-diario text-sm font-bold`}>
+          <span aria-hidden="true" style={{ color: colorTexto }}>
+            A
+          </span>
+          <input
+            type="color"
+            aria-label={t("colorTexto")}
+            value={colorTexto}
+            onChange={(evento) => editor?.chain().focus().setColor(evento.target.value).run()}
+            className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
+          />
+        </label>
         <button
-          key={boton.clave}
           type="button"
-          title={boton.titulo}
-          aria-label={boton.titulo}
+          title={t("quitarColorTexto")}
+          aria-label={t("quitarColorTexto")}
           onMouseDown={(evento) => {
-            // preventDefault evita que el botón le quite el foco al editor
-            // antes de aplicar el formato — sin esto, encadenar dos formatos
-            // (ej. negrita + cursiva) desde el cursor, antes de escribir,
-            // se rompía porque el editor perdía y recuperaba el foco entre
-            // click y click.
             evento.preventDefault();
-            boton.accion();
+            editor?.chain().focus().unsetColor().run();
           }}
-          aria-pressed={boton.activo}
-          className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink px-2 transition-colors ${
-            boton.activo
-              ? "bg-secondary-purple text-background"
-              : "bg-card text-ink hover:bg-secondary-turquoise/25"
-          }`}
+          className={`${CLASE_BOTON_FORMATO} ${INACTIVO}`}
         >
-          {boton.icono}
+          <IconoQuitar />
         </button>
-      ))}
-      <button
-        type="button"
-        title={t("enlace")}
-        aria-label={t("enlace")}
-        onMouseDown={(evento) => {
-          evento.preventDefault();
-          setEnlaceAbierto(true);
-        }}
-        aria-pressed={editor.isActive("link")}
-        className={`flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink px-2 transition-colors ${
-          editor.isActive("link")
-            ? "bg-secondary-purple text-background"
-            : "bg-card text-ink hover:bg-secondary-turquoise/25"
-        }`}
-      >
-        <IconoEnlace />
-      </button>
+        <label title={t("resaltar")} className={`${CLASE_BOTON_FORMATO} ${INACTIVO} cursor-pointer gap-1.5 font-diario text-sm font-bold`}>
+          <span aria-hidden="true" className="rounded px-1" style={{ backgroundColor: colorResaltado }}>
+            A
+          </span>
+          <input
+            type="color"
+            aria-label={t("resaltar")}
+            value={colorResaltado}
+            onChange={(evento) => editor?.chain().focus().setHighlight({ color: evento.target.value }).run()}
+            className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
+          />
+        </label>
+        <button
+          type="button"
+          title={t("quitarResaltado")}
+          aria-label={t("quitarResaltado")}
+          onMouseDown={(evento) => {
+            evento.preventDefault();
+            editor?.chain().focus().unsetHighlight().run();
+          }}
+          className={`${CLASE_BOTON_FORMATO} ${INACTIVO}`}
+        >
+          <IconoQuitar />
+        </button>
+      </>
+    );
+  }
 
-      <button
-        type="button"
-        title={t("imagen")}
-        onMouseDown={(evento) => evento.preventDefault()}
-        onClick={() => archivoRef.current?.click()}
-        disabled={subiendo}
-        className="flex h-8 items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 disabled:opacity-60"
-      >
-        <IconoImagen />
-        {subiendo ? t("subiendoImagen") : t("imagen")}
-      </button>
-      <input
-        ref={archivoRef}
-        type="file"
-        accept={FORMATOS_ACEPTADOS}
-        className="hidden"
-        onChange={(evento) => {
-          const archivo = evento.target.files?.[0];
-          evento.target.value = "";
-          if (archivo) void subir(archivo);
-        }}
-      />
+  // Lo de todos los días va siempre a la vista; tachado, subtítulo, lista
+  // numerada y colores, detrás de «Más» en el celular. Antes eran 15
+  // controles de 32 px en tres renglones, que con el teclado abierto se
+  // comían media pantalla.
+  const principales = new Set(["negrita", "cursiva", "titulo", "lista", "cita"]);
+  const boton = (b: (typeof botones)[number]) => (
+    <button
+      key={b.clave}
+      type="button"
+      title={b.titulo}
+      aria-label={b.titulo}
+      onMouseDown={(evento) => {
+        // preventDefault evita que el botón le quite el foco al editor
+        // antes de aplicar el formato — sin esto, encadenar dos formatos
+        // (ej. negrita + cursiva) desde el cursor, antes de escribir,
+        // se rompía porque el editor perdía y recuperaba el foco entre
+        // click y click.
+        evento.preventDefault();
+        b.accion();
+      }}
+      aria-pressed={b.activo}
+      className={`${CLASE_BOTON_FORMATO} ${b.activo ? ACTIVO : INACTIVO}`}
+    >
+      {b.icono}
+    </button>
+  );
 
-      <span className="mx-1 h-5 w-0.5 bg-ink/25" aria-hidden="true" />
+  return (
+    <div role="toolbar" aria-label={t("formato")} className="flex flex-col gap-1.5">
+      <div className="fila-deslizable -mx-3 flex items-center gap-1 overflow-x-auto px-3 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+        {botones.filter((b) => principales.has(b.clave)).map(boton)}
+        <button
+          type="button"
+          title={t("enlace")}
+          aria-label={t("enlace")}
+          onMouseDown={(evento) => {
+            evento.preventDefault();
+            setEnlaceAbierto(true);
+          }}
+          aria-pressed={editor.isActive("link")}
+          className={`${CLASE_BOTON_FORMATO} ${editor.isActive("link") ? ACTIVO : INACTIVO}`}
+        >
+          <IconoEnlace />
+        </button>
 
-      <label
-        title={t("colorTexto")}
-        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
-      >
-        <span aria-hidden="true" style={{ color: colorTexto }}>
-          A
-        </span>
+        <button
+          type="button"
+          title={t("imagen")}
+          onMouseDown={(evento) => evento.preventDefault()}
+          onClick={() => archivoRef.current?.click()}
+          disabled={subiendo}
+          className={`${CLASE_BOTON_FORMATO} gap-1.5 bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong hover:brightness-95 disabled:opacity-60`}
+        >
+          <IconoImagen />
+          {/* En el celular, solo el dibujo (el nombre queda para el lector
+              de pantalla), salvo mientras sube: ahí sí se avisa. */}
+          <span className={subiendo ? "" : "sr-only sm:not-sr-only"}>
+            {subiendo ? t("subiendoImagen") : t("imagen")}
+          </span>
+        </button>
         <input
-          type="color"
-          aria-label={t("colorTexto")}
-          value={colorTexto}
-          onChange={(evento) => editor.chain().focus().setColor(evento.target.value).run()}
-          className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
+          ref={archivoRef}
+          type="file"
+          accept={FORMATOS_ACEPTADOS}
+          className="hidden"
+          onChange={(evento) => {
+            const archivo = evento.target.files?.[0];
+            evento.target.value = "";
+            if (archivo) void subir(archivo);
+          }}
         />
-      </label>
-      <button
-        type="button"
-        title={t("quitarColorTexto")}
-        aria-label={t("quitarColorTexto")}
-        onMouseDown={(evento) => {
-          evento.preventDefault();
-          editor.chain().focus().unsetColor().run();
-        }}
-        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
-      >
-        <IconoQuitar />
-      </button>
 
-      <label
-        title={t("resaltar")}
-        className="flex h-8 cursor-pointer items-center gap-1.5 rounded-theme border-(length:--borde) border-ink bg-card px-2 font-diario text-sm font-bold text-ink hover:bg-secondary-turquoise/25"
-      >
-        <span aria-hidden="true" className="rounded px-1" style={{ backgroundColor: colorResaltado }}>
-          A
-        </span>
-        <input
-          type="color"
-          aria-label={t("resaltar")}
-          value={colorResaltado}
-          onChange={(evento) =>
-            editor.chain().focus().setHighlight({ color: evento.target.value }).run()
-          }
-          className="h-4 w-4 cursor-pointer rounded border-0 bg-transparent p-0"
-        />
-      </label>
-      <button
-        type="button"
-        title={t("quitarResaltado")}
-        aria-label={t("quitarResaltado")}
-        onMouseDown={(evento) => {
-          evento.preventDefault();
-          editor.chain().focus().unsetHighlight().run();
-        }}
-        className="flex h-8 min-w-8 items-center justify-center rounded-theme border-(length:--borde) border-ink bg-card text-ink hover:bg-secondary-turquoise/25"
-      >
-        <IconoQuitar />
-      </button>
+        <button
+          type="button"
+          onMouseDown={(evento) => evento.preventDefault()}
+          onClick={() => setMasAbierto((abierto) => !abierto)}
+          aria-expanded={masAbierto}
+          title={t("mas")}
+          aria-label={t("mas")}
+          className={`${CLASE_BOTON_FORMATO} ${masAbierto ? ACTIVO : INACTIVO} md:hidden`}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="2" />
+            <circle cx="12" cy="12" r="2" />
+            <circle cx="19" cy="12" r="2" />
+          </svg>
+        </button>
+
+        {/* Desde tablet hay lugar: el resto va en la misma fila. */}
+        <span className="mx-1 hidden h-5 w-0.5 bg-ink/25 md:block" aria-hidden="true" />
+        <div className="hidden items-center gap-1 md:flex">{secundarios()}</div>
+      </div>
+
+      {masAbierto ? (
+        <div className="fila-deslizable -mx-3 flex items-center gap-1 overflow-x-auto px-3 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 md:hidden">
+          {secundarios()}
+        </div>
+      ) : null}
 
       {errorImagen ? (
         <div

@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import { getFormatter, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { colorCategoria } from "@/lib/categorias/color";
+import { getTranslations } from "next-intl/server";
 import { actualizarEntrada, eliminarEntrada } from "@/lib/diario/actions";
 import { listarCategorias } from "@/lib/categorias/queries";
 import { obtenerEntradaPorCodigo } from "@/lib/diario/queries";
 import { EntradaForm } from "../../entrada-form";
 import { EliminarEntradaBoton } from "../eliminar-boton";
-import { GuardadoProvider, GuardarBoton } from "../../guardar-boton";
+import { BarraEntrada } from "../../barra-entrada";
+import { EstadoGuardado, GuardadoProvider, GuardarBoton } from "../../guardar-boton";
+import { MetaEntrada } from "../../meta-entrada";
 
 export default async function EditarEntradaPage({
   params,
@@ -16,9 +16,8 @@ export default async function EditarEntradaPage({
 }) {
   const { locale, codigo } = await params;
 
-  const [t, format, categorias, entrada] = await Promise.all([
+  const [t, categorias, entrada] = await Promise.all([
     getTranslations({ locale, namespace: "diario" }),
-    getFormatter({ locale }),
     listarCategorias(),
     obtenerEntradaPorCodigo(codigo),
   ]);
@@ -33,43 +32,23 @@ export default async function EditarEntradaPage({
   const formId = "entrada-form";
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
-      <Link
-        href={`/diario/${codigo}`}
-        className="flex h-10 w-fit items-center gap-2 text-sm font-semibold text-muted/80 transition-colors hover:text-secondary-purple"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-        {t("volver")}
-      </Link>
-
+    <div className="mx-auto flex w-full max-w-2xl flex-col">
       <GuardadoProvider>
-        <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
-          <div className="flex items-center justify-between gap-4 p-5">
-            <div className="flex items-center gap-3">
-              <span className="apoyo">
-                {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" })}
-              </span>
-              {entrada.categoriaNombre && entrada.categoriaId ? (
-                <span
-                  className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-xs font-semibold text-ink-strong"
-                  style={{ background: colorCategoria(categorias, entrada.categoriaId) }}
-                >
-                  {entrada.categoriaNombre}
-                </span>
-              ) : null}
-            </div>
-            <div className="flex items-center gap-2.5">
-              <GuardarBoton
-                formId={formId}
-                className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-green px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-              />
-              <EliminarEntradaBoton action={eliminar} />
-            </div>
-          </div>
-
-          <div className="p-5">
+        <article className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+          <BarraEntrada
+            volverHref={`/diario/${codigo}`}
+            volverTexto={t("volver")}
+            estado={<EstadoGuardado />}
+            acciones={
+              <>
+                <EliminarEntradaBoton action={eliminar} />
+                <GuardarBoton formId={formId} className="boton boton-verde" />
+              </>
+            }
+            formatoId={`${formId}-formato`}
+          />
+          <div className="flex flex-col gap-4 p-4 sm:p-6">
+            <MetaEntrada fecha={entrada.fecha} categoriaId={entrada.categoriaId} categoriaNombre={entrada.categoriaNombre} categorias={categorias} locale={locale} />
             <EntradaForm
               formId={formId}
               claveBorrador={codigo}
@@ -82,7 +61,7 @@ export default async function EditarEntradaPage({
               }}
             />
           </div>
-        </div>
+        </article>
       </GuardadoProvider>
     </div>
   );

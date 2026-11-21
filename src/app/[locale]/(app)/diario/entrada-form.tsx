@@ -48,7 +48,6 @@ export function EntradaForm({
   const t = useTranslations("diario");
   const format = useFormatter();
   const [estado, enviarAction, guardando] = useActionState(enviar, undefined);
-  useAvisarGuardando(guardando);
   // El globo del título vacío dice lo mismo que el aviso de la Server
   // Action (que es la que atrapa el título hecho solo de espacios).
   const validacion = useValidacionNativa({
@@ -77,11 +76,28 @@ export function EntradaForm({
   const [guardadoEn, setGuardadoEn] = useState<Date | null>(null);
   const enviando = useRef(false);
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const tituloRef = useRef<HTMLTextAreaElement>(null);
+
+  // El alto del título sigue a su texto (y al ancho, si gira la pantalla).
+  useEffect(() => {
+    const campo = tituloRef.current;
+    if (!campo) return;
+    const ajustar = () => {
+      campo.style.height = "auto";
+      campo.style.height = `${campo.scrollHeight}px`;
+    };
+    ajustar();
+    window.addEventListener("resize", ajustar);
+    return () => window.removeEventListener("resize", ajustar);
+  }, [titulo]);
 
   const sucio =
     titulo !== tituloInicial ||
     categoriaTexto !== categoriaInicial ||
     JSON.stringify(contenido) !== JSON.stringify(contenidoInicial);
+  // La barra de la página muestra el estado (guardando, cambios sin
+  // guardar, copia local) al lado de Guardar.
+  useAvisarGuardando(guardando, sucio, guardadoEn);
 
   /**
    * Envuelve la Server Action para que un guardado fallido nunca se lleve lo
@@ -178,7 +194,7 @@ export function EntradaForm({
       id={formId}
       action={enviarAction}
       {...validacion}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-5"
     >
       {estado?.error ? (
         <p
@@ -219,31 +235,30 @@ export function EntradaForm({
         </div>
       ) : null}
 
-      {guardadoEn && sucio ? (
-        <p aria-live="polite" className="-mb-1 flex items-center gap-1.5 text-xs text-muted/75">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M4 12l5 5L20 6" />
-          </svg>
-          {t("borradorGuardado", {
-            hora: format.dateTime(guardadoEn, { hour: "numeric", minute: "2-digit" }),
-          })}
-        </p>
-      ) : null}
-
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={`${formId}-titulo`} className="text-xs font-semibold">
+        <label htmlFor={`${formId}-titulo`} className="rotulo">
           {t("campoTitulo")} <span aria-hidden="true" className="text-secondary-purple">*</span>
         </label>
-        <input
+        {/* Un textarea de un renglón que crece: un título largo se ve
+            entero mientras se escribe, como al leer la entrada (un input lo
+            cortaba). Enter no hace salto de línea: el título es una línea. */}
+        <textarea
+          ref={tituloRef}
           id={`${formId}-titulo`}
-          type="text"
           name="titulo"
+          rows={1}
           required
           maxLength={TITULO_MAXIMO}
           value={titulo}
-          onChange={(evento) => setTitulo(evento.target.value)}
+          onChange={(evento) => setTitulo(evento.target.value.replace(/[\r\n]+/g, " "))}
+          onKeyDown={(evento) => {
+            if (evento.key === "Enter") evento.preventDefault();
+          }}
+          enterKeyHint="next"
           placeholder={t("tituloPlaceholder")}
-          className="rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2.5 font-diario text-2xl font-semibold outline-none"
+          // Con la misma letra y el mismo tamaño que el título al leer la
+          // entrada: escribir y leer se ven como la misma página.
+          className="w-full resize-none overflow-hidden border-0 border-b-(length:--borde) border-ink/30 bg-transparent px-0 py-1.5 font-diario text-2xl leading-tight font-bold text-secondary-purple outline-none placeholder:font-semibold placeholder:text-muted/45 focus:border-secondary-purple sm:text-3xl"
         />
         {titulo.length > TITULO_MAXIMO - 20 ? (
           <span className="self-end apoyo tabular-nums">
@@ -252,17 +267,15 @@ export function EntradaForm({
         ) : null}
       </div>
 
+      {/* Categoría: las que ya existen como chips en un solo carril (en el
+          celular se desliza de lado, en vez de apilar renglones) y el campo
+          para escribir una nueva. */}
       <div className="flex flex-col gap-2">
-        <input
-          type="text"
-          name="categoria"
-          value={categoriaTexto}
-          onChange={(evento) => setCategoriaTexto(evento.target.value)}
-          placeholder={t("categoriaPlaceholder")}
-          className="w-64 max-w-full rounded-theme border-(length:--borde) border-ink bg-card px-3 py-2 text-sm outline-none"
-        />
+        <label htmlFor={`${formId}-categoria`} className="rotulo">
+          {t("campoCategoria")}
+        </label>
         {categorias.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="fila-deslizable -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
             {categorias.map((cat) => {
               const seleccionada = cat.nombre === categoriaTexto;
               return (
@@ -284,11 +297,21 @@ export function EntradaForm({
             })}
           </div>
         ) : null}
+        <input
+          id={`${formId}-categoria`}
+          type="text"
+          name="categoria"
+          value={categoriaTexto}
+          onChange={(evento) => setCategoriaTexto(evento.target.value)}
+          placeholder={t("categoriaPlaceholder")}
+          className="h-10 w-full rounded-theme border-(length:--borde) border-ink bg-card px-3 text-sm outline-none focus:border-secondary-purple sm:w-64"
+        />
       </div>
 
       <TiptapEditor
         key={remonte}
         name="contenido"
+        barraEn={`${formId}-formato`}
         contenidoInicial={contenidoBase}
         onCambio={setContenido}
       />
