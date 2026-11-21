@@ -153,7 +153,7 @@ export default async function ImagenPage({
                     <Link
                       key={hashtag}
                       href={{ pathname: "/vitrina", query: { hashtag } }}
-                      className="border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
+                      className="inline-flex min-h-9 items-center border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 pointer-coarse:min-h-10"
                     >
                       #{hashtag}
                     </Link>
@@ -164,7 +164,7 @@ export default async function ImagenPage({
               {imagen.categoriaId && imagen.categoriaNombre ? (
                 <Link
                   href={{ pathname: "/vitrina", query: { categoria: imagen.categoriaId } }}
-                  className="w-fit border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
+                  className="inline-flex min-h-9 w-fit items-center border-(length:--borde) border-ink-strong rounded-theme px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 pointer-coarse:min-h-10"
                   style={{ background: colorCategoria(categorias, imagen.categoriaId) }}
                 >
                   {imagen.categoriaNombre}
@@ -180,7 +180,7 @@ export default async function ImagenPage({
                     href={imagen.completaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-(length:--borde) border-ink rounded-theme bg-card px-2.5 py-1 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
+                    className="boton boton-chico"
                   >
                     {t("verCompleta")}
                   </a>

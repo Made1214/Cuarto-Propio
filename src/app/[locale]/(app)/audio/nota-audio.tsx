@@ -109,7 +109,7 @@ export function NotaAudio({
               evento.currentTarget.blur();
             }
           }}
-          className="min-w-0 flex-1 resize-none overflow-hidden border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg leading-snug font-semibold outline-none placeholder:text-muted/50 focus:border-ink"
+          className="min-w-0 flex-1 resize-none overflow-hidden border-b-(length:--borde) border-transparent bg-transparent py-0.5 font-diario text-lg leading-snug font-semibold outline-none placeholder:text-muted/50 focus:border-ink pointer-coarse:py-1.5"
         />
 
 

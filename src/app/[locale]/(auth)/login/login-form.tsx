@@ -40,7 +40,7 @@ export function LoginForm({ locale, siguiente }: { locale: string; siguiente: st
       />
       <Link
         href="/recuperar"
-        className="-mt-1 w-fit text-[13px] font-semibold text-secondary-purple underline-offset-2 hover:underline"
+        className="-my-2.5 inline-flex min-h-11 w-fit items-center text-[13px] font-semibold text-secondary-purple underline-offset-2 hover:underline"
       >
         {t("olvide")}
       </Link>

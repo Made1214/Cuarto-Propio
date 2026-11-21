@@ -80,13 +80,13 @@ export default async function AccesoLayout({
           >
             <Link
               href="/terminos"
-              className="underline-offset-2 hover:underline"
+              className="inline-flex min-h-11 items-center underline-offset-2 hover:underline"
             >
               {t("terminos")}
             </Link>
             <Link
               href="/privacidad"
-              className="underline-offset-2 hover:underline"
+              className="inline-flex min-h-11 items-center underline-offset-2 hover:underline"
             >
               {t("privacidad")}
             </Link>

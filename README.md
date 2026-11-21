@@ -80,6 +80,19 @@ npm test
 
 Tests unitarios con Vitest (archivos `*.test.ts` junto al código). La prueba de punta a punta (`npm run e2e`, Playwright) necesita una cuenta de prueba: ver `docs/pendientes.md`.
 
+### Capturas responsive
+
+```bash
+npm run responsive                                   # 6 celulares, Retro, claro
+npm run responsive -- --temas=todos --modo=ambos     # los 4 temas, claro y oscuro
+npm run responsive -- --dispositivos=todos --pwa --teclado
+npm run responsive -- --rutas=/vitrina,/diario/nueva --dispositivos="iPhone SE,Pixel 8"
+```
+
+Fotografía las pantallas en varios dispositivos (iPhone SE de 320 px hasta iPhone 15 Pro Max, Galaxy, Pixel; con `--dispositivos=todos` también iPad y escritorio) y avisa si algo se sale de la pantalla o si hay controles de menos de 32 px para el dedo. No necesita cuenta ni base: levanta un Supabase simulado con datos de prueba (`scripts/responsive/supabase-simulado.mjs`) y `next dev` apuntando a él. `--pwa` usa el alto de la app instalada en vez del de la pestaña; `--teclado` enfoca el primer campo y descuenta el alto del teclado. El resultado queda en `capturas-responsive/` (fuera de git): abrir `index.html`.
+
+Es Chromium con el tamaño, la densidad y el modo táctil de cada dispositivo: sirve para el layout, los cortes y los tamaños, pero no es Safari de iOS (su teclado, el zoom al enfocar o la barra de estado se prueban en un iPhone o en el Simulador de Xcode).
+
 ## Estado
 
 La Fase 1 está construida: **acceso** (entrar, crear cuenta, recuperar contraseña, bloqueo tras 5 intentos fallidos), **Diario** (editor Tiptap con imágenes incrustadas, categorías, búsqueda), **Listas** (tablero en una sola página), **Vitrina** (cuadrícula masonry de fotos propias, subida por lotes, hashtags y categorías), **Audio** (grabación en el navegador con tope de 10 minutos), **Perfil** (panel lateral: foto, nombre, modo claro/oscuro/auto, idioma) y **Personalización** (cuatro temas con nombre —Retro, Whimsical, Softsignal y Void—, cada uno con sus propios colores y letras, más cursor e iconos). También: PWA instalable, términos y privacidad, bienvenida y aviso de espacio.

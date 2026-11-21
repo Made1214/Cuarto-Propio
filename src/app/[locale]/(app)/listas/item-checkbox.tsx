@@ -14,13 +14,17 @@ export function ItemCheckbox({
   onCambiar: (marcado: boolean) => void;
   disabled?: boolean;
 }) {
+  // La etiqueta agranda el área de toque (36 px con mouse, 44 con el dedo)
+  // sin agrandar el dibujo de la casilla.
   return (
-    <input
-      type="checkbox"
-      checked={marcado}
-      disabled={disabled}
-      onChange={(evento) => onCambiar(evento.target.checked)}
-      className="h-5 w-5 shrink-0 cursor-pointer pointer-coarse:h-6 pointer-coarse:w-6 border-(length:--borde) border-ink rounded-theme accent-secondary-purple disabled:cursor-default"
-    />
+    <label className="-mx-1.5 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center pointer-coarse:h-11 pointer-coarse:w-11">
+      <input
+        type="checkbox"
+        checked={marcado}
+        disabled={disabled}
+        onChange={(evento) => onCambiar(evento.target.checked)}
+        className="h-5 w-5 shrink-0 cursor-pointer pointer-coarse:h-6 pointer-coarse:w-6 border-(length:--borde) border-ink rounded-theme accent-secondary-purple disabled:cursor-default"
+      />
+    </label>
   );
 }

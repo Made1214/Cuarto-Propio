@@ -52,7 +52,7 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
         }}
         aria-label={t("agregarItem")}
         placeholder={t("itemPlaceholder")}
-        className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted/60"
+        className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted/60"
       />
       {/* Siempre a la vista: en el celular no todos saben que Enter agrega,
           y el botón que aparecía de golpe movía la fila. Vacío queda apagado. */}
