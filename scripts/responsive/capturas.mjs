@@ -258,7 +258,10 @@ for (const tema of temas) {
                 "input:not([type=hidden], [type=checkbox], [type=radio], [type=file], [type=color], [type=range], [type=button], [type=submit]):visible, textarea:visible, [contenteditable=true]:visible",
               )
               .first();
-            if (await campo.count()) await campo.focus().catch(() => {});
+            // Sin campos de texto no se abre el teclado: esa captura no
+            // corresponde (antes salía igual, con la barra de abajo a la vista).
+            if (!(await campo.count())) continue;
+            await campo.focus().catch(() => {});
           }
           await pagina.waitForTimeout(500);
           const revision = await pagina.evaluate(revisar);

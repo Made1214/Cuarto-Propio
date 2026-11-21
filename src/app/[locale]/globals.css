@@ -745,3 +745,57 @@ body {
   background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
   color: var(--foreground);
 }
+
+/*
+ * Texto con el color de acento, en modo oscuro: legible siempre.
+ *
+ * El acento (`--secondary-purple`) está pensado como fondo de botones y
+ * barras; como color de TEXTO sobre el fondo oscuro, en Whimsical da 3,5:1
+ * (#8A6BA3 sobre #2B2033), poco para los rótulos de 12 px, los enlaces o el
+ * día de la semana de las fechas, que piden 4,5:1. Acá el texto con acento
+ * se mezcla con el color del texto: sigue siendo el mismo lila, pero con
+ * contraste de sobra (6,6:1), y vale también para colores elegidos a mano
+ * —acercarse al color del texto siempre aleja del fondo. Los fondos y
+ * botones con acento no cambian.
+ *
+ * Solo en los temas de tokens: Softsignal y Void dibujan sus títulos con
+ * letra propia (pantalla LCD, cromo), que una mezcla rompería.
+ */
+:root[data-modo="oscuro"] :is([data-tema="retro"], [data-tema="whimsical"]) :is(.text-secondary-purple, .titulo-seccion, .rotulo, .enlace-volver) {
+  color: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+}
+
+:root[data-modo="oscuro"] :is([data-tema="retro"], [data-tema="whimsical"]) .diario-prose {
+  --tw-prose-headings: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+  --tw-prose-links: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) :is([data-tema="retro"], [data-tema="whimsical"]) :is(.text-secondary-purple, .titulo-seccion, .rotulo, .enlace-volver) {
+    color: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+  }
+
+  :root:not([data-modo="claro"]) :is([data-tema="retro"], [data-tema="whimsical"]) .diario-prose {
+    --tw-prose-headings: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+    --tw-prose-links: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+  }
+}
+
+/*
+ * En Whimsical oscuro el acento es un morado medio (#8A6BA3): ni el texto
+ * oscuro ni el claro llegan a 4,5:1 encima de él. Para lo que lleva texto
+ * chico sobre el acento —el chip de filtro elegido y los botones morados—,
+ * el fondo baja un poco hacia el fondo de la página y el texto pasa al
+ * color del texto: 5,2:1. En Retro oscuro el acento es claro y ya se lee.
+ */
+:root[data-modo="oscuro"] [data-tema="whimsical"] :is(.tema-chip-activo, .boton-morado) {
+  background: color-mix(in srgb, var(--secondary-purple) 80%, var(--background));
+  color: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) [data-tema="whimsical"] :is(.tema-chip-activo, .boton-morado) {
+    background: color-mix(in srgb, var(--secondary-purple) 80%, var(--background));
+    color: var(--foreground);
+  }
+}
