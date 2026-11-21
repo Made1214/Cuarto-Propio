@@ -144,6 +144,46 @@ body {
     .tema-nav-inferior {
     display: none;
   }
+
+  /* Y la barra de arriba deja de estar pegada: con el teclado queda a la
+     vista poco más de un tercio de la pantalla, y la barra de la app más la
+     de una entrada (volver, Guardar, formato) se comían casi todo. Lo que
+     estaba pegado debajo de ella sube hasta el borde. */
+  body:has(
+      :is(
+          input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+          textarea,
+          [contenteditable="true"]
+        ):focus
+    )
+    .tema-barra {
+    position: relative;
+  }
+
+  body:has(
+      :is(
+          input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+          textarea,
+          [contenteditable="true"]
+        ):focus
+    )
+    .fijo-bajo-barra {
+    top: 0;
+  }
+}
+
+/* Lo que queda pegado justo debajo de la barra de la app (56 px; 64 desde
+   tablet): la barra de una entrada del diario, el índice de
+   Personalización. */
+.fijo-bajo-barra {
+  position: sticky;
+  top: 3.5rem;
+}
+
+@media (min-width: 48rem) {
+  .fijo-bajo-barra {
+    top: 4rem;
+  }
 }
 
 /*

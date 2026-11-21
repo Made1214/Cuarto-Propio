@@ -94,7 +94,7 @@ export function EditorPersonalizacion({ config }: { config: ConfigTema }) {
           derecha, si el último cambio se está guardando o ya quedó. */}
       <nav
         aria-label={t("indice")}
-        className="sticky top-14 z-20 -mx-5 flex items-center gap-2 border-b-(length:--borde) border-ink/20 bg-background/95 px-5 py-2 backdrop-blur-sm sm:mx-0 sm:rounded-theme sm:border-(length:--borde) sm:px-2 md:top-16"
+        className="fijo-bajo-barra z-20 -mx-5 flex items-center gap-2 border-b-(length:--borde) border-ink/20 bg-background/95 px-5 py-2 backdrop-blur-sm sm:mx-0 sm:rounded-theme sm:border-(length:--borde) sm:px-2"
       >
         <ul className="fila-deslizable flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none]">
           {secciones.map((seccion) => (

@@ -25,7 +25,7 @@ export function BarraEntrada({
   formatoId?: string;
 }) {
   return (
-    <div className="sticky top-14 z-20 flex flex-col gap-2 rounded-t-theme border-b-(length:--borde) border-ink bg-card px-3 py-2 sm:px-4 md:top-16">
+    <div className="fijo-bajo-barra z-20 flex flex-col gap-2 rounded-t-theme border-b-(length:--borde) border-ink bg-card px-3 py-2 sm:px-4">
       <div className="flex items-center gap-2">
         <Link
           href={volverHref}

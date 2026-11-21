@@ -119,12 +119,19 @@ if (!args.url) {
       NEXT_TELEMETRY_DISABLED: "1",
     },
     stdio: ["ignore", "ignore", "inherit"],
+    // Grupo propio: al terminar se cierra npx y también el next-server que
+    // lanza (matar solo a npx dejaba el servidor ocupando el puerto).
+    detached: true,
   });
   console.log(`Levantando la app en ${urlBase}…`);
 }
 
 async function cerrar() {
-  next?.kill("SIGTERM");
+  if (next?.pid) {
+    try {
+      process.kill(-next.pid, "SIGTERM");
+    } catch {}
+  }
   supabase.close();
 }
 process.on("SIGINT", async () => {
@@ -245,7 +252,12 @@ for (const tema of temas) {
           }
           await pagina.addStyleTag({ content: "nextjs-portal{display:none!important} *{caret-color:transparent!important}" });
           if (variante === "teclado") {
-            const campo = pagina.locator("input:not([type=hidden]):not([type=checkbox]):not([type=file]):visible, textarea:visible, [contenteditable=true]:visible").first();
+            // Solo campos que abren el teclado (no casillas, colores ni archivos).
+            const campo = pagina
+              .locator(
+                "input:not([type=hidden], [type=checkbox], [type=radio], [type=file], [type=color], [type=range], [type=button], [type=submit]):visible, textarea:visible, [contenteditable=true]:visible",
+              )
+              .first();
             if (await campo.count()) await campo.focus().catch(() => {});
           }
           await pagina.waitForTimeout(500);
