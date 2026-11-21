@@ -110,6 +110,43 @@ body {
 }
 
 /*
+ * En el celular, iOS agranda la pantalla al tocar cualquier campo con letra
+ * de menos de 16 px (y no la vuelve a achicar sola): por eso al escribir en
+ * el login, el diario o un ítem de lista todo se corría y quedaba cortado.
+ * En pantallas táctiles los campos van a 16 px como mínimo — en escritorio
+ * conservan el tamaño del diseño. Va con !important porque los temas y las
+ * utilidades de cada campo fijan su propio tamaño. Sin `maximum-scale` en el
+ * viewport: eso le quitaría a Android el zoom con dos dedos.
+ */
+@media (pointer: coarse) {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]),
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
+/*
+ * Con el teclado abierto (un campo de texto enfocado en una pantalla
+ * táctil) la barra de secciones de abajo se esconde: no hace falta mientras
+ * se escribe, y en iOS quedaba flotando sobre el texto o encima del teclado
+ * y achicaba todavía más lo poco que se ve.
+ */
+@media (pointer: coarse) {
+  body:has(
+      :is(
+          input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+          textarea,
+          [contenteditable="true"]
+        ):focus
+    )
+    .tema-nav-inferior {
+    display: none;
+  }
+}
+
+/*
  * Vocabulario compartido de botones y textos. Antes cada pantalla repetía su
  * propia ristra de utilidades y terminaban distintos: «Nueva entrada» en
  * Inter y «NUEVA LISTA» en pixel, «Guardar» de un alto y «EDITAR» de otro.
@@ -224,6 +261,97 @@ body {
     }
   }
 
+  /* Encabezado de cada sección: título, una línea de apoyo y la acción
+     principal («Nueva», «Exhibir»). Una sola definición para las cinco
+     pantallas: antes cada una tenía su ristra de utilidades y en el celular
+     el título de 36 px más el botón se comían la primera pantalla, o el
+     subtítulo quedaba en una columnita de tres palabras por renglón al lado
+     del botón. Ahora, en el celular, el botón va a la altura del título y el
+     subtítulo debajo de los dos, a todo el ancho; desde tablet el botón
+     acompaña a los dos renglones. */
+  .encabezado-seccion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.75rem;
+  }
+
+  .encabezado-seccion > .titulo-seccion {
+    grid-column: 1;
+  }
+
+  .encabezado-seccion > .subtitulo-seccion {
+    grid-column: 1 / -1;
+  }
+
+  .acciones-seccion {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  /* «Nueva lista» abierta: un renglón propio debajo de todo. */
+  .encabezado-seccion > .acciones-seccion:has(.nueva-lista-abierta) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: stretch;
+    margin-top: 0.75rem;
+  }
+
+  .titulo-seccion {
+    font-family: var(--fuente-diario), Georgia, serif;
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--secondary-purple);
+    overflow-wrap: anywhere;
+  }
+
+  .subtitulo-seccion {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+  }
+
+  @media (min-width: 48rem) {
+    .encabezado-seccion {
+      column-gap: 1rem;
+    }
+
+    .encabezado-seccion > .subtitulo-seccion {
+      grid-column: 1;
+    }
+
+    .acciones-seccion {
+      grid-row: 1 / span 2;
+      align-self: end;
+    }
+
+    .titulo-seccion {
+      font-size: 2.25rem;
+    }
+
+    .subtitulo-seccion {
+      font-size: 0.875rem;
+    }
+  }
+
+  /* Botones de la barra de formato del editor. */
+  .boton-formato {
+    height: 2rem;
+    min-width: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  @media (pointer: coarse) {
+    .boton-formato {
+      height: 2.5rem;
+      min-width: 2.5rem;
+    }
+  }
+
   /* Rótulo corto en la letra de rótulos del tema (pixel en Retro). */
   .rotulo {
     font-family: var(--fuente-rotulo, var(--font-silkscreen)), monospace;
@@ -277,6 +405,59 @@ body {
     height: 0.625rem;
     border: 1.5px solid var(--ink-strong);
   }
+}
+
+/* La barra de progreso del reproductor de audio: una pista con el borde del
+   tema, rellena hasta donde va la nota, y un tirador cuadrado (retro) con
+   área de toque generosa. */
+.reproductor-barra {
+  appearance: none;
+  height: 1.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.reproductor-barra::-webkit-slider-runnable-track {
+  height: 0.625rem;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: linear-gradient(to right, var(--secondary-turquoise) var(--progreso, 0%), var(--card) var(--progreso, 0%));
+}
+
+.reproductor-barra::-moz-range-track {
+  height: 0.625rem;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: linear-gradient(to right, var(--secondary-turquoise) var(--progreso, 0%), var(--card) var(--progreso, 0%));
+}
+
+.reproductor-barra::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: calc(-0.25rem - var(--borde));
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: var(--secondary-purple);
+}
+
+.reproductor-barra::-moz-range-thumb {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: var(--secondary-purple);
+}
+
+@media (pointer: coarse) {
+  .reproductor-barra {
+    height: 2.5rem;
+  }
+}
+
+.reproductor-barra:focus-visible {
+  outline: 2px solid var(--secondary-purple);
+  outline-offset: 2px;
 }
 
 /* La ventanita entra con un salto corto, como una ventana que se abre de

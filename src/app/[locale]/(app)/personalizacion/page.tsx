@@ -22,10 +22,10 @@ export default async function PersonalizacionPage({ params }: { params: Promise<
   ]);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
-      <div>
-        <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-        <p className="mt-1 text-sm text-muted/80">{t("subtitulo")}</p>
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 sm:gap-8">
+      <div className="encabezado-seccion">
+        <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
+        <p className="subtitulo-seccion">{t("subtitulo")}</p>
       </div>
       <EditorPersonalizacion config={config} />
     </div>

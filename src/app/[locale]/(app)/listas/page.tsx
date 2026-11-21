@@ -33,14 +33,13 @@ export default async function ListasPage({
   const abiertasPorDefecto = listas.length <= LISTAS_ABIERTAS_MAXIMO;
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-          <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
+    <div className="flex w-full flex-col gap-4 sm:gap-6">
+      <div className="encabezado-seccion">
+        <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
+        <div className="acciones-seccion">
+          <NuevaListaInline />
         </div>
-
-        <NuevaListaInline />
+        <p className="subtitulo-seccion">{t("subtitulo")}</p>
       </div>
 
       <FiltroCategoria pathname="/listas" categorias={categorias} categoriaActualId={categoria ?? null} />
@@ -63,9 +62,9 @@ export default async function ListasPage({
       {/* Columnas CSS (masonry): cada tarjeta ocupa solo el alto de su
           contenido y la siguiente se acomoda justo debajo — una lista larga
           no deja hueco bajo las cortas, como sí pasa con grid. */}
-      <div className="columns-[17rem] gap-5">
+      <div className="columns-[17rem] gap-4 sm:gap-5">
         {listas.map((lista) => (
-          <div key={lista.id} className="mb-5 break-inside-avoid">
+          <div key={lista.id} className="mb-4 break-inside-avoid sm:mb-5">
             <ListaColumna lista={lista} categorias={categorias} abiertaPorDefecto={abiertasPorDefecto} />
           </div>
         ))}

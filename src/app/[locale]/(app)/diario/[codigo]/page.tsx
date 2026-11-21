@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { EntradaContenido } from "@/components/entrada-contenido";
-import { colorCategoria } from "@/lib/categorias/color";
 import { eliminarEntrada } from "@/lib/diario/actions";
 import { listarCategorias } from "@/lib/categorias/queries";
 import { obtenerEntradaPorCodigo } from "@/lib/diario/queries";
 import { EliminarEntradaBoton } from "./eliminar-boton";
+import { BarraEntrada } from "../barra-entrada";
+import { MetaEntrada } from "../meta-entrada";
 
 export default async function EntradaPage({
   params,
@@ -15,9 +16,8 @@ export default async function EntradaPage({
 }) {
   const { locale, codigo } = await params;
 
-  const [t, format, categorias, entrada] = await Promise.all([
+  const [t, categorias, entrada] = await Promise.all([
     getTranslations({ locale, namespace: "diario" }),
-    getFormatter({ locale }),
     listarCategorias(),
     obtenerEntradaPorCodigo(codigo),
   ]);
@@ -29,50 +29,33 @@ export default async function EntradaPage({
   const eliminar = eliminarEntrada.bind(null, locale, entrada.id);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
-      <Link
-        href="/diario"
-        className="enlace-volver"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-        {t("volver")}
-      </Link>
-
-      <div className="divide-y-2 divide-ink border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
-        <div className="flex items-center justify-between gap-4 p-5">
-          <div className="flex items-center gap-3">
-            <span className="apoyo">
-              {format.dateTime(new Date(entrada.fecha), { dateStyle: "long" })}
-            </span>
-            {entrada.categoriaNombre && entrada.categoriaId ? (
-              <span
-                className="border-(length:--borde) border-ink-strong rounded-theme px-2.5 py-1 text-xs font-semibold text-ink-strong"
-                style={{ background: colorCategoria(categorias, entrada.categoriaId) }}
-              >
-                {entrada.categoriaNombre}
-              </span>
-            ) : null}
-          </div>
-          <div className="flex items-center gap-2.5">
-            <Link
-              href={`/diario/${codigo}/editar`}
-              className="boton boton-turquesa"
-            >
-              {t("editar")}
-            </Link>
-            <EliminarEntradaBoton action={eliminar} />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3 p-6">
-          <h1 className="font-diario text-3xl font-bold text-secondary-purple">
+    <div className="mx-auto flex w-full max-w-2xl flex-col">
+      <article className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+        <BarraEntrada
+          volverHref="/diario"
+          volverTexto={t("volver")}
+          acciones={
+            <>
+              <EliminarEntradaBoton action={eliminar} />
+              <Link href={`/diario/${codigo}/editar`} className="boton boton-turquesa">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z" />
+                </svg>
+                {t("editar")}
+              </Link>
+            </>
+          }
+        />
+        {/* Misma caja, mismos márgenes y misma letra que al editar: pasar de
+            leer a editar no reacomoda la página. */}
+        <div className="flex flex-col gap-4 p-4 sm:p-6">
+          <MetaEntrada fecha={entrada.fecha} categoriaId={entrada.categoriaId} categoriaNombre={entrada.categoriaNombre} categorias={categorias} locale={locale} />
+          <h1 className="font-diario text-2xl leading-tight font-bold break-words text-secondary-purple sm:text-3xl">
             {entrada.titulo || t("sinTitulo")}
           </h1>
           <EntradaContenido contenido={entrada.contenido} />
         </div>
-      </div>
+      </article>
     </div>
   );
 }

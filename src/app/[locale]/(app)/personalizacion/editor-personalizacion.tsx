@@ -32,11 +32,14 @@ import { TEMAS_DISPONIBLES, TEMAS_PLANEADOS, type PresetId } from "@/lib/temas/p
 import type { ModoColor } from "@/lib/temas/types";
 
 
-const CLASE_SECCION = "flex flex-col gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-5 shadow-marco";
+// `scroll-mt`: al saltar desde el índice, la sección queda debajo de la
+// barra de la app y del propio índice, que están pegados arriba.
+const CLASE_SECCION =
+  "flex scroll-mt-32 flex-col gap-4 border-(length:--borde) border-ink rounded-theme bg-card p-4 shadow-marco sm:p-5 md:scroll-mt-36";
 const CLASE_TITULO = "font-diario text-xl font-semibold text-secondary-purple";
 const CLASE_OPCION =
-  "flex flex-col items-start gap-2 border-(length:--borde) border-ink rounded-theme p-3 text-left text-sm transition-colors";
-const CLASE_OPCION_ACTIVA = "bg-secondary-purple/15 outline-3 outline-secondary-purple outline-offset-1";
+  "flex flex-col items-start gap-2 border-(length:--borde) border-ink rounded-theme p-2 text-left text-sm transition-colors sm:p-3";
+const CLASE_OPCION_ACTIVA = "relative bg-secondary-purple/15 outline-3 outline-secondary-purple outline-offset-1";
 const CLASE_BOTON =
   "flex h-10 items-center justify-center border-(length:--borde) border-ink rounded-theme px-4 text-[13px] font-semibold transition-[filter] hover:brightness-95 disabled:opacity-60";
 
@@ -61,23 +64,67 @@ export function EditorPersonalizacion({ config }: { config: ConfigTema }) {
   const router = useRouter();
   const [pendiente, startTransition] = useTransition();
   const [error, setError] = useState(false);
+  const [guardado, setGuardado] = useState(false);
+  const temporizador = useRef(0);
 
   /** Guarda con una Server Action y vuelve a pedir la página: el layout
    * regenera el CSS del tema y el cambio se ve en toda la app. */
   function guardar(accion: () => Promise<unknown>) {
     setError(false);
+    setGuardado(false);
+    window.clearTimeout(temporizador.current);
     startTransition(async () => {
       try {
         await accion();
         router.refresh();
+        startTransition(() => setGuardado(true));
+        temporizador.current = window.setTimeout(() => setGuardado(false), 2500);
       } catch {
-        setError(true);
+        startTransition(() => setError(true));
       }
     });
   }
 
+  const secciones = ["tema", "colores", "tipografia", "cursor", "iconos"] as const;
+
   return (
-    <div className="flex flex-col gap-6" aria-busy={pendiente}>
+    <div className="flex flex-col gap-5 sm:gap-6" aria-busy={pendiente}>
+      {/* Índice pegado arriba: la pantalla tiene cinco bloques largos, y
+          saltar a «Iconos» ya no obliga a recorrer todo lo de arriba. A la
+          derecha, si el último cambio se está guardando o ya quedó. */}
+      <nav
+        aria-label={t("indice")}
+        className="sticky top-14 z-20 -mx-5 flex items-center gap-2 border-b-(length:--borde) border-ink/20 bg-background/95 px-5 py-2 backdrop-blur-sm sm:mx-0 sm:rounded-theme sm:border-(length:--borde) sm:px-2 md:top-16"
+      >
+        <ul className="fila-deslizable flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none]">
+          {secciones.map((seccion) => (
+            <li key={seccion}>
+              <a
+                href={`#seccion-${seccion}`}
+                className="flex h-9 shrink-0 items-center rounded-theme border-(length:--borde) border-ink/30 bg-card px-3 text-[13px] font-semibold whitespace-nowrap text-foreground transition-colors hover:border-ink hover:bg-secondary-purple/10"
+              >
+                {t(`indiceCorto.${seccion}`)}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <span aria-live="polite" className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-muted/80">
+          {pendiente ? (
+            <>
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-primary-pink motion-safe:animate-pulse" />
+              {t("guardando")}
+            </>
+          ) : guardado ? (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 12l5 5L20 6" />
+              </svg>
+              {t("guardado")}
+            </>
+          ) : null}
+        </span>
+      </nav>
+
       {error ? (
         <p role="alert" className="border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-3 text-sm text-ink-strong">
           {t("error")}
@@ -98,14 +145,16 @@ type PropsSeccion = { config: ConfigTema; guardar: (accion: () => Promise<unknow
 function SeccionTema({ config, guardar }: PropsSeccion) {
   const t = useTranslations("personalizacion");
   return (
-    <section className={CLASE_SECCION} aria-labelledby="titulo-tema">
+    <section id="seccion-tema" className={CLASE_SECCION} aria-labelledby="titulo-tema">
       <div>
         <h2 id="titulo-tema" className={CLASE_TITULO}>
           {t("tema.titulo")}
         </h2>
         <p className="mt-1 text-sm text-muted/80">{t("tema.ayuda")}</p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      {/* Dos por fila también en el celular: de a uno, los cuatro temas
+          ocupaban cuatro pantallas. */}
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
         {(Object.keys(TEMAS_DISPONIBLES) as PresetId[]).map((id) => {
           const tema = TEMAS_DISPONIBLES[id];
           const paleta = tema.colores.claro;
@@ -125,7 +174,7 @@ function SeccionTema({ config, guardar }: PropsSeccion) {
               {/* Muestra: una tarjetita dibujada con los valores del tema. */}
               <span
                 aria-hidden="true"
-                className="flex w-full flex-col gap-2 p-3"
+                className="flex w-full flex-col gap-1.5 p-2 sm:gap-2 sm:p-3"
                 style={{ background: paleta.fondo, borderRadius: tema.radio }}
               >
                 <span
@@ -156,11 +205,18 @@ function SeccionTema({ config, guardar }: PropsSeccion) {
                   ))}
                 </span>
               </span>
-              <span className="font-bold">
+              <span className="flex w-full flex-wrap items-center gap-x-2 gap-y-1 font-bold">
                 {tema.nombre}
-                {activo ? <span className="font-medium text-muted/80"> · {t("activo")}</span> : null}
+                {activo ? (
+                  <span className="flex items-center gap-1 rounded-theme bg-secondary-purple px-1.5 py-0.5 text-[11px] font-semibold text-background">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 12l5 5L20 6" />
+                    </svg>
+                    {t("activo")}
+                  </span>
+                ) : null}
               </span>
-              <span className="text-[13px] leading-snug text-muted/85">{t(`tema.${id}`)}</span>
+              <span className="line-clamp-3 text-xs leading-snug text-muted/85 sm:line-clamp-none sm:text-[13px]">{t(`tema.${id}`)}</span>
             </button>
           );
         })}
@@ -260,7 +316,7 @@ function SeccionColores({ config, guardar }: PropsSeccion) {
   }
 
   return (
-    <section className={CLASE_SECCION} aria-labelledby="titulo-colores">
+    <section id="seccion-colores" className={CLASE_SECCION} aria-labelledby="titulo-colores">
       <div>
         <h2 id="titulo-colores" className={CLASE_TITULO}>
           {t("colores.titulo")}
@@ -340,7 +396,7 @@ function SeccionTipografia({ config, guardar }: PropsSeccion) {
   const interfaz = config.fuenteInterfaz ?? tema.fuenteInterfaz;
 
   return (
-    <section className={CLASE_SECCION} aria-labelledby="titulo-tipografia">
+    <section id="seccion-tipografia" className={CLASE_SECCION} aria-labelledby="titulo-tipografia">
       <div>
         <h2 id="titulo-tipografia" className={CLASE_TITULO}>
           {t("tipografia.titulo")}
@@ -478,7 +534,7 @@ function SeccionCursor({ config, guardar }: PropsSeccion) {
   const actual = config.cursor?.tipo === "preset" ? config.cursor.id : config.cursor?.tipo === "propio" ? "propio" : null;
 
   return (
-    <section className={CLASE_SECCION} aria-labelledby="titulo-cursor">
+    <section id="seccion-cursor" className={CLASE_SECCION} aria-labelledby="titulo-cursor">
       <div>
         <h2 id="titulo-cursor" className={CLASE_TITULO}>
           {t("cursor.titulo")}
@@ -535,7 +591,7 @@ function SeccionIconos({ config, guardar }: PropsSeccion) {
   const { subir, subiendo, error } = useSubidaImagen();
 
   return (
-    <section className={CLASE_SECCION} aria-labelledby="titulo-iconos">
+    <section id="seccion-iconos" className={CLASE_SECCION} aria-labelledby="titulo-iconos">
       <div>
         <h2 id="titulo-iconos" className={CLASE_TITULO}>
           {t("iconos.titulo")}

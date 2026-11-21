@@ -61,7 +61,8 @@
     "espacioDe": "{usado} of {limite}",
     "espacioAyuda": "Photos and audio. We'll warn you before it fills up.",
     "abrirPersonalizacion": "Personalize",
-    "personalizacionAyudaCorta": "Theme, colors, fonts, cursor and icons"
+    "personalizacionAyudaCorta": "Theme, colors, fonts, cursor and icons",
+    "nombreGuardado": "Name saved"
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -181,7 +182,12 @@
     "guardando": "Saving…",
     "contenidoRequerido": "Your entry is still blank — write something (or add an image) before saving.",
     "errorGuardar": "We couldn't save it. What you wrote is still here — try again in a moment.",
-    "sesionVencida": "Your session expired and we couldn't save. What you wrote is kept as a draft on this device — sign in again to get it back."
+    "sesionVencida": "Your session expired and we couldn't save. What you wrote is kept as a draft on this device — sign in again to get it back.",
+    "estadoSinGuardar": "Unsaved changes",
+    "estadoBorradorLocal": "Local copy · {hora}",
+    "estadoAlDia": "All saved",
+    "volverCorto": "Journal",
+    "campoCategoria": "Category"
   },
   "dialogos": {
     "cerrar": "Close",
@@ -222,7 +228,9 @@
       "tamano": "The image is larger than 25 MB.",
       "sesion": "Your session expired. Sign in again and retry; what you wrote is kept as a draft.",
       "fallo": "Couldn't upload the image. What you wrote is still here: try again."
-    }
+    },
+    "mas": "More formatting",
+    "formato": "Text formatting"
   },
   "listas": {
     "titulo": "Lists",
@@ -257,7 +265,9 @@
     "cantidadItems": "{total, plural, =0 {No items} one {# item} other {# items}}",
     "abrirLista": "Open list",
     "plegarLista": "Collapse list",
-    "eliminarLista": "Delete list"
+    "eliminarLista": "Delete list",
+    "crear": "Create list",
+    "nombreLista": "List name"
   },
   "vitrina": {
     "titulo": "Showcase",
@@ -341,7 +351,12 @@
     "grabadora": "Recorder",
     "tocaParaGrabar": "Tap to record",
     "tocaParaDetener": "tap the square to stop",
-    "ayudaGrabar": "Up to {minutos} minutes. It saves itself when you stop; add a title later (or keep the date and time)."
+    "ayudaGrabar": "Up to {minutos} minutes. It saves itself when you stop; add a title later (or keep the date and time).",
+    "reproducir": "Play",
+    "pausar": "Pause",
+    "posicion": "Position in the note",
+    "cargandoAudio": "Loading…",
+    "guardada": "Saved! It's in your list now."
   },
   "paginacion": {
     "cargarMas": "Load more",
@@ -535,6 +550,16 @@
       "tamano": "The image is too large (2 MB max).",
       "sesion": "Your session expired. Sign in again and try once more.",
       "fallo": "Couldn't upload the image. Try again."
+    },
+    "indice": "Customization sections",
+    "guardando": "Saving…",
+    "guardado": "Saved",
+    "indiceCorto": {
+      "tema": "Theme",
+      "colores": "Colors",
+      "tipografia": "Fonts",
+      "cursor": "Cursor",
+      "iconos": "Icons"
     }
   },
   "decoracion": {

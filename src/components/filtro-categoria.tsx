@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { colorCategoria } from "@/lib/categorias/color";
@@ -29,6 +30,7 @@ export function FiltroCategoria({
   categorias,
   categoriaActualId,
   conservar,
+  children,
 }: {
   pathname: string;
   categorias: Categoria[];
@@ -38,9 +40,13 @@ export function FiltroCategoria({
    * una categoría no tiene que borrar. Nunca `hasta`: cambiar de filtro
    * vuelve a la primera tanda. */
   conservar?: Record<string, string>;
+  /** Más chips en la misma fila, después de las categorías (los hashtags de
+   * la Vitrina), como `<li>`. En el celular comparten un solo carril
+   * deslizable en vez de dos filas apiladas que se comían la pantalla. */
+  children?: ReactNode;
 }) {
   const t = useTranslations("nav");
-  if (categorias.length === 0) return null;
+  if (categorias.length === 0 && !children) return null;
 
   return (
     <nav aria-label={t("filtrarCategoria")} className="tema-fila-chips -mx-5 sm:mx-0">
@@ -73,6 +79,16 @@ export function FiltroCategoria({
             </li>
           );
         })}
+        {children ? (
+          <>
+            {/* En el celular, una rayita entre categorías y hashtags; desde
+                tablet, un salto de línea. */}
+            {categorias.length > 0 ? (
+              <li aria-hidden="true" className="mx-1 w-(--borde) shrink-0 self-stretch bg-ink/25 sm:mx-0 sm:h-0 sm:w-auto sm:basis-full sm:bg-transparent" />
+            ) : null}
+            {children}
+          </>
+        ) : null}
       </ul>
     </nav>
   );

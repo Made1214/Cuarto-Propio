@@ -27,8 +27,11 @@ export default async function AccesoLayout({
     <main id="contenido" className="flex flex-1 flex-col bg-background text-foreground md:flex-row">
       {/* En el celular el panel es solo una barra (marca + idioma + modo):
           antes ocupaba media pantalla y el botón de entrar quedaba abajo del
-          pliegue. Desde tablet vuelve a ser la columna con qué es la app. */}
-      <section className="acceso-panel flex flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-2 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
+          pliegue. Desde tablet vuelve a ser la columna con qué es la app.
+          En el celular queda pegada arriba (como la barra de la app): si no,
+          al abrir el teclado el contenido sube por detrás de la barra de
+          estado de iOS y se ve difuminado. */}
+      <section className="acceso-panel sticky top-0 z-30 flex md:static flex-col gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple px-4 py-2 text-background md:w-[min(35rem,45%)] md:gap-7 md:border-r-(length:--borde-grueso) md:border-b-0 md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" aria-label={t("volverInicio")} className="flex min-h-11 items-center gap-2.5">
             <Image
@@ -68,7 +71,7 @@ export default async function AccesoLayout({
         </p>
       </section>
 
-      <div className="flex flex-1 justify-center px-5 py-6 md:items-center md:px-6 md:py-8">
+      <div className="flex flex-1 items-center justify-center px-5 py-6 md:px-6 md:py-8">
         <div className="flex w-full max-w-100 flex-col gap-8">
           {children}
           <nav
@@ -77,13 +80,13 @@ export default async function AccesoLayout({
           >
             <Link
               href="/terminos"
-              className="underline-offset-2 hover:underline"
+              className="inline-flex min-h-11 items-center underline-offset-2 hover:underline"
             >
               {t("terminos")}
             </Link>
             <Link
               href="/privacidad"
-              className="underline-offset-2 hover:underline"
+              className="inline-flex min-h-11 items-center underline-offset-2 hover:underline"
             >
               {t("privacidad")}
             </Link>

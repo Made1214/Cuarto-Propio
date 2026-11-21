@@ -49,37 +49,45 @@ export function VentanaDialogo({
       onClick={(evento) => {
         if (evento.target === ref.current) onCerrar();
       }}
-      className={`ventana-dialogo m-auto border-0 bg-transparent p-0 text-foreground backdrop:bg-velo ${
+      // Nunca más alta que la pantalla (con el teclado abierto incluido:
+      // `dvh`): el contenido se desplaza adentro y los botones de abajo
+      // quedan siempre a la vista.
+      className={`ventana-dialogo m-auto max-h-[calc(100dvh-2rem)] border-0 bg-transparent p-0 text-foreground backdrop:bg-velo ${
         ancho === "ancho"
           ? "w-[min(44rem,calc(100vw-2rem))]"
           : "w-[min(26rem,calc(100vw-2rem))]"
       }`}
     >
-      <div className="flex flex-col border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-lg">
-        <div className="flex items-center justify-between gap-3 border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-2">
+      <div className="flex max-h-[calc(100dvh-2rem)] flex-col border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-lg">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b-(length:--borde) border-ink bg-secondary-purple py-1 pr-1 pl-3">
           <h2 className="truncate font-pixel text-xs tracking-wide text-background uppercase">
             {titulo}
           </h2>
           <div className="flex shrink-0 items-center gap-2">
             <span aria-hidden="true" className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-primary-green" />
             <span aria-hidden="true" className="h-3 w-3 border-(length:--borde) border-ink rounded-theme bg-secondary-turquoise" />
+            {/* La ✕ de verdad: el cuadradito rosa de 12 px de antes era
+                imposible de acertar con el dedo. El área de toque es de
+                36 px (44 en pantallas táctiles); el dibujo sigue chico. */}
             <button
               type="button"
               onClick={onCerrar}
               aria-label={etiquetaCerrar}
               title={etiquetaCerrar}
-              className="flex h-3 w-3 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink transition-[filter] hover:brightness-90"
+              className="group flex h-9 w-9 items-center justify-center pointer-coarse:h-11 pointer-coarse:w-11"
             >
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="var(--ink-strong)" strokeWidth="5" strokeLinecap="round" aria-hidden="true">
-                <path d="M6 6l12 12M18 6L6 18" />
-              </svg>
+              <span className="flex h-5 w-5 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink transition-[filter] group-hover:brightness-90">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--ink-strong)" strokeWidth="4" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </span>
             </button>
           </div>
         </div>
 
-        <div className="px-5 py-5">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5">{children}</div>
 
-        <div className="flex flex-wrap items-center justify-end gap-2 border-t-(length:--borde) border-ink/15 px-5 pt-4 pb-5">
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t-(length:--borde) border-ink/15 px-4 pt-3 pb-4 sm:px-5 sm:pt-4 sm:pb-5">
           {acciones}
         </div>
       </div>
