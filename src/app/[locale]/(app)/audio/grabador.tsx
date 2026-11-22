@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useAvisoAntesDeSalir, usePantallaEncendida } from "@/lib/audio/pantalla-encendida";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { formatearDuracion } from "@/lib/audio/duracion";
@@ -206,6 +207,11 @@ export function Grabador() {
   const restantes = DURACION_MAXIMA_SEGUNDOS - segundos;
 
   const grabando = estado === "grabando";
+  // Grabando, la pantalla no se apaga (si se apaga, el celular corta el
+  // micrófono). Y mientras hay algo sin guardar —grabando, subiendo o una
+  // grabación que falló al subir— cerrar la pestaña pregunta antes.
+  usePantallaEncendida(grabando);
+  useAvisoAntesDeSalir(estado !== "inactivo" || pendiente !== null);
 
   return (
     <div className="flex flex-col items-stretch gap-3">
