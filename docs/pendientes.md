@@ -29,7 +29,7 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 1. `claude/pwa-ui-responsive-fixes-33tbqf` (PR #2): pulido móvil de la PWA.
 2. `claude/loving-euler-0ihqb5`: zona horaria, categorías sin mayúsculas, migración `0013` de RLS, barra del editor con teclado, Wake Lock al grabar, tope de espacio por cuenta y las pruebas de punta a punta que faltaban (incluida RLS con dos cuentas). Contiene a la 1: fusionar esta alcanza.
 
-Migraciones **sin aplicar** en Supabase: `0012` (aplicarla junto con el despliegue, cambia firmas) y `0013` (en cualquier momento).
+Migraciones 0001–0013 **aplicadas** en Supabase (0012 y 0013 el 2026-11-22). El aviso `auth_rls_initplan` ya no aparece.
 
 Lo que separa a la Fase 1 de estar cerrada ya no es código: es la sección 1 (probar con la base real y en celulares), el operativo de la sección 2 y el SMTP propio.
 
@@ -72,7 +72,7 @@ Bloqueos:
 
 - [x] ~~**Subidas de más de 4,5 MB:**~~ el audio se graba a 32 kbps (10 min ≈ 2,4 MB), las imágenes se reducen en el navegador antes de subir y el tope del servidor es 4 MB. Probado con una foto de 10,5 MB. **Falta probar en Safari de iPhone.**
 - [x] ~~**Borrador del diario:**~~ ya no se borra hasta confirmar el guardado; si falla, el texto sigue en pantalla con aviso y reintento. Probado en navegador con el servidor caído.
-- [x] ~~**Bloqueo de login:**~~ cuenta por correo e IP (migración `0012`). **La `0012` no está aplicada en Supabase:** hasta entonces el login funciona sin bloqueo. Aplicarla junto con el despliegue de este código. Solución completa pendiente: registrar los fallos con la clave secreta y quitar el permiso a `anon`.
+- [x] ~~**Bloqueo de login:**~~ cuenta por correo e IP (migración `0012`). `0012` aplicada el 2026-11-22: el bloqueo funciona con el código nuevo, así que hay que desplegarlo. Solución completa pendiente: registrar los fallos con la clave secreta y quitar el permiso a `anon`.
 - [ ] **SMTP propio** en Supabase (lo hace la usuaria): sin esto no llegan los correos a otras personas.
 - [x] ~~**Tope de storage por cuenta**~~ en las cuatro rutas de subida, con `uso_storage()` (`src/lib/storage/cuota.ts`). Por defecto es el GB del plan; **antes de abrir el registro, poner `CUOTA_STORAGE_MB` en Vercel** (p. ej. 250).
 - [ ] **Backups y tarea contra la pausa del proyecto gratuito:** aplazados hasta que haya presupuesto (decisión del 2026-11-16).
@@ -88,7 +88,7 @@ Experiencia:
 - [x] ~~Barra del editor usable con teclado~~ (Enter y Espacio aplican el formato).
 - [x] ~~Categorías sin distinguir mayúsculas~~ (servidor y selectores; con duplicadas viejas gana la más antigua).
 - [x] ~~Pantalla encendida mientras se graba~~ (Wake Lock) y aviso antes de cerrar con una nota sin guardar. **Falta probar en iPhone.**
-- [x] ~~Migración de RLS con `(select auth.uid())`~~: `0013`, escrita y **sin aplicar** en Supabase. Se puede aplicar en cualquier momento.
+- [x] ~~Migración de RLS con `(select auth.uid())`~~: `0013`, aplicada el 2026-11-22.
 - [ ] Prueba de RLS con dos cuentas antes de abrir el registro: escrita (`e2e/rls.spec.ts`), **falta correrla** con dos cuentas de prueba reales.
 
 ## 0. Revisión de rendimiento, navegación e interfaz (2026-11-16)
