@@ -7,6 +7,7 @@ import {
 } from "@/components/filtro-categoria";
 import { useOptimistic, useState, useTransition } from "react";
 import { colorCategoria } from "@/lib/categorias/color";
+import { claveCategoria } from "@/lib/categorias/nombre";
 import type { Categoria } from "@/lib/categorias/types";
 
 /** Id provisorio de una categoría recién escrita que el servidor todavía no
@@ -69,7 +70,10 @@ export function CategoriaSelector({
       : categorias;
 
   function elegir(nombre: string) {
-    const nombreLimpio = nombre.trim();
+    // Escribir "viajes" con "Viajes" ya creada elige la existente, igual que
+    // hace el servidor (`resolverCategoriaId`).
+    const existente = categorias.find((cat) => claveCategoria(cat.nombre) === claveCategoria(nombre));
+    const nombreLimpio = existente?.nombre ?? nombre.trim();
     // Se cierra fuera de la transición: dentro, el cierre esperaría a que
     // responda el servidor, y la gracia es que el panel se vaya ya.
     setNueva("");
@@ -78,7 +82,6 @@ export function CategoriaSelector({
     // dos veces lo mismo mientras viaja la primera no manda nada.
     if (nombreLimpio === (actual.nombre ?? "")) return;
 
-    const existente = categorias.find((cat) => cat.nombre === nombreLimpio);
     startTransition(async () => {
       setActual(
         nombreLimpio
