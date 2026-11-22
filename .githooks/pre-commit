@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Nada de commits directos a main: todo entra por una rama de tema y un PR.
+rama="$(git branch --show-current)"
+if [[ "$rama" == "main" ]]; then
+  echo "✗ No se hace commit directo a main. Crea una rama:" >&2
+  echo "    scripts/git-flujo.sh rama feat/lo-que-haces" >&2
+  exit 1
+fi

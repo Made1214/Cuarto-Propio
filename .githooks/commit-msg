@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Deja los mensajes de commit sin ninguna firma de Claude y exige autoría de Made1214.
+# Se activa con: scripts/git-flujo.sh instalar   (core.hooksPath = .githooks)
+archivo="$1"
+
+# Quita coautorías y firmas de sesión que agregue cualquier herramienta.
+sed -i -E '/^Co-Authored-By:.*(Claude|Anthropic|noreply@anthropic\.com)/Id;
+           /^Claude-Session:/Id;
+           /Generated with .*Claude/Id' "$archivo"
+# Quita líneas en blanco sobrantes al final.
+sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$archivo"
+
+autor="$(git var GIT_AUTHOR_IDENT)"
+if echo "$autor" | grep -qiE 'claude|anthropic'; then
+  echo "✗ El autor del commit es: $autor" >&2
+  echo "  Ejecuta scripts/git-flujo.sh instalar para fijar Made1214." >&2
+  exit 1
+fi
