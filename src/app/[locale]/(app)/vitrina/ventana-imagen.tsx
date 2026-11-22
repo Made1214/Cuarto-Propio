@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import { FONDO_MIENTRAS_CARGA } from "@/lib/imagenes/fondo-carga";
 import { textoAlternativo } from "@/lib/imagenes/hashtags";
 import type { ImagenEnVitrina } from "@/lib/imagenes/types";
-import { BotonesVentana } from "./iconos";
 
 /**
  * Las columnas del esqueleto de la pared (`loading.tsx`): las mismas
@@ -16,7 +15,11 @@ export const CLASE_PARED =
 export const CLASE_PIEZA_PARED = "mb-2.5 break-inside-avoid sm:mb-4";
 
 /**
- * Una pieza de la cuadrícula, montada como ventanita de escritorio Y2K.
+ * Una pieza de la pared, al estilo de un tablero de imágenes: la foto manda,
+ * con un marco fino, y el título corto debajo, fuera del marco. Antes cada
+ * pieza era una ventanita de escritorio con barra "_ □ ×" y caja de título:
+ * la pared se veía como un escritorio lleno de ventanas y el marco le
+ * quitaba lugar a la foto.
  *
  * Debajo de la foto va el título y nada más: los hashtags y la categoría
  * son para buscar, y buscar se hace desde la barra de filtros de arriba —
@@ -46,21 +49,10 @@ export async function VentanaImagen({
   const titulo = imagen.titulo?.trim() ?? "";
 
   return (
-    <Link
-      href={`/vitrina/${imagen.codigo}`}
-      className="block overflow-hidden border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-sm transition-[transform,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-marco-lg focus-visible:-translate-x-0.5 focus-visible:-translate-y-0.5 sm:shadow-marco"
-    >
-      {/* Barra de ventana sin texto: el título vive abajo, como en un
-          tablero de imágenes, y acá quedan solo los botones de adorno. En
-          el celular es más fina: con dos columnas, cada píxel de marco se
-          lo quita a la foto. */}
-      <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-1.5 py-1 text-background sm:px-2 sm:py-1.5">
-        <BotonesVentana />
-      </div>
-
+    <Link href={`/vitrina/${imagen.codigo}`} className="group block rounded-theme">
       {/* El alto ya está reservado (ancho y alto en el <img>) y el degradé
           ocupa el lugar mientras baja: la pared no salta al cargar. */}
-      <div className="bg-background">
+      <div className="overflow-hidden border-(length:--borde) border-ink rounded-theme bg-background transition-[transform,box-shadow] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-marco group-focus-visible:-translate-x-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:shadow-marco">
         {imagen.miniaturaUrl ? (
           <Image
             src={imagen.miniaturaUrl}
@@ -93,9 +85,9 @@ export async function VentanaImagen({
       </div>
 
       {titulo ? (
-        <p className="border-t-(length:--borde) border-ink px-2 py-1.5 font-diario text-[13px] leading-snug font-semibold text-foreground sm:px-2.5 sm:py-2 sm:text-sm">
-          {/* Dos renglones como mucho: un título largo no estira la ventana. */}
-          <span className="line-clamp-2 break-words">{titulo}</span>
+        // Dos renglones como mucho: un título largo no estira la pieza.
+        <p className="mt-1.5 line-clamp-2 px-0.5 text-[13px] leading-snug font-semibold break-words text-foreground sm:text-sm">
+          {titulo}
         </p>
       ) : null}
     </Link>

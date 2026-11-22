@@ -22,23 +22,11 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
     campoRef.current?.focus();
   }
 
-  // Un solo renglón punteado con el "+" adentro: se lee como "acá va el
-  // siguiente ítem", y Enter lo agrega sin buscar un botón.
+  // Un campo y, pegado, el botón "+" siempre verde: antes el botón se veía
+  // apagado mientras el campo estaba vacío y parecía roto. Vacío, tocarlo
+  // lleva al campo; Enter también agrega.
   return (
-    <div className="flex h-11 items-center gap-2 overflow-hidden border-(length:--borde) border-dashed border-ink/40 rounded-theme pl-2.5 transition-colors focus-within:border-solid focus-within:border-ink">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        aria-hidden="true"
-        className="shrink-0"
-      >
-        <path d="M12 5v14M5 12h14" />
-      </svg>
+    <div className="flex h-11 items-stretch overflow-hidden border-(length:--borde) border-ink rounded-theme bg-background transition-colors focus-within:border-secondary-purple">
       <input
         ref={campoRef}
         type="text"
@@ -52,17 +40,19 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
         }}
         aria-label={t("agregarItem")}
         placeholder={t("itemPlaceholder")}
-        className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted/60"
+        enterKeyHint="done"
+        className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted/60"
       />
-      {/* Siempre a la vista: en el celular no todos saben que Enter agrega,
-          y el botón que aparecía de golpe movía la fila. Vacío queda apagado. */}
       <button
         type="button"
-        onClick={enviar}
-        disabled={!valor.trim()}
-        className="h-full shrink-0 border-l-(length:--borde) border-ink bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter,opacity] hover:brightness-95 disabled:border-ink/30 disabled:bg-transparent disabled:text-ink/40"
+        onClick={() => (valor.trim() ? enviar() : campoRef.current?.focus())}
+        aria-label={t("agregarItem")}
+        title={t("agregarItem")}
+        className="flex w-11 shrink-0 items-center justify-center border-l-(length:--borde) border-ink bg-primary-green text-ink-strong transition-[filter] hover:brightness-95"
       >
-        {t("agregar")}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
       </button>
     </div>
   );

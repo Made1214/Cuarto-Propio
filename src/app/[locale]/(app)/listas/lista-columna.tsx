@@ -3,7 +3,6 @@
 import { useOptimistic, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { AvisoErrorAccion } from "@/components/aviso-error-accion";
-import { BotonConfirmar } from "@/components/boton-confirmar";
 import { CategoriaSelector } from "@/components/categoria-selector";
 import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import type { Categoria } from "@/lib/categorias/types";
@@ -19,7 +18,8 @@ import {
 } from "@/lib/listas/actions";
 import type { ItemLista, ListaConItems } from "@/lib/listas/types";
 import { AgregarItemInline } from "./agregar-item-inline";
-import { IconoCasilla, IconoEliminar, IconoPlegar } from "./iconos";
+import { IconoPlegar } from "./iconos";
+import { MenuLista } from "./menu-lista";
 import { useListaAbierta } from "@/lib/listas/plegado";
 import { ItemFila } from "./item-fila";
 
@@ -256,24 +256,21 @@ export function ListaColumna({
           className="min-w-0 flex-1 border-b-(length:--borde) border-dashed border-ink/20 bg-transparent py-1 pointer-coarse:py-2 font-diario text-lg leading-snug font-semibold outline-none hover:border-ink/40 focus:border-solid focus:border-ink"
         />
 
-        <button
-          type="button"
-          onClick={() => {
-            const valor = !conCasillas;
+        <MenuLista
+          nombreLista={nombre}
+          conCasillas={conCasillas}
+          onCasillas={(valor) =>
             guardar(
               () => setConCasillasOptimista(valor),
               () => cambiarCasillasLista(lista.id, valor),
-            );
+            )
+          }
+          onRenombrar={() => {
+            nombreRef.current?.focus();
+            nombreRef.current?.select();
           }}
-          aria-pressed={conCasillas}
-          aria-label={t("listaConCasillas")}
-          title={t("listaConCasillas")}
-          className={`flex h-9 w-9 shrink-0 items-center justify-center transition-colors pointer-coarse:h-11 pointer-coarse:w-11 ${
-            conCasillas ? "bg-secondary-purple/25 text-ink" : "text-ink/35 hover:bg-secondary-purple/15 hover:text-ink"
-          }`}
-        >
-          <IconoCasilla activa={conCasillas} />
-        </button>
+          onEliminar={() => guardar(() => {}, () => eliminarLista(lista.id))}
+        />
 
         <button
           type="button"
@@ -355,22 +352,6 @@ export function ListaColumna({
       )}
 
       <AgregarItemInline onAgregar={agregar} />
-
-      {/* Borrar la lista va abajo y con palabras, lejos de la ✕ de cada
-          ítem: en el celular quedaban pegadas y era fácil tocar la que no. */}
-      <div className="flex justify-end border-t-(length:--borde) border-ink/15 pt-2">
-        <BotonConfirmar
-          titulo={t("eliminar")}
-          mensaje={t("eliminarConfirmar")}
-          textoConfirmar={t("eliminar")}
-          etiqueta={t("eliminarLista")}
-          onConfirmar={() => guardar(() => {}, () => eliminarLista(lista.id))}
-          className="flex min-h-9 items-center gap-1.5 rounded-theme px-2 text-xs font-semibold text-ink/55 transition-colors hover:bg-primary-pink/30 hover:text-ink pointer-coarse:min-h-11"
-        >
-          <IconoEliminar />
-          <span>{t("eliminarLista")}</span>
-        </BotonConfirmar>
-      </div>
     </div>
   );
 }

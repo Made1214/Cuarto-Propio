@@ -102,14 +102,6 @@ export default async function ImagenPage({
             <span className="min-w-0 flex-1 truncate text-sm font-semibold">
               {titulo}
             </span>
-            <Link
-              href={`/vitrina/${imagen.codigo}/editar`}
-              aria-label={t("editar")}
-              title={t("editar")}
-              className="flex h-9 w-9 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-green text-ink-strong transition-[filter] hover:brightness-90 sm:h-7 sm:w-7"
-            >
-              <IconoLapiz />
-            </Link>
             <BotonesVentana />
           </div>
 
@@ -147,15 +139,38 @@ export default async function ImagenPage({
                 <p className="text-sm leading-relaxed whitespace-pre-line">{imagen.descripcion}</p>
               ) : null}
 
-              {/* Tocar un hashtag o la categoría lleva a la vitrina ya
-                  filtrada: es la forma natural de decir "más como esta". */}
+              {/* Fecha y categoría en una línea de apoyo: antes la categoría
+                  era una caja grande de color que parecía un botón. */}
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-muted/80">
+                <span>{format.dateTime(new Date(imagen.fecha), { dateStyle: "long", timeZone: zona })}</span>
+                {imagen.categoriaId && imagen.categoriaNombre ? (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <Link
+                      href={{ pathname: "/vitrina", query: { categoria: imagen.categoriaId } }}
+                      className="inline-flex min-h-9 items-center gap-1.5 font-semibold text-foreground underline-offset-2 hover:underline"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="punto-categoria"
+                        style={{ background: colorCategoria(categorias, imagen.categoriaId) }}
+                      />
+                      {imagen.categoriaNombre}
+                    </Link>
+                  </>
+                ) : null}
+              </p>
+
+              {/* Tocar un hashtag lleva a la vitrina ya filtrada: es la
+                  forma natural de decir "más como esta". Chicos y sin
+                  relleno, para que no compitan con la foto. */}
               {imagen.hashtags.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
                   {imagen.hashtags.map((hashtag) => (
                     <Link
                       key={hashtag}
                       href={{ pathname: "/vitrina", query: { hashtag } }}
-                      className="inline-flex min-h-9 items-center border-(length:--borde) border-ink-strong rounded-theme bg-secondary-turquoise px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 pointer-coarse:min-h-10"
+                      className="inline-flex min-h-9 items-center border-(length:--borde) border-ink/60 rounded-theme bg-card px-2.5 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary-turquoise/30 pointer-coarse:min-h-10"
                     >
                       #{hashtag}
                     </Link>
@@ -163,26 +178,24 @@ export default async function ImagenPage({
                 </div>
               ) : null}
 
-              {imagen.categoriaId && imagen.categoriaNombre ? (
+              {/* Las acciones con nombre, al pie del panel. En el celular se
+                  quedan pegadas sobre la barra de abajo, al alcance del
+                  pulgar; antes editar era un lápiz chico escondido en la
+                  barra de la ventana. */}
+              <div className="mt-auto flex items-center gap-2 border-t-(length:--borde) border-ink/20 bg-card pt-3 max-md:sticky max-md:bottom-[calc(5.75rem+env(safe-area-inset-bottom))] max-md:pb-2">
                 <Link
-                  href={{ pathname: "/vitrina", query: { categoria: imagen.categoriaId } }}
-                  className="inline-flex min-h-9 w-fit items-center border-(length:--borde) border-ink-strong rounded-theme px-2.5 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95 pointer-coarse:min-h-10"
-                  style={{ background: colorCategoria(categorias, imagen.categoriaId) }}
+                  href={`/vitrina/${imagen.codigo}/editar`}
+                  className="boton boton-turquesa flex-1 sm:flex-none"
                 >
-                  {imagen.categoriaNombre}
+                  <IconoLapiz />
+                  {t("editar")}
                 </Link>
-              ) : null}
-
-              <div className="mt-auto flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
-                <span className="text-[13px] font-semibold text-muted/70">
-                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long", timeZone: zona })}
-                </span>
                 {imagen.completaUrl ? (
                   <a
                     href={imagen.completaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="boton boton-chico"
+                    className="boton"
                   >
                     {t("verCompleta")}
                   </a>

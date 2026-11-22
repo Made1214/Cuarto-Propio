@@ -1,5 +1,4 @@
 import { EsqueletoPantalla, Hueso } from "@/components/esqueleto";
-import { BotonesVentana } from "./iconos";
 import { CLASE_PARED, CLASE_PIEZA_PARED } from "./ventana-imagen";
 
 /** Proporciones de las fotos de mentira. Variadas a propósito: lo que hace
@@ -45,17 +44,12 @@ export default function CargandoVitrina() {
       <div className={CLASE_PARED}>
         {PIEZAS.map((pieza, indice) => (
           <div key={indice} className={CLASE_PIEZA_PARED}>
-            <div className="overflow-hidden border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-sm sm:shadow-marco">
-              <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-1.5 py-1 text-background sm:px-2 sm:py-1.5">
-                <BotonesVentana />
-              </div>
+            {/* La misma forma que la pieza de verdad: la foto con su marco y
+                el título debajo, afuera. */}
+            <div className="overflow-hidden border-(length:--borde) border-ink rounded-theme bg-card">
               <Hueso className={`w-full ${pieza.proporcion}`} />
-              {pieza.titulo ? (
-                <div className="border-t-(length:--borde) border-ink px-2 py-2 sm:px-2.5 sm:py-2.5">
-                  <Hueso className={`h-3.5 ${pieza.titulo}`} />
-                </div>
-              ) : null}
             </div>
+            {pieza.titulo ? <Hueso className={`mt-2 h-3.5 ${pieza.titulo}`} /> : null}
           </div>
         ))}
       </div>

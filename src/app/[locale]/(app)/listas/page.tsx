@@ -37,7 +37,7 @@ export default async function ListasPage({
       <div className="encabezado-seccion">
         <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
         <div className="acciones-seccion">
-          <NuevaListaInline />
+          <NuevaListaInline principal />
         </div>
         <p className="subtitulo-seccion">{t("subtitulo")}</p>
       </div>

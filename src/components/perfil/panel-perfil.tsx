@@ -173,6 +173,27 @@ export function PanelPerfil({
               ) : null}
             </div>
 
+            {/* Personalización vive en su propia pantalla: necesita lugar
+                para ver cada opción antes de elegirla. Va arriba y
+                destacada: es lo que más distingue a la app, y reemplaza al
+                pincel que había en la barra (no se entendía qué era). */}
+            <Link
+              href="/personalizacion"
+              onClick={() => setAbierto(false)}
+              className="flex items-center gap-3 border-(length:--borde) border-ink rounded-theme bg-primary-pink p-3.5 text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            >
+              <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-card text-ink">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold">{t("abrirPersonalizacion")}</span>
+                <span className="mt-0.5 block text-xs">{t("personalizacionAyudaCorta")}</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </Link>
+
             <Seccion titulo={t("apariencia")} ayuda={t("modoAyuda")}>
               <SelectorModo />
             </Seccion>
@@ -181,24 +202,6 @@ export function PanelPerfil({
               <SelectorIdioma />
             </Seccion>
 
-            {/* Personalización vive en su propia pantalla: necesita lugar
-                para ver cada opción antes de elegirla. */}
-            <Link
-              href="/personalizacion"
-              onClick={() => setAbierto(false)}
-              className="flex items-center gap-3 border-(length:--borde) border-ink rounded-theme bg-background p-3.5 transition-colors hover:bg-primary-pink/25"
-            >
-              <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center border-(length:--borde) border-ink rounded-theme bg-primary-pink text-ink-strong">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z" />
-                </svg>
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold">{t("abrirPersonalizacion")}</span>
-                <span className="mt-0.5 block text-xs text-muted/75">{t("personalizacionAyudaCorta")}</span>
-              </span>
-              <span aria-hidden="true">→</span>
-            </Link>
 
             {usoStorage !== null ? (
               <Seccion titulo={t("espacioUsado")} ayuda={t("espacioAyuda")}>

@@ -4,8 +4,9 @@ import { useLinkStatus } from "next/link";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { IconoSeccion } from "./icono-seccion";
-import type { RutaSeccion } from "./iconos-secciones";
+import { IconoEscribir, type RutaSeccion } from "./iconos-secciones";
 import { MenuCrear } from "./menu-crear";
+import { pedirAccionPrincipal } from "@/lib/accion-principal";
 
 type Seccion = { href: RutaSeccion; label: string };
 
@@ -59,12 +60,64 @@ export function NavSecciones({
         <LinkSeccion key={seccion.href} seccion={seccion} activa={esActiva(seccion.href)} variante="inferior" />
       ))}
       <div className="flex justify-center">
-        <MenuCrear variante="inferior" />
+        <BotonCentral pathname={pathname} />
       </div>
       {secciones.slice(mitad).map((seccion) => (
         <LinkSeccion key={seccion.href} seccion={seccion} activa={esActiva(seccion.href)} variante="inferior" />
       ))}
     </nav>
+  );
+}
+
+/** Qué hace el botón del centro en cada sección: su acción principal, en un
+ * toque y al alcance del pulgar (antes estaba arriba a la derecha, lo más
+ * lejano en un celular sostenido con una mano). */
+const ACCIONES_CENTRALES = {
+  "/diario": { clave: "escribir", fondo: "bg-primary-pink" },
+  "/listas": { clave: "nuevaLista", fondo: "bg-primary-green" },
+  "/vitrina": { clave: "exhibir", fondo: "bg-secondary-turquoise" },
+  "/audio": { clave: "grabar", fondo: "bg-primary-pink" },
+} as const;
+
+/**
+ * En la portada de cada sección, el botón del centro hace la acción de esa
+ * sección (Escribir, Nueva lista, Exhibir, Grabar), con su nombre debajo. En
+ * las demás pantallas (una ficha, Personalización) es "Crear", con las
+ * cuatro opciones. Al centro le queda igual de cerca a diestras y zurdas.
+ */
+function BotonCentral({ pathname }: { pathname: string }) {
+  const t = useTranslations("nav");
+  const ruta = pathname as keyof typeof ACCIONES_CENTRALES;
+  const accion = ACCIONES_CENTRALES[ruta];
+  if (!accion) return <MenuCrear variante="inferior" />;
+
+  const contenido = (
+    <>
+      <span
+        className={`-mt-7 flex h-13 w-13 items-center justify-center border-(length:--borde-grueso) border-ink rounded-theme ${accion.fondo} text-ink-strong shadow-marco-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none`}
+      >
+        {ruta === "/diario" ? <IconoEscribir tamano={24} /> : <IconoSeccion ruta={ruta} tamano={24} />}
+      </span>
+      {t(accion.clave)}
+    </>
+  );
+  const clases = "flex flex-col items-center gap-1 text-xs font-bold whitespace-nowrap text-ink";
+
+  if (ruta === "/diario") {
+    return (
+      <Link href="/diario/nueva" className={clases}>
+        {contenido}
+      </Link>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => pedirAccionPrincipal(ruta === "/listas" ? "listas" : ruta === "/vitrina" ? "vitrina" : "audio")}
+      className={clases}
+    >
+      {contenido}
+    </button>
   );
 }
 

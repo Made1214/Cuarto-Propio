@@ -69,7 +69,7 @@ export default async function VitrinaPage({
       <div className="encabezado-seccion">
         <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
         <div className="acciones-seccion">
-          <ExhibirPiezas />
+          <ExhibirPiezas principal />
         </div>
         <p className="subtitulo-seccion">{t("subtitulo")}</p>
       </div>

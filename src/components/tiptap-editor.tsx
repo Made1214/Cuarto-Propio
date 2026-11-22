@@ -56,9 +56,11 @@ type TiptapEditorProps = {
    * texto y se perdía al bajar). Sin él, la barra va arriba del editor.
    */
   barraEn?: string;
+  /** La línea de ejemplo que se ve mientras el editor está vacío. */
+  placeholder?: string;
 };
 
-export function TiptapEditor({ name, contenidoInicial, onCambio, barraEn }: TiptapEditorProps) {
+export function TiptapEditor({ name, contenidoInicial, onCambio, barraEn, placeholder }: TiptapEditorProps) {
   const [json, setJson] = useState<JSONContent>(contenidoInicial ?? CONTENIDO_VACIO);
   // Fuerza un re-render en CADA transacción, no solo cuando cambia el
   // contenido o la selección. Sin esto, marcar negrita/cursiva con el
@@ -118,7 +120,17 @@ export function TiptapEditor({ name, contenidoInicial, onCambio, barraEn }: Tipt
   return (
     <div className="flex flex-col gap-2">
       {destinoBarra ? createPortal(barra, destinoBarra) : barra}
-      <div className="rounded-theme border-(length:--borde) border-ink bg-card px-4 py-3">
+      {/* Sin caja alrededor: el texto corre en la hoja, como en la vista de
+          lectura. Vacío, una línea de ejemplo dice qué va ahí (antes era un
+          recuadro en blanco sin pista). */}
+      <div className="relative">
+        {placeholder && editor?.isEmpty ? (
+          // Con las mismas clases que el texto del editor, así la línea de
+          // ejemplo cae justo donde va a aparecer lo que se escriba.
+          <div aria-hidden="true" className="diario-prose prose pointer-events-none absolute inset-x-0 top-0 max-w-none">
+            <p className="text-muted/60">{placeholder}</p>
+          </div>
+        ) : null}
         <EditorContent editor={editor} />
       </div>
       <input type="hidden" name={name} value={JSON.stringify(json)} />

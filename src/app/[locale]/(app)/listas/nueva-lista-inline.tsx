@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl";
 import { AvisoErrorAccion } from "@/components/aviso-error-accion";
 import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import { crearLista } from "@/lib/listas/actions";
+import { useAccionPrincipal } from "@/lib/accion-principal";
 
 /** Vive en el encabezado, no en el tablero: crear una lista es una acción de
  * la página, y como tarjeta ocupaba un lugar de la cuadrícula. El mismo
  * botón va dentro del estado vacío, donde es el siguiente paso obvio. */
-export function NuevaListaInline() {
+export function NuevaListaInline({ principal = false }: { principal?: boolean }) {
   const t = useTranslations("listas");
   const [activo, setActivo] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -19,6 +20,9 @@ export function NuevaListaInline() {
   const [aviso, setAviso] = useState<"nombreVacio" | ErrorAccion | null>(null);
   const campoRef = useRef<HTMLInputElement>(null);
   const avisoId = useId();
+  // El del encabezado se abre también desde el botón del centro de la barra
+  // de abajo; en el celular su propio botón se esconde.
+  useAccionPrincipal("listas", () => setActivo(true), principal);
 
   function cerrar() {
     setNombre("");
@@ -32,7 +36,7 @@ export function NuevaListaInline() {
       <button
         type="button"
         onClick={() => setActivo(true)}
-        className="boton boton-rosa"
+        className={`boton boton-rosa ${principal ? "max-md:hidden" : ""}`}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 5v14M5 12h14" />

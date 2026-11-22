@@ -24,12 +24,15 @@ export default async function NuevaEntradaPage({
           <BarraEntrada
             volverHref="/diario"
             volverTexto={t("volver")}
-            estado={<EstadoGuardado />}
+            estado={<EstadoGuardado nueva />}
             acciones={<GuardarBoton formId={formId} className="boton boton-verde" />}
             formatoId={`${formId}-formato`}
           />
           <div className="flex flex-col gap-4 p-4 sm:p-6">
-            <h1 className="rotulo">{t("queEstasPensando")}</h1>
+            {/* El título de la pantalla queda para lectores de pantalla: a la
+                vista, el primer renglón ya es el título de la entrada (un
+                rótulo pixelado arriba competía con lo que se escribe). */}
+            <h1 className="sr-only">{t("queEstasPensando")}</h1>
             <EntradaForm formId={formId} claveBorrador="nueva" action={crear} categorias={categorias} />
           </div>
         </article>

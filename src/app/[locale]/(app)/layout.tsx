@@ -10,8 +10,7 @@ import {
   obtenerUsuario,
   type UsuarioSesion,
 } from "@/lib/supabase/server";
-import { Link, redirect } from "@/i18n/navigation";
-import { IconoPincel } from "@/components/perfil/iconos";
+import { redirect } from "@/i18n/navigation";
 import { DecoracionTema } from "@/components/decoracion-tema/decoracion-tema";
 import { IconosProvider } from "@/components/icono-seccion";
 import { MenuCrear } from "@/components/menu-crear";
@@ -116,16 +115,6 @@ export default async function AppLayout({
             <div className="hidden md:block">
               <MenuCrear variante="barra" />
             </div>
-            {/* Personalización es de lo que más distingue a la app: un
-              acceso directo a la vista, no solo dentro del panel de perfil. */}
-            <Link
-              href="/personalizacion"
-              aria-label={t("personalizar")}
-              title={t("personalizar")}
-              className="tema-barra-icono flex h-10 w-10 items-center justify-center border-(length:--borde) border-transparent rounded-theme text-background transition-colors hover:border-background/50 hover:bg-background/15 aria-[current=page]:border-background/60 aria-[current=page]:bg-background/20"
-            >
-              <IconoPincel />
-            </Link>
             {/* El perfil (una consulta a la base, más la firma de la foto) llega
               por streaming: sin este `Suspense`, la barra entera y el
               esqueleto de la sección esperaban a que respondiera la base
