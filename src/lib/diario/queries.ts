@@ -20,7 +20,7 @@ export const TAMANO_PAGINA_DIARIO = 20;
  * Lo que cuesta es recorrer todas las coincidencias y no solo la página, y a
  * esta escala (cientos de entradas) es poco: la búsqueda va por el índice GIN
  * `entradas_busqueda_idx` sobre `busqueda` (0001_esquema_completo.sql) y el
- * filtro de RLS se resuelve una sola vez por consulta (0009). `"estimated"`
+ * filtro de RLS se resuelve una sola vez por consulta (0013). `"estimated"`
  * no ahorraría nada: PostgREST igual cuenta exacto por debajo de `max-rows`
  * (1000), que es donde vive este diario.
  *
