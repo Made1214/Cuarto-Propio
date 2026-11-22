@@ -91,12 +91,12 @@ function LinkSeccion({
   return (
     <Link
       href={seccion.href}
-      // Precarga COMPLETA (datos incluidos), no solo hasta el `loading.tsx`:
-      // son cuatro secciones que se visitan todo el tiempo, así que pasar de
-      // una a otra ya encuentra la página lista en vez de esperar al
-      // servidor. Cuánto dura lo precargado lo fija `staleTimes.static` en
-      // next.config.ts. Solo en producción: en `next dev` no se precarga.
-      prefetch
+      // Sin `prefetch` (precarga completa, datos incluidos) a propósito: con
+      // ella, una sección a la que se llegaba desde esta barra quedaba
+      // servida desde lo precargado y no tomaba el `refresh()` de sus
+      // actions — se creaba una lista y no aparecía hasta recargar. La
+      // precarga por defecto (hasta el `loading.tsx`) alcanza para que el
+      // esqueleto salga al instante.
       aria-current={activa ? "page" : undefined}
       className={clases}
     >
