@@ -106,6 +106,7 @@
     "errorRegistro": "No se pudo crear la cuenta. Prueba de nuevo en un rato.",
     "confirmarCorreo": "Antes de entrar, confirma tu cuenta desde el enlace que te enviamos por correo.",
     "demasiadosIntentos": "Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.",
+    "correoNoEnviado": "No pudimos mandarte el correo en este momento: hay muchos envíos seguidos. Prueba de nuevo en un rato.",
     "enlaceVencido": "El enlace venció o ya se usó. Pide uno nuevo.",
     "recuperarTitulo": "Recupera tu contraseña",
     "recuperarAyuda": "Escribe tu correo y te enviaremos un enlace para elegir una nueva.",

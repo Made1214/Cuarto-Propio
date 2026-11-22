@@ -31,11 +31,16 @@ async function enlaceConfirmacion(siguiente: string) {
 }
 
 function esLimiteDeIntentos(error: AuthError) {
-  return (
-    error.status === 429 ||
-    error.code === "over_request_rate_limit" ||
-    error.code === "over_email_send_rate_limit"
-  );
+  return error.status === 429 || error.code === "over_request_rate_limit";
+}
+
+/** Supabase no pudo mandar el correo (confirmar cuenta, recuperar
+ * contraseña) porque se pasó el tope de envíos del PROYECTO: con el correo
+ * incluido de Supabase son unos pocos por hora entre todas las cuentas, y
+ * solo se arregla con un SMTP propio. No es culpa de quien lo intenta, así
+ * que no se le dice "demasiados intentos": a la primera vez ya puede pasar. */
+function esLimiteDeCorreos(error: AuthError) {
+  return error.code === "over_email_send_rate_limit";
 }
 
 /** Minutos (redondeados para arriba) que faltan para `hasta`. */
@@ -148,6 +153,7 @@ export async function registrar(
   });
 
   if (error) {
+    if (esLimiteDeCorreos(error)) return { error: t("correoNoEnviado") };
     if (esLimiteDeIntentos(error)) return { error: t("demasiadosIntentos") };
     if (error.code === "weak_password") return { error: t("contrasenaDebil") };
     // Correo ya registrado: misma respuesta que un registro nuevo.
@@ -180,6 +186,7 @@ export async function pedirRecuperacion(
     redirectTo: await enlaceConfirmacion(`/${locale}/restablecer`),
   });
 
+  if (error && esLimiteDeCorreos(error)) return { error: t("correoNoEnviado") };
   if (error && esLimiteDeIntentos(error))
     return { error: t("demasiadosIntentos") };
   return { enviado: true };
