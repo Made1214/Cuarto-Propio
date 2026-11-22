@@ -1,4 +1,5 @@
 import { getFormatter } from "next-intl/server";
+import { zonaUsuaria } from "@/lib/fechas/zona-servidor";
 import { colorCategoria } from "@/lib/categorias/color";
 import type { Categoria } from "@/lib/categorias/types";
 
@@ -16,11 +17,11 @@ export async function MetaEntrada({
   categorias: Categoria[];
   locale: string;
 }) {
-  const format = await getFormatter({ locale });
+  const [format, zona] = await Promise.all([getFormatter({ locale }), zonaUsuaria()]);
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
       <time dateTime={fecha} className="apoyo font-semibold">
-        {format.dateTime(new Date(fecha), { dateStyle: "full" })}
+        {format.dateTime(new Date(fecha), { dateStyle: "full", timeZone: zona })}
       </time>
       {categoriaNombre && categoriaId ? (
         <span className="flex items-center gap-1.5 text-xs font-semibold">

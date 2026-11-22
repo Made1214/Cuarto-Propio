@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import Image from "next/image";
+import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { SincronizarZona } from "@/components/sincronizar-zona";
+import { zonaGuardada } from "@/lib/fechas/zona-servidor";
 import {
   createClient,
   obtenerUsuario,
@@ -38,10 +41,11 @@ export default async function AppLayout({
   // el JWT localmente (sin red, ver src/lib/supabase/server.ts), así que el
   // chequeo de sesión ya no retrasa el primer byte como cuando era una ida al
   // servidor de Auth.
-  const [usuario, t, tema] = await Promise.all([
+  const [usuario, t, tema, zona] = await Promise.all([
     obtenerUsuario(),
     getTranslations({ locale, namespace: "nav" }),
     obtenerConfigTema(),
+    zonaGuardada(),
   ]);
 
   if (!usuario) {
@@ -66,7 +70,12 @@ export default async function AppLayout({
     { href: "/audio", label: t("audio") },
   ] as const;
 
+  // Las fechas, en la hora de la usuaria (ver `src/lib/fechas/zona.ts`). Solo
+  // acá y no en `src/i18n/request.ts`: leer la cookie vuelve dinámica la
+  // página, y las pantallas públicas se prerenderizan.
   return (
+    <NextIntlClientProvider timeZone={zona ?? "UTC"}>
+    <SincronizarZona actual={zona} />
     <IconosProvider valor={tema.iconos}>
       {/* El tema elegido en Personalización (colores, forma, letras, cursor):
         pisa las variables por defecto de globals.css. Va antes que todo el
@@ -145,6 +154,7 @@ export default async function AppLayout({
         <NavSecciones secciones={links} variante="inferior" />
       </div>
     </IconosProvider>
+    </NextIntlClientProvider>
   );
 }
 

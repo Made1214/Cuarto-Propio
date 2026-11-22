@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { normalizarCategoria } from "@/lib/categorias/queries";
 import { paginar, type Pagina } from "@/lib/paginacion";
+import { claveMes, inicioDeMes } from "@/lib/fechas/zona";
 import type { Entrada, EntradaResumen } from "./types";
 
 const LARGO_EXTRACTO = 220;
@@ -35,6 +36,7 @@ export async function listarEntradas({
   busqueda,
   hasta,
   contar = false,
+  zona = "UTC",
 }: {
   categoriaId?: string;
   /** Solo las entradas sin categoría (`?categoria=ninguna`). Si también viene
@@ -45,10 +47,12 @@ export async function listarEntradas({
   busqueda?: string;
   hasta?: string;
   contar?: boolean;
+  /** Zona horaria con la que se lee `mes` (ver `src/lib/fechas/zona.ts`). */
+  zona?: string;
 } = {}): Promise<Pagina<EntradaResumen>> {
   const supabase = await createClient();
   const termino = busqueda?.trim();
-  const rango = rangoDeMes(mes);
+  const rango = rangoDeMes(mes, zona);
 
   const consulta = () => {
     let query = supabase
@@ -99,15 +103,19 @@ export function mesValido(valor: unknown): string | undefined {
   return typeof valor === "string" && FORMATO_MES.test(valor) ? valor : undefined;
 }
 
-/** Rango `[desde, hasta)` en UTC del mes `YYYY-MM`, o `null` si no es válido. */
-export function rangoDeMes(mes: string | undefined): { desde: string; hasta: string } | null {
+/** Rango `[desde, hasta)` del mes `YYYY-MM` tal como se vive en `zona`
+ * (en instantes UTC, que es como se guardan), o `null` si no es válido. */
+export function rangoDeMes(
+  mes: string | undefined,
+  zona = "UTC",
+): { desde: string; hasta: string } | null {
   const coincide = mes ? FORMATO_MES.exec(mes) : null;
   if (!coincide) return null;
   const anio = Number(coincide[1]);
   const indice = Number(coincide[2]) - 1;
   return {
-    desde: new Date(Date.UTC(anio, indice, 1)).toISOString(),
-    hasta: new Date(Date.UTC(anio, indice + 1, 1)).toISOString(),
+    desde: inicioDeMes(anio, indice, zona).toISOString(),
+    hasta: inicioDeMes(anio, indice + 1, zona).toISOString(),
   };
 }
 
@@ -115,13 +123,14 @@ export type ConteosDiario = {
   total: number;
   sinCategoria: number;
   porCategoria: Record<string, number>;
-  /** Meses con entradas (`YYYY-MM`, en UTC), del más nuevo al más viejo. */
+  /** Meses con entradas (`YYYY-MM`, en la zona de la usuaria), del más nuevo al más viejo. */
   porMes: { mes: string; cantidad: number }[];
 };
 
 /** Agrega los conteos de la columna de filtros a partir de las filas crudas. */
 export function agregarConteos(
   filas: { fecha: string; categoria_id: string | null }[],
+  zona = "UTC",
 ): ConteosDiario {
   const porCategoria: Record<string, number> = {};
   const meses = new Map<string, number>();
@@ -133,7 +142,7 @@ export function agregarConteos(
 
     const instante = new Date(fecha);
     if (Number.isNaN(instante.getTime())) continue;
-    const mes = instante.toISOString().slice(0, 7);
+    const mes = claveMes(instante, zona);
     meses.set(mes, (meses.get(mes) ?? 0) + 1);
   }
 
@@ -149,7 +158,7 @@ export function agregarConteos(
 
 /** Conteos del diario entero (no dependen de los filtros). Trae solo dos
  * columnas de cada entrada y agrega acá: a esta escala no vale una función SQL. */
-export async function contarEntradasDiario(): Promise<ConteosDiario> {
+export async function contarEntradasDiario(zona = "UTC"): Promise<ConteosDiario> {
   const supabase = await createClient();
   const filas: { fecha: string; categoria_id: string | null }[] = [];
 
@@ -166,7 +175,7 @@ export async function contarEntradasDiario(): Promise<ConteosDiario> {
     if (!data || data.length < TANDA_CONTEO) break;
   }
 
-  return agregarConteos(filas);
+  return agregarConteos(filas, zona);
 }
 
 const TANDA_CONTEO = 1000;

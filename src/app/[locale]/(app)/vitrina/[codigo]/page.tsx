@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getFormatter, getTranslations } from "next-intl/server";
+import { zonaUsuaria } from "@/lib/fechas/zona-servidor";
 import { ArribaAlRecargar } from "@/components/cargar-mas";
 import { Hueso } from "@/components/esqueleto";
 import { Link } from "@/i18n/navigation";
@@ -41,11 +42,12 @@ export default async function ImagenPage({
 }) {
   const { locale, codigo } = await params;
 
-  const [t, format, categorias, imagen] = await Promise.all([
+  const [t, format, categorias, imagen, zona] = await Promise.all([
     getTranslations({ locale, namespace: "vitrina" }),
     getFormatter({ locale }),
     listarCategorias(),
     obtenerImagenPorCodigo(codigo),
+    zonaUsuaria(),
   ]);
 
   if (!imagen) {
@@ -173,7 +175,7 @@ export default async function ImagenPage({
 
               <div className="mt-auto flex flex-wrap items-center gap-2 border-t-(length:--borde) border-ink/20 pt-3">
                 <span className="text-[13px] font-semibold text-muted/70">
-                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long" })}
+                  {format.dateTime(new Date(imagen.fecha), { dateStyle: "long", timeZone: zona })}
                 </span>
                 {imagen.completaUrl ? (
                   <a

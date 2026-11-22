@@ -50,3 +50,18 @@ describe("mes", () => {
     expect(rangoDeMes("roto")).toBeNull();
   });
 });
+
+describe("diario en la zona de la usuaria", () => {
+  it("el rango del mes empieza a la medianoche local", () => {
+    expect(rangoDeMes("2026-11", "America/Lima")).toEqual({
+      desde: "2026-11-01T05:00:00.000Z",
+      hasta: "2026-12-01T05:00:00.000Z",
+    });
+  });
+
+  it("los conteos por mes usan la zona", () => {
+    const filas = [{ fecha: "2026-12-01T03:00:00Z", categoria_id: null }];
+    expect(agregarConteos(filas, "America/Lima").porMes).toEqual([{ mes: "2026-11", cantidad: 1 }]);
+    expect(agregarConteos(filas).porMes).toEqual([{ mes: "2026-12", cantidad: 1 }]);
+  });
+});
