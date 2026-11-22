@@ -288,10 +288,8 @@ function Barra({
           type="button"
           title={t("quitarColorTexto")}
           aria-label={t("quitarColorTexto")}
-          onMouseDown={(evento) => {
-            evento.preventDefault();
-            editor?.chain().focus().unsetColor().run();
-          }}
+          onMouseDown={(evento) => evento.preventDefault()}
+          onClick={() => editor?.chain().focus().unsetColor().run()}
           className={`${CLASE_BOTON_FORMATO} ${INACTIVO}`}
         >
           <IconoQuitar />
@@ -312,10 +310,8 @@ function Barra({
           type="button"
           title={t("quitarResaltado")}
           aria-label={t("quitarResaltado")}
-          onMouseDown={(evento) => {
-            evento.preventDefault();
-            editor?.chain().focus().unsetHighlight().run();
-          }}
+          onMouseDown={(evento) => evento.preventDefault()}
+          onClick={() => editor?.chain().focus().unsetHighlight().run()}
           className={`${CLASE_BOTON_FORMATO} ${INACTIVO}`}
         >
           <IconoQuitar />
@@ -335,15 +331,14 @@ function Barra({
       type="button"
       title={b.titulo}
       aria-label={b.titulo}
-      onMouseDown={(evento) => {
-        // preventDefault evita que el botón le quite el foco al editor
-        // antes de aplicar el formato — sin esto, encadenar dos formatos
-        // (ej. negrita + cursiva) desde el cursor, antes de escribir,
-        // se rompía porque el editor perdía y recuperaba el foco entre
-        // click y click.
-        evento.preventDefault();
-        b.accion();
-      }}
+      // preventDefault en mousedown evita que el botón le quite el foco al
+      // editor antes de aplicar el formato — sin esto, encadenar dos formatos
+      // (ej. negrita + cursiva) desde el cursor, antes de escribir, se
+      // rompía porque el editor perdía y recuperaba el foco entre click y
+      // click. La acción va en onClick: así también responde a Enter y
+      // Espacio con el teclado (mousedown solo llega con el puntero).
+      onMouseDown={(evento) => evento.preventDefault()}
+      onClick={b.accion}
       aria-pressed={b.activo}
       className={`${CLASE_BOTON_FORMATO} ${b.activo ? ACTIVO : INACTIVO}`}
     >
@@ -359,10 +354,8 @@ function Barra({
           type="button"
           title={t("enlace")}
           aria-label={t("enlace")}
-          onMouseDown={(evento) => {
-            evento.preventDefault();
-            setEnlaceAbierto(true);
-          }}
+          onMouseDown={(evento) => evento.preventDefault()}
+          onClick={() => setEnlaceAbierto(true)}
           aria-pressed={editor.isActive("link")}
           className={`${CLASE_BOTON_FORMATO} ${editor.isActive("link") ? ACTIVO : INACTIVO}`}
         >
