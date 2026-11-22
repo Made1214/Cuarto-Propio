@@ -36,6 +36,7 @@
     "quitarFoto": "Remove photo",
     "quitarFotoConfirmar": "Remove your profile photo? You'll go back to your initial.",
     "errorTamano": "That photo is too large.",
+    "errorEspacio": "Your room is out of space for more photos and audio.",
     "errorFallo": "Couldn't change the photo. Try again.",
     "apariencia": "Appearance",
     "modo": "Mode",
@@ -226,6 +227,7 @@
     "errorImagen": {
       "formato": "That file isn't a JPG, PNG or WebP image.",
       "tamano": "The image is larger than 25 MB.",
+      "espacio": "Your room is out of space for more images.",
       "sesion": "Your session expired. Sign in again and retry; what you wrote is kept as a draft.",
       "fallo": "Couldn't upload the image. What you wrote is still here: try again."
     },
@@ -288,6 +290,7 @@
     "quitarPieza": "Remove this piece",
     "errorFormato": "Unsupported format",
     "errorTamano": "Too large",
+    "errorEspacio": "No space left in your room",
     "errorSesion": "Session expired",
     "errorFallo": "Upload failed",
     "campoTitulo": "Title",
@@ -335,6 +338,7 @@
     "errorSoporte": "This browser can't record audio.",
     "errorFormato": "Unsupported audio format.",
     "errorTamano": "The recording is too large.",
+    "errorEspacio": "Your room is out of space: the recording is still here to retry once you free some up.",
     "errorSesion": "Your session expired. Sign in again and retry.",
     "errorFallo": "Couldn't save the note. It's still here: try again.",
     "campoTitulo": "Note title",

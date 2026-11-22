@@ -33,7 +33,7 @@ const CLASE_BOTON_FORMATO =
 const ACTIVO = "bg-secondary-purple text-background";
 const INACTIVO = "bg-card text-ink hover:bg-secondary-turquoise/25";
 
-type ErrorImagen = "formato" | "tamano" | "sesion" | "fallo";
+type ErrorImagen = "formato" | "tamano" | "espacio" | "sesion" | "fallo";
 
 /** Lo que devuelve `/api/diario/imagen` al subir. */
 type ImagenSubida = { src: string; completa: string; ancho: number; alto: number };

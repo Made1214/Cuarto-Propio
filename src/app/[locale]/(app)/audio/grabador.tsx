@@ -13,7 +13,7 @@ import {
 import { IconoAudio as IconoMicrofono } from "@/components/iconos-secciones";
 import { IconoCerrar, IconoReintentar } from "./iconos";
 
-type CodigoError = "permiso" | "soporte" | "formato" | "tamano" | "sesion" | "fallo";
+type CodigoError = "permiso" | "soporte" | "formato" | "tamano" | "espacio" | "sesion" | "fallo";
 
 /** Lo que el navegador prefiera de esta lista: Opus donde se pueda (pesa
  * ~1MB por minuto, que es lo que hace que el tope de 10 minutos alcance sin
@@ -87,6 +87,7 @@ export function Grabador() {
     if (codigo === "soporte") return t("errorSoporte");
     if (codigo === "formato") return t("errorFormato");
     if (codigo === "tamano") return t("errorTamano");
+    if (codigo === "espacio") return t("errorEspacio");
     if (codigo === "sesion") return t("errorSesion");
     return t("errorFallo");
   }

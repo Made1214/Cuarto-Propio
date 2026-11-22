@@ -36,6 +36,7 @@
     "quitarFoto": "Quitar foto",
     "quitarFotoConfirmar": "¿Quitar tu foto de perfil? Vas a volver a tu inicial.",
     "errorTamano": "La foto pesa demasiado.",
+    "errorEspacio": "Tu cuarto se quedó sin espacio para más fotos y audios.",
     "errorFallo": "No se pudo cambiar la foto. Prueba de nuevo.",
     "apariencia": "Apariencia",
     "modo": "Modo",
@@ -226,6 +227,7 @@
     "errorImagen": {
       "formato": "Ese archivo no es una imagen JPG, PNG o WebP.",
       "tamano": "La imagen pesa más de 25 MB.",
+      "espacio": "Tu cuarto se quedó sin espacio para más imágenes.",
       "sesion": "Se venció la sesión. Vuelve a entrar y reintenta; lo que escribiste queda guardado como borrador.",
       "fallo": "No se pudo subir la imagen. Lo que escribiste sigue acá: prueba de nuevo."
     },
@@ -288,6 +290,7 @@
     "quitarPieza": "Quitar esta pieza",
     "errorFormato": "Formato no soportado",
     "errorTamano": "Pesa demasiado",
+    "errorEspacio": "Sin espacio en tu cuarto",
     "errorSesion": "Sesión vencida",
     "errorFallo": "No se pudo subir",
     "campoTitulo": "Título",
@@ -335,6 +338,7 @@
     "errorSoporte": "Este navegador no puede grabar audio.",
     "errorFormato": "Formato de audio no soportado.",
     "errorTamano": "La grabación pesa demasiado.",
+    "errorEspacio": "Tu cuarto se quedó sin espacio: la grabación sigue aquí para reintentar cuando liberes lugar.",
     "errorSesion": "Se venció la sesión. Vuelve a entrar y reintenta.",
     "errorFallo": "No se pudo guardar la nota. Sigue acá: prueba de nuevo.",
     "campoTitulo": "Título de la nota",
