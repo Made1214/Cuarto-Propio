@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { colorCategoria } from "@/lib/categorias/color";
 import { listarConFiltroCategoria } from "@/lib/categorias/filtro";
 import { contarEntradasDiario, listarEntradas, mesValido } from "@/lib/diario/queries";
+import { claveMes } from "@/lib/fechas/zona";
+import { zonaUsuaria } from "@/lib/fechas/zona-servidor";
 import { Buscador } from "./buscador";
 import { ColumnaFiltros, SIN_CATEGORIA } from "./columna-filtros";
 import { ResultadosBusqueda, ZonaBusqueda } from "./busqueda-pendiente";
@@ -19,7 +21,7 @@ export default async function DiarioPage({
   const { locale } = await params;
   const { q, categoria: categoriaUrl, mes: mesUrl, hasta } = await searchParams;
   const t = await getTranslations({ locale, namespace: "diario" });
-  const format = await getFormatter({ locale });
+  const [format, zona] = await Promise.all([getFormatter({ locale }), zonaUsuaria()]);
 
   const busqueda = q?.trim() ?? "";
 
@@ -37,9 +39,10 @@ export default async function DiarioPage({
         busqueda: q,
         hasta,
         contar: Boolean(busqueda || categoriaId || sinCategoria || mes),
+        zona,
       }),
     ),
-    contarEntradasDiario(),
+    contarEntradasDiario(zona),
   ]);
 
   // De acá en más, solo la categoría que de verdad existe: un id roto en la
@@ -61,14 +64,14 @@ export default async function DiarioPage({
   const grupos: { clave: string; etiqueta: string; entradas: typeof entradas }[] = [];
   for (const entrada of entradas) {
     const fecha = new Date(entrada.fecha);
-    const clave = `${fecha.getFullYear()}-${fecha.getMonth()}`;
+    const clave = claveMes(fecha, zona);
     const ultimo = grupos.at(-1);
     if (ultimo?.clave === clave) {
       ultimo.entradas.push(entrada);
     } else {
       grupos.push({
         clave,
-        etiqueta: format.dateTime(fecha, { month: "long", year: "numeric" }),
+        etiqueta: format.dateTime(fecha, { month: "long", year: "numeric", timeZone: zona }),
         entradas: [entrada],
       });
     }
@@ -186,10 +189,10 @@ export default async function DiarioPage({
                             className="tema-lcd flex w-11 shrink-0 flex-col items-center pt-0.5 sm:w-13"
                           >
                             <span className="font-pixel text-[22px] leading-none sm:text-[26px]">
-                              {format.dateTime(new Date(entrada.fecha), { day: "2-digit" })}
+                              {format.dateTime(new Date(entrada.fecha), { day: "2-digit", timeZone: zona })}
                             </span>
                             <span className="mt-1.5 text-[11px] font-semibold text-secondary-purple uppercase">
-                              {format.dateTime(new Date(entrada.fecha), { weekday: "short" }).replace(".", "")}
+                              {format.dateTime(new Date(entrada.fecha), { weekday: "short", timeZone: zona }).replace(".", "")}
                             </span>
                           </time>
                           <div className="flex min-w-0 flex-1 flex-col gap-1">

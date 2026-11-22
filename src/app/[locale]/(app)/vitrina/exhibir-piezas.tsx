@@ -14,7 +14,7 @@ import {
 import { reducirImagen } from "@/lib/imagenes/reducir";
 import { IconoCerrar, IconoReintentar, IconoSubir } from "./iconos";
 
-type CodigoError = "formato" | "tamano" | "sesion" | "fallo";
+type CodigoError = "formato" | "tamano" | "espacio" | "sesion" | "fallo";
 
 type Pieza = {
   id: string;
@@ -210,6 +210,7 @@ export function ExhibirPiezas() {
   function textoError(codigo: CodigoError) {
     if (codigo === "formato") return t("errorFormato");
     if (codigo === "tamano") return t("errorTamano");
+    if (codigo === "espacio") return t("errorEspacio");
     if (codigo === "sesion") return t("errorSesion");
     return t("errorFallo");
   }

@@ -11,6 +11,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { TiptapEditor } from "@/components/tiptap-editor";
 import { colorCategoria } from "@/lib/categorias/color";
+import { claveCategoria } from "@/lib/categorias/nombre";
 import { useValidacionNativa } from "@/lib/formularios/validacion-nativa";
 import { borrarBorrador, guardarBorrador, leerBorrador, type Borrador } from "@/lib/diario/borrador";
 import { contenidoVacio } from "@/lib/diario/contenido";
@@ -277,7 +278,7 @@ export function EntradaForm({
         {categorias.length > 0 ? (
           <div className="fila-deslizable -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
             {categorias.map((cat) => {
-              const seleccionada = cat.nombre === categoriaTexto;
+              const seleccionada = claveCategoria(cat.nombre) === claveCategoria(categoriaTexto);
               return (
                 <button
                   key={cat.id}

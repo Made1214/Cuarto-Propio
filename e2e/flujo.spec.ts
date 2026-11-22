@@ -1,7 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
+import sharp from "sharp";
 
 /**
- * Recorrido básico con la base real. Necesita una cuenta de prueba YA
+ * Recorrido con la base real (Diario, Listas, Vitrina, Audio y
+ * Personalización). Necesita una cuenta de prueba YA
  * CREADA y con el correo confirmado:
  *
  *   E2E_EMAIL=prueba@ejemplo.com E2E_PASSWORD=... npm run e2e
@@ -94,6 +96,63 @@ test.describe("con sesión", () => {
     await page.getByPlaceholder("Agregar ítem y Enter").first().fill("primer ítem");
     await page.keyboard.press("Enter");
     await expect(page.getByText("primer ítem").first()).toBeVisible();
+  });
+
+  test("Vitrina: exhibir una pieza y filtrarla por hashtag", async ({ page }) => {
+    const titulo = `E2E pieza ${sufijo}`;
+    const hashtag = `e2e_${sufijo}`;
+    // Una imagen chica generada al vuelo: no hace falta un archivo en el repo.
+    const png = await sharp({
+      create: { width: 640, height: 480, channels: 3, background: { r: 116, g: 199, b: 195 } },
+    })
+      .png()
+      .toBuffer();
+
+    await page.goto("/es/vitrina");
+    await page.locator('input[type="file"][multiple]').setInputFiles({
+      name: "e2e.png",
+      mimeType: "image/png",
+      buffer: png,
+    });
+    const dialogo = page.getByRole("dialog");
+    await expect(dialogo).toBeVisible();
+    await dialogo.getByLabel("Título", { exact: true }).fill(titulo);
+    await dialogo.getByLabel("Hashtags", { exact: true }).fill(`#${hashtag.toUpperCase()}`);
+    await dialogo.getByRole("button", { name: "Exhibir", exact: true }).click();
+    // Si sale todo bien, el diálogo se cierra solo.
+    await expect(dialogo).toBeHidden({ timeout: 30_000 });
+
+    // El hashtag se guardó normalizado en minúsculas: filtrar por él la trae.
+    await page.goto(`/es/vitrina?hashtag=${hashtag}`);
+    await expect(page.getByText(titulo).first()).toBeVisible();
+  });
+
+  test("Audio: grabar unos segundos y que se guarde", async ({ page }) => {
+    // El micrófono es el de mentira de Chromium (ver `playwright.config.ts`).
+    await page.goto("/es/audio");
+    await page.getByRole("button", { name: "Grabar", exact: true }).click();
+    await expect(page.getByText(/Grabando/).first()).toBeVisible();
+    await page.waitForTimeout(2500);
+    await page.getByRole("button", { name: "Detener", exact: true }).click();
+    await expect(page.getByText("¡Guardada! Ya está en tu lista.")).toBeVisible({ timeout: 30_000 });
+  });
+
+  test("Personalización: el tema elegido se mantiene al recargar", async ({ page }) => {
+    await page.goto("/es/personalizacion");
+    const anterior = await page.locator("[data-tema]").first().getAttribute("data-tema");
+    const destino = anterior === "void" ? "Whimsical" : "Void";
+
+    await page.getByRole("button", { name: new RegExp(`^${destino}`) }).click();
+    await expect(page.locator("[data-tema]").first()).toHaveAttribute("data-tema", destino.toLowerCase());
+    await page.reload();
+    await expect(page.locator("[data-tema]").first()).toHaveAttribute("data-tema", destino.toLowerCase());
+
+    // Se deja la cuenta de prueba como estaba.
+    if (anterior) {
+      const nombre = anterior.charAt(0).toUpperCase() + anterior.slice(1);
+      await page.getByRole("button", { name: new RegExp(`^${nombre}`) }).click();
+      await expect(page.locator("[data-tema]").first()).toHaveAttribute("data-tema", anterior);
+    }
   });
 
   test("las secciones cargan sin error", async ({ page }) => {

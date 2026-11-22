@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useAvisoAntesDeSalir, usePantallaEncendida } from "@/lib/audio/pantalla-encendida";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { formatearDuracion } from "@/lib/audio/duracion";
@@ -12,7 +13,7 @@ import {
 import { IconoAudio as IconoMicrofono } from "@/components/iconos-secciones";
 import { IconoCerrar, IconoReintentar } from "./iconos";
 
-type CodigoError = "permiso" | "soporte" | "formato" | "tamano" | "sesion" | "fallo";
+type CodigoError = "permiso" | "soporte" | "formato" | "tamano" | "espacio" | "sesion" | "fallo";
 
 /** Lo que el navegador prefiera de esta lista: Opus donde se pueda (pesa
  * ~1MB por minuto, que es lo que hace que el tope de 10 minutos alcance sin
@@ -86,6 +87,7 @@ export function Grabador() {
     if (codigo === "soporte") return t("errorSoporte");
     if (codigo === "formato") return t("errorFormato");
     if (codigo === "tamano") return t("errorTamano");
+    if (codigo === "espacio") return t("errorEspacio");
     if (codigo === "sesion") return t("errorSesion");
     return t("errorFallo");
   }
@@ -206,6 +208,11 @@ export function Grabador() {
   const restantes = DURACION_MAXIMA_SEGUNDOS - segundos;
 
   const grabando = estado === "grabando";
+  // Grabando, la pantalla no se apaga (si se apaga, el celular corta el
+  // micrófono). Y mientras hay algo sin guardar —grabando, subiendo o una
+  // grabación que falló al subir— cerrar la pestaña pregunta antes.
+  usePantallaEncendida(grabando);
+  useAvisoAntesDeSalir(estado !== "inactivo" || pendiente !== null);
 
   return (
     <div className="flex flex-col items-stretch gap-3">

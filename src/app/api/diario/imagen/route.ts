@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { hayEspacioPara } from "@/lib/storage/cuota";
 import { firmarPaths, guardarVersiones } from "@/lib/imagenes/almacenamiento";
 import { TAMANO_MAXIMO_BYTES } from "@/lib/imagenes/limites";
 import { FormatoNoSoportadoError, procesarImagen } from "@/lib/imagenes/procesar";
@@ -31,6 +32,11 @@ export async function POST(request: Request) {
   }
   if (archivo.size > TAMANO_MAXIMO_BYTES) {
     return NextResponse.json({ error: "tamano" }, { status: 413 });
+  }
+  // Tope de espacio por cuenta (src/lib/storage/cuota.ts): se frena antes
+  // de procesar y guardar, no cuando ya falló Storage.
+  if (!(await hayEspacioPara(archivo.size))) {
+    return NextResponse.json({ error: "espacio" }, { status: 507 });
   }
 
   try {

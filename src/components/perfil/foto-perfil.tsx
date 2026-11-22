@@ -19,6 +19,7 @@ import { IconoCamara, IconoQuitar } from "./iconos";
 const ERRORES: Record<string, string> = {
   sesion: "errorSesion",
   tamano: "errorTamano",
+  espacio: "errorEspacio",
   formato: "errorFormato",
 };
 

@@ -1,6 +1,6 @@
 # Pendientes — para seguir en otro chat
 
-Última revisión: 2026-11-16 · rama revisada: `dev` (sobre `1d57869`, más la revisión de rendimiento, navegación e interfaz)
+Última revisión: 2026-11-22 · rama `claude/loving-euler-0ihqb5`, sobre `claude/pwa-ui-responsive-fixes-33tbqf` (PR #2): cierra el código pendiente de la Fase 1. Lo que queda es probar con la base real y el operativo.
 
 > **Regla de trabajo:** cada vez que se revise el estado del proyecto, primero
 > se hace `git fetch` y se analiza `origin/dev` (diff contra `main`, `tsc`,
@@ -22,7 +22,18 @@ Reglas que ya están en `CLAUDE.md` y conviene no olvidar:
 - **Base de datos:** las migraciones viven en `supabase/migrations/` y nunca se editan una vez aplicadas; un cambio nuevo es un archivo nuevo. Se pueden aplicar con el conector de Supabase (proyecto "Cuarto Propio").
 - **Diseño:** los cambios grandes de estilo se prototipan primero en Claude Design y después se pasan al código.
 
-## Estado de `dev`
+## Estado del código (2026-11-22)
+
+**Todo el código de la Fase 1 que pedía `CLAUDE.md` y la auditoría de `lanzamiento.md` está escrito.** Vive en dos ramas sin fusionar, una sobre la otra:
+
+1. `claude/pwa-ui-responsive-fixes-33tbqf` (PR #2): pulido móvil de la PWA.
+2. `claude/loving-euler-0ihqb5`: zona horaria, categorías sin mayúsculas, migración `0013` de RLS, barra del editor con teclado, Wake Lock al grabar, tope de espacio por cuenta y las pruebas de punta a punta que faltaban (incluida RLS con dos cuentas). Contiene a la 1: fusionar esta alcanza.
+
+Migraciones 0001–0013 **aplicadas** en Supabase (0012 y 0013 el 2026-11-22). El aviso `auth_rls_initplan` ya no aparece.
+
+Lo que separa a la Fase 1 de estar cerrada ya no es código: es la sección 1 (probar con la base real y en celulares), el operativo de la sección 2 y el SMTP propio.
+
+## Estado de `dev` (revisión del 2026-11-16)
 
 - Más de 30 commits por delante de `main`, sin commits propios en `main`: la fusión no tiene conflictos.
 - `tsc --noEmit`, `eslint`, `npm test` (78) y `next build` pasan sin errores, y ahora los corre el CI (`.github/workflows/ci.yml`) en cada push.
@@ -61,24 +72,24 @@ Bloqueos:
 
 - [x] ~~**Subidas de más de 4,5 MB:**~~ el audio se graba a 32 kbps (10 min ≈ 2,4 MB), las imágenes se reducen en el navegador antes de subir y el tope del servidor es 4 MB. Probado con una foto de 10,5 MB. **Falta probar en Safari de iPhone.**
 - [x] ~~**Borrador del diario:**~~ ya no se borra hasta confirmar el guardado; si falla, el texto sigue en pantalla con aviso y reintento. Probado en navegador con el servidor caído.
-- [x] ~~**Bloqueo de login:**~~ cuenta por correo e IP (migración `0012`). **La `0012` no está aplicada en Supabase:** hasta entonces el login funciona sin bloqueo. Aplicarla junto con el despliegue de este código. Solución completa pendiente: registrar los fallos con la clave secreta y quitar el permiso a `anon`.
+- [x] ~~**Bloqueo de login:**~~ cuenta por correo e IP (migración `0012`). `0012` aplicada el 2026-11-22: el bloqueo funciona con el código nuevo, así que hay que desplegarlo. Solución completa pendiente: registrar los fallos con la clave secreta y quitar el permiso a `anon`.
 - [ ] **SMTP propio** en Supabase (lo hace la usuaria): sin esto no llegan los correos a otras personas.
-- [ ] **Tope de storage por cuenta** en las rutas de subida, con `uso_storage()`.
+- [x] ~~**Tope de storage por cuenta**~~ en las cuatro rutas de subida, con `uso_storage()` (`src/lib/storage/cuota.ts`). Por defecto es el GB del plan; **antes de abrir el registro, poner `CUOTA_STORAGE_MB` en Vercel** (p. ej. 250).
 - [ ] **Backups y tarea contra la pausa del proyecto gratuito:** aplazados hasta que haya presupuesto (decisión del 2026-11-16).
 
 Experiencia:
 
-- [ ] Ficha y edición de entrada sin desborde en 360 px (Eliminar queda fuera de pantalla).
-- [ ] Fechas en la zona horaria de la usuaria.
-- [ ] Barra de formato del editor siempre a la vista.
+- [x] ~~Ficha y edición de entrada sin desborde en 360 px~~ (PR #2, barra `BarraEntrada`).
+- [x] ~~Fechas en la zona horaria de la usuaria.~~ Cookie `zona` desde el navegador (`SincronizarZona`); también el agrupado, el filtro y los conteos por mes del Diario.
+- [x] ~~Barra de formato del editor siempre a la vista~~ (PR #2).
 - [x] ~~No guardar entradas sin texto.~~ Además el botón dice «Guardando…» y una entrada editada se ve al instante (antes hacía falta recargar).
-- [ ] Nombres de lista y títulos de audio en varias líneas.
-- [ ] Agrandar casillas, agarre de ítems y selectores de color.
-- [ ] Barra del editor usable con teclado.
-- [ ] Categorías sin distinguir mayúsculas.
-- [ ] Pantalla encendida mientras se graba.
-- [ ] Migración de RLS con `(select auth.uid())`.
-- [ ] Prueba de RLS con dos cuentas antes de abrir el registro.
+- [x] ~~Nombres de lista y títulos de audio en varias líneas~~ (PR #2).
+- [x] ~~Agrandar casillas, agarre de ítems y selectores de color~~ (PR #2: 44 px en táctil; los selectores de color del editor van dentro de un botón de 40 px).
+- [x] ~~Barra del editor usable con teclado~~ (Enter y Espacio aplican el formato).
+- [x] ~~Categorías sin distinguir mayúsculas~~ (servidor y selectores; con duplicadas viejas gana la más antigua).
+- [x] ~~Pantalla encendida mientras se graba~~ (Wake Lock) y aviso antes de cerrar con una nota sin guardar. **Falta probar en iPhone.**
+- [x] ~~Migración de RLS con `(select auth.uid())`~~: `0013`, aplicada el 2026-11-22.
+- [ ] Prueba de RLS con dos cuentas antes de abrir el registro: escrita (`e2e/rls.spec.ts`), **falta correrla** con dos cuentas de prueba reales.
 
 ## 0. Revisión de rendimiento, navegación e interfaz (2026-11-16)
 
@@ -159,7 +170,7 @@ Falta verlo con la base real, junto con lo de la sección 1.
 ## 5. Calidad
 
 - [x] ~~**Tests unitarios:**~~ con Vitest (`npm test`, 56 tests): categorías (color, resolver, filtro), audio (formato real por bytes, duración y límites), pipeline de imágenes (formato real, tamaños, avatar, EXIF), título del Diario (`src/lib/diario/titulo.ts`, función pura sacada de las Server Actions), contraseña, configuración del tema, contraste y hashtags. Archivos `*.test.ts` junto al código. Vitest 5 con `@types/node` 22 (Vitest 3 traía 2 alertas críticas de `tinypool`).
-- [ ] **Prueba de punta a punta (Playwright):** el script ya está (`e2e/flujo.spec.ts`, `playwright.config.ts`, `npm run e2e`; escritorio y celular). Con cuenta de prueba ya confirmada: `E2E_EMAIL=... E2E_PASSWORD=... npm run e2e`. Verificado aquí solo lo que no necesita sesión (ruta privada y contraseña incorrecta); **falta correr y ajustar los de con sesión** (Diario, borrador, Listas, secciones, cerrar sesión) con la base real: los selectores del botón de perfil y de «Empezar» son una suposición. Pendiente agregar: Vitrina, Audio y Personalización.
+- [ ] **Prueba de punta a punta (Playwright):** ya cubre Vitrina, Audio (micrófono de mentira) y Personalización, más `e2e/rls.spec.ts`; sus selectores se verificaron contra el Supabase simulado. El script ya está (`e2e/flujo.spec.ts`, `playwright.config.ts`, `npm run e2e`; escritorio y celular). Con cuenta de prueba ya confirmada: `E2E_EMAIL=... E2E_PASSWORD=... npm run e2e`. Verificado aquí solo lo que no necesita sesión (ruta privada y contraseña incorrecta); **falta correr y ajustar los de con sesión** (Diario, borrador, Listas, secciones, cerrar sesión) con la base real: los selectores del botón de perfil y de «Empezar» son una suposición. Falta correrlo con la base real.
 
 ## Ya resuelto (para no volver a preguntarlo)
 

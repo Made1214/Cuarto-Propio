@@ -17,7 +17,13 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     // Solo si ya tienes un Chromium instalado y no quieres `npx playwright install`.
-    launchOptions: process.env.E2E_CHROMIUM ? { executablePath: process.env.E2E_CHROMIUM } : {},
+    launchOptions: {
+      ...(process.env.E2E_CHROMIUM ? { executablePath: process.env.E2E_CHROMIUM } : {}),
+      // Micrófono de mentira (un tono) y sin el cartel de permiso: así la
+      // prueba de Audio graba sin un micrófono de verdad.
+      args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"],
+    },
+    permissions: ["microphone"],
   },
   projects: [
     { name: "escritorio", use: { ...devices["Desktop Chrome"] } },
