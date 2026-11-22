@@ -65,7 +65,7 @@ export function GuardarBoton({ formId, className }: { formId: string; className:
  * se sepa que cerrar el navegador no lo pierde) o todo al día. Antes ese
  * aviso aparecía y desaparecía arriba del título y empujaba el formulario.
  */
-export function EstadoGuardado() {
+export function EstadoGuardado({ nueva = false }: { nueva?: boolean }) {
   const t = useTranslations("diario");
   const format = useFormatter();
   const contexto = useContext(GuardadoContext);
@@ -84,6 +84,10 @@ export function EstadoGuardado() {
         })
       : t("estadoSinGuardar");
     tono = "pendiente";
+  } else if (nueva) {
+    // Una entrada nueva sin nada escrito no está "guardada": decirlo
+    // confundía. Hasta que se escriba algo, no hay estado que mostrar.
+    return null;
   } else {
     texto = t("estadoAlDia");
     tono = "neutro";

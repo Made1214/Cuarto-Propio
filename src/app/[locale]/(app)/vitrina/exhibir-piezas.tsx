@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAccionPrincipal } from "@/lib/accion-principal";
 import { useTranslations } from "next-intl";
 import { VentanaDialogo } from "@/components/ventana-dialogo";
 import { useRouter } from "@/i18n/navigation";
@@ -85,7 +86,7 @@ function enviar(
  * primeras ya están y esa se reintenta sola, sin volver a mandar las demás
  * (CLAUDE.md → Confiabilidad).
  */
-export function ExhibirPiezas() {
+export function ExhibirPiezas({ principal = false }: { principal?: boolean }) {
   const t = useTranslations("vitrina");
   const tDialogos = useTranslations("dialogos");
   const router = useRouter();
@@ -96,6 +97,10 @@ export function ExhibirPiezas() {
   const [subiendo, setSubiendo] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
   const huboExito = useRef(false);
+  // El del encabezado atiende el botón del centro de la barra de abajo (en
+  // el celular, su propio botón se esconde: la acción ya está al alcance del
+  // pulgar). El del estado vacío no escucha, para no abrir dos selectores.
+  useAccionPrincipal("vitrina", () => inputRef.current?.click(), principal);
 
   function actualizar(id: string, cambios: Partial<Pieza>) {
     setPiezas((previas) =>
@@ -234,7 +239,7 @@ export function ExhibirPiezas() {
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="boton boton-turquesa"
+        className={`boton boton-turquesa ${principal ? "max-md:hidden" : ""}`}
       >
         <IconoSubir />
         {t("exhibir")}

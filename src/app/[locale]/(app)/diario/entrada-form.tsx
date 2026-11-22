@@ -64,6 +64,11 @@ export function EntradaForm({
 
   const [titulo, setTitulo] = useState(tituloInicial);
   const [categoriaTexto, setCategoriaTexto] = useState(categoriaInicial);
+  // Escribiendo una categoría que todavía no existe (el chip "+ Nueva").
+  const [creandoCategoria, setCreandoCategoria] = useState(false);
+  const categoriaNueva =
+    categoriaTexto.trim() !== "" &&
+    !categorias.some((cat) => claveCategoria(cat.nombre) === claveCategoria(categoriaTexto));
   const [contenido, setContenido] = useState<JSONContent | null>(contenidoInicial);
 
   // Remontar el editor es la forma simple de meterle contenido restaurado:
@@ -237,8 +242,10 @@ export function EntradaForm({
       ) : null}
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={`${formId}-titulo`} className="rotulo">
-          {t("campoTitulo")} <span aria-hidden="true" className="text-secondary-purple">*</span>
+        {/* Sin rótulo a la vista: el campo grande ya dice qué es (su texto de
+            ejemplo). Queda para lectores de pantalla. */}
+        <label htmlFor={`${formId}-titulo`} className="sr-only">
+          {t("campoTitulo")}
         </label>
         {/* Un textarea de un renglón que crece: un título largo se ve
             entero mientras se escribe, como al leer la entrada (un input lo
@@ -268,51 +275,78 @@ export function EntradaForm({
         ) : null}
       </div>
 
-      {/* Categoría: las que ya existen como chips en un solo carril (en el
-          celular se desliza de lado, en vez de apilar renglones) y el campo
-          para escribir una nueva. */}
-      <div className="flex flex-col gap-2">
-        <label htmlFor={`${formId}-categoria`} className="rotulo">
-          {t("campoCategoria")}
-        </label>
-        {categorias.length > 0 ? (
-          <div className="fila-deslizable -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
-            {categorias.map((cat) => {
-              const seleccionada = claveCategoria(cat.nombre) === claveCategoria(categoriaTexto);
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setCategoriaTexto(seleccionada ? "" : cat.nombre)}
-                  aria-pressed={seleccionada}
-                  className={`${CLASE_CHIP} ${seleccionada ? CLASE_CHIP_ACTIVO : CLASE_CHIP_INACTIVO}`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="punto-categoria"
-                    style={{ background: colorCategoria(categorias, cat.id) }}
-                  />
-                  {cat.nombre}
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
-        <input
-          id={`${formId}-categoria`}
-          type="text"
-          name="categoria"
-          value={categoriaTexto}
-          onChange={(evento) => setCategoriaTexto(evento.target.value)}
-          placeholder={t("categoriaPlaceholder")}
-          className="h-10 w-full rounded-theme border-(length:--borde) border-ink bg-card px-3 text-sm outline-none focus:border-secondary-purple sm:w-64"
-        />
-      </div>
+      {/* Categoría: un solo control. Las que ya existen son chips en un
+          carril (en el celular se desliza de lado) y el primero, "+ Nueva",
+          se vuelve el campo para escribir una (primero y no al final: al
+          final quedaba fuera de la pantalla). Antes había chips y además un
+          campo aparte que hacía lo mismo. */}
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-2 text-sm font-semibold text-muted/80">
+          {t("campoCategoria")} <span className="font-normal">({t("opcional")})</span>
+        </legend>
+        <div className="fila-deslizable -mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+          {creandoCategoria || categoriaNueva ? (
+            <input
+              id={`${formId}-categoria`}
+              type="text"
+              aria-label={t("nuevaCategoriaPlaceholder")}
+              autoFocus={creandoCategoria}
+              value={categoriaTexto}
+              onChange={(evento) => setCategoriaTexto(evento.target.value)}
+              onBlur={() => setCreandoCategoria(false)}
+              onKeyDown={(evento) => {
+                if (evento.key === "Enter") {
+                  evento.preventDefault();
+                  evento.currentTarget.blur();
+                }
+              }}
+              placeholder={t("nuevaCategoriaPlaceholder")}
+              className={`${CLASE_CHIP} ${CLASE_CHIP_ACTIVO} w-44 shrink-0 outline-none placeholder:text-current/70`}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setCategoriaTexto("");
+                setCreandoCategoria(true);
+              }}
+              className={`${CLASE_CHIP} ${CLASE_CHIP_INACTIVO} border-dashed`}
+            >
+              <span aria-hidden="true">+</span>
+              {t("nuevaCategoria")}
+            </button>
+          )}
+          {categorias.map((cat) => {
+            const seleccionada = claveCategoria(cat.nombre) === claveCategoria(categoriaTexto);
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => {
+                  setCategoriaTexto(seleccionada ? "" : cat.nombre);
+                  setCreandoCategoria(false);
+                }}
+                aria-pressed={seleccionada}
+                className={`${CLASE_CHIP} ${seleccionada ? CLASE_CHIP_ACTIVO : CLASE_CHIP_INACTIVO}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className="punto-categoria"
+                  style={{ background: colorCategoria(categorias, cat.id) }}
+                />
+                {cat.nombre}
+              </button>
+            );
+          })}
+        </div>
+        <input type="hidden" name="categoria" value={categoriaTexto} />
+      </fieldset>
 
       <TiptapEditor
         key={remonte}
         name="contenido"
         barraEn={`${formId}-formato`}
+        placeholder={t("contenidoPlaceholder")}
         contenidoInicial={contenidoBase}
         onCambio={setContenido}
       />

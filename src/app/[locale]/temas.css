@@ -125,19 +125,6 @@
 
 /* Secciones: teclas físicas con lucecita; la activa queda hundida y
    encendida como una pantalla LCD. */
-/* Los atajos de la barra (el pincel de Personalización). La barra de este
-   tema es clara, así que el ícono va en el color del texto: con el claro de
-   la barra morada de Retro no se veía. */
-[data-tema="softsignal"] .tema-barra-icono {
-  color: var(--foreground);
-}
-
-[data-tema="softsignal"] .tema-barra-icono:hover,
-[data-tema="softsignal"] .tema-barra-icono[aria-current="page"] {
-  border-color: var(--ink);
-  background: color-mix(in srgb, var(--foreground) 10%, transparent);
-}
-
 [data-tema="softsignal"] .tema-nav-link {
   background: var(--ss-tecla);
   border: 2px solid var(--ss-borde);
@@ -584,19 +571,6 @@
 }
 
 /* Secciones: texto pixelado en mayúsculas; la activa brilla en rosa. */
-/* Los atajos de la barra (el pincel de Personalización). La barra de este
-   tema es clara, así que el ícono va en el color del texto: con el claro de
-   la barra morada de Retro no se veía. */
-[data-tema="void"] .tema-barra-icono {
-  color: var(--foreground);
-}
-
-[data-tema="void"] .tema-barra-icono:hover,
-[data-tema="void"] .tema-barra-icono[aria-current="page"] {
-  border-color: var(--ink);
-  background: color-mix(in srgb, var(--foreground) 10%, transparent);
-}
-
 [data-tema="void"] .tema-nav-link {
   background: transparent;
   border-color: transparent;

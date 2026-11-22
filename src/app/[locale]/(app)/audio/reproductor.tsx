@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { formatearDuracion } from "@/lib/audio/duracion";
 
 /**
@@ -30,6 +31,7 @@ export function Reproductor({ src, duracion }: { src: string; duracion: number |
   const [actual, setActual] = useState(0);
   const [total, setTotal] = useState(duracion ?? 0);
   const [fallo, setFallo] = useState(false);
+  const router = useRouter();
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
@@ -57,9 +59,21 @@ export function Reproductor({ src, duracion }: { src: string; duracion: number |
 
   if (fallo) {
     return (
-      <p role="alert" className="border-(length:--borde) border-dashed border-ink/40 px-3 py-4 text-center apoyo text-xs">
-        {t("noSePudoCargar")}
-      </p>
+      // Con salida: el enlace firmado del audio vence, y pedir la página de
+      // nuevo trae uno nuevo. Antes el aviso quedaba ahí sin nada que hacer.
+      <div role="alert" className="flex items-center gap-3 border-(length:--borde) border-ink rounded-theme bg-primary-pink/25 px-3 py-2">
+        <p className="flex-1 text-sm">{t("noSePudoCargar")}</p>
+        <button
+          type="button"
+          onClick={() => {
+            setFallo(false);
+            router.refresh();
+          }}
+          className="boton boton-chico"
+        >
+          {t("reintentar")}
+        </button>
+      </div>
     );
   }
 

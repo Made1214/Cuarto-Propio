@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useAccionPrincipal } from "@/lib/accion-principal";
 import { useAvisoAntesDeSalir, usePantallaEncendida } from "@/lib/audio/pantalla-encendida";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -213,6 +214,13 @@ export function Grabador() {
   // grabación que falló al subir— cerrar la pestaña pregunta antes.
   usePantallaEncendida(grabando);
   useAvisoAntesDeSalir(estado !== "inactivo" || pendiente !== null);
+  // El botón del centro de la barra de abajo graba (y, grabando, detiene)
+  // igual que el botón redondo: queda al alcance del pulgar.
+  useAccionPrincipal("audio", () => {
+    if (estado === "subiendo") return;
+    if (grabando) detener();
+    else void grabar();
+  });
 
   return (
     <div className="flex flex-col items-stretch gap-3">

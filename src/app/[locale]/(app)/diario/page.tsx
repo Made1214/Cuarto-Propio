@@ -83,9 +83,12 @@ export default async function DiarioPage({
         <div className="encabezado-seccion lg:col-start-2">
           <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
           <div className="acciones-seccion">
+            {/* En el celular, "Escribir" es el botón del centro de la barra
+                de abajo (al alcance del pulgar); este queda para tablet y
+                escritorio. */}
             <Link
               href="/diario/nueva"
-              className="boton boton-rosa"
+              className="boton boton-rosa max-md:hidden"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" />
