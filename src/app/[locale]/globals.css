@@ -2,6 +2,12 @@
 @import "./temas.css";
 @plugin "@tailwindcss/typography";
 
+/* Hay un mouse o trackpad (aunque sea uno entre varios punteros): `any-pointer`
+   y no `pointer`, para que un notebook con pantalla táctil siga contando.
+   Lo que solo tiene sentido con puntero (cursor propio, atajos de teclado)
+   cuelga de acá, no del ancho de la pantalla ni de si la app está instalada. */
+@custom-variant puntero-fino (@media (any-pointer: fine) and (hover: hover));
+
 /*
  * Tokens del tema "Retro" (ver src/lib/temas/presets.ts — fuente de verdad
  * del sistema de temas). Ventanas de escritorio Y2K: bordes gruesos, sombra

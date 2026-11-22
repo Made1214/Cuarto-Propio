@@ -207,7 +207,7 @@ export function Probador() {
               />
             ))}
           </Fila>
-          <Fila etiqueta={t("cursor")}>
+          <Fila etiqueta={t("cursor")} className="hidden puntero-fino:flex">
             <BotonOpcion activo={cursor === null} onClick={() => setCursor(null)}>
               {t("cursorNormal")}
             </BotonOpcion>
@@ -238,9 +238,17 @@ export function Probador() {
   );
 }
 
-function Fila({ etiqueta, children }: { etiqueta: string; children: React.ReactNode }) {
+function Fila({
+  etiqueta,
+  children,
+  className = "flex",
+}: {
+  etiqueta: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div role="group" aria-label={etiqueta} className="flex flex-wrap items-center gap-2">
+    <div role="group" aria-label={etiqueta} className={`${className} flex-wrap items-center gap-2`}>
       <span className="w-16 shrink-0 text-xs font-bold tracking-wider text-[var(--text-secondary)] uppercase">
         {etiqueta}
       </span>

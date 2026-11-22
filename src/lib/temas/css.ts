@@ -113,9 +113,15 @@ export function generarCssTema(config: ConfigTema, alcance?: string): string {
   } else if (config.cursor?.tipo === "propio") {
     imagenCursor = { url: config.cursor.imagen, punto: PUNTO_CURSOR_PROPIO };
   }
+  // Solo con mouse o trackpad: en un celular (la PWA instalada incluida) no
+  // hay puntero que dibujar, y el navegador ni lee esta regla ni descarga la
+  // imagen. La elección sigue guardada en el tema para los dispositivos con
+  // mouse de la misma cuenta.
   const cursor = imagenCursor
-    ? `${cuerpo}{cursor:url("${imagenCursor.url}") ${imagenCursor.punto[0]} ${imagenCursor.punto[1]},auto}` +
-      `${clicables}{cursor:url("${imagenCursor.url}") ${imagenCursor.punto[0]} ${imagenCursor.punto[1]},pointer}`
+    ? `@media (any-pointer: fine) and (hover: hover){` +
+      `${cuerpo}{cursor:url("${imagenCursor.url}") ${imagenCursor.punto[0]} ${imagenCursor.punto[1]},auto}` +
+      `${clicables}{cursor:url("${imagenCursor.url}") ${imagenCursor.punto[0]} ${imagenCursor.punto[1]},pointer}` +
+      `}`
     : "";
 
   return [

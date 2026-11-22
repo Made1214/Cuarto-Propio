@@ -478,7 +478,9 @@ function SeccionCursor({ config, guardar }: PropsSeccion) {
   const actual = config.cursor?.tipo === "preset" ? config.cursor.id : config.cursor?.tipo === "propio" ? "propio" : null;
 
   return (
-    <section className={CLASE_SECCION} aria-labelledby="titulo-cursor">
+    // `hidden` + `puntero-fino:flex`: sin mouse (celular, PWA) la sección no
+    // se muestra, porque elegir un cursor que nunca se vería solo confunde.
+    <section className={`${CLASE_SECCION} hidden puntero-fino:flex`} aria-labelledby="titulo-cursor">
       <div>
         <h2 id="titulo-cursor" className={CLASE_TITULO}>
           {t("cursor.titulo")}

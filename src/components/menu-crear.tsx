@@ -99,7 +99,7 @@ export function MenuCrear({ variante }: { variante: "barra" | "inferior" }) {
               </h2>
               <p className="mt-1 text-sm text-muted/75">
                 {t("crearAyuda")}
-                <span className="hidden md:inline"> {t("crearAyudaTeclas")}</span>
+                <span className="hidden puntero-fino:inline"> {t("crearAyudaTeclas")}</span>
               </p>
             </div>
             <button
@@ -127,7 +127,7 @@ export function MenuCrear({ variante }: { variante: "barra" | "inferior" }) {
                   </span>
                   <span className="text-base font-bold">{t(clave)}</span>
                   <span className="text-[13px] leading-snug">{t(`${clave}Ayuda`)}</span>
-                  <span aria-hidden="true" className="mt-auto hidden font-pixel text-[11px] md:block">
+                  <span aria-hidden="true" className="mt-auto hidden font-pixel text-[11px] puntero-fino:block">
                     {indice + 1}
                   </span>
                 </Link>

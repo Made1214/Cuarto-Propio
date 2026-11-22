@@ -11,6 +11,15 @@ describe("generarCssTema: cursor", () => {
     expect(css).toMatch(/body :is\(a,button,[^)]*\):not\([^)]*\)\{cursor:url\("\/cursores\/corazon\.png"\) 14 12,pointer\}/);
   });
 
+  it("solo se aplica con mouse o trackpad, no en táctil", () => {
+    const css = generarCssTema(config);
+    const desde = css.indexOf("@media (any-pointer: fine) and (hover: hover){");
+    expect(desde).toBeGreaterThan(-1);
+    // Todo `cursor:` queda dentro de esa media query.
+    expect(css.indexOf("cursor:")).toBeGreaterThan(desde);
+    expect(css.slice(0, desde)).not.toContain("cursor:");
+  });
+
   it("con alcance, todo queda colgado de ese selector", () => {
     const css = generarCssTema(config, ".muestra");
     expect(css).toContain('.muestra{cursor:url(');
