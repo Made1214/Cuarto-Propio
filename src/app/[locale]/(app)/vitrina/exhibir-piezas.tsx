@@ -276,7 +276,7 @@ export function ExhibirPiezas() {
             </p>
           ) : null}
 
-          <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto">
+          <div className="flex flex-col gap-3">
             {piezas.map((pieza) => {
               const bloqueada = pieza.estado === "subiendo" || pieza.estado === "exhibida";
               return (
@@ -392,7 +392,7 @@ export function ExhibirPiezas() {
                       onClick={() => quitar(pieza.id)}
                       aria-label={t("quitarPieza")}
                       title={t("quitarPieza")}
-                      className="flex h-7 w-7 shrink-0 items-center justify-center self-start text-ink/40 transition-colors hover:bg-primary-pink/30 hover:text-ink"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center self-start text-ink/50 transition-colors hover:bg-primary-pink/30 hover:text-ink pointer-coarse:h-11 pointer-coarse:w-11"
                     >
                       <IconoCerrar />
                     </button>

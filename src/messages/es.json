@@ -61,7 +61,8 @@
     "espacioDe": "{usado} de {limite}",
     "espacioAyuda": "Fotos y audios. Te avisaremos antes de que se llene.",
     "abrirPersonalizacion": "Personalizar",
-    "personalizacionAyudaCorta": "Tema, colores, letras, cursor e iconos"
+    "personalizacionAyudaCorta": "Tema, colores, letras, cursor e iconos",
+    "nombreGuardado": "Nombre guardado"
   },
   "login": {
     "titulo": "Cuarto Propio",
@@ -181,7 +182,12 @@
     "guardando": "Guardando…",
     "contenidoRequerido": "Tu entrada todavía está en blanco: escribe algo (o suma una imagen) antes de guardar.",
     "errorGuardar": "No se pudo guardar. Lo que escribiste sigue aquí: prueba de nuevo en un ratito.",
-    "sesionVencida": "Se venció tu sesión y no se pudo guardar. Lo que escribiste quedó como borrador en este dispositivo: vuelve a entrar y lo recuperas."
+    "sesionVencida": "Se venció tu sesión y no se pudo guardar. Lo que escribiste quedó como borrador en este dispositivo: vuelve a entrar y lo recuperas.",
+    "estadoSinGuardar": "Cambios sin guardar",
+    "estadoBorradorLocal": "Copia local · {hora}",
+    "estadoAlDia": "Todo guardado",
+    "volverCorto": "Diario",
+    "campoCategoria": "Categoría"
   },
   "dialogos": {
     "cerrar": "Cerrar",
@@ -222,7 +228,9 @@
       "tamano": "La imagen pesa más de 25 MB.",
       "sesion": "Se venció la sesión. Vuelve a entrar y reintenta; lo que escribiste queda guardado como borrador.",
       "fallo": "No se pudo subir la imagen. Lo que escribiste sigue acá: prueba de nuevo."
-    }
+    },
+    "mas": "Más formato",
+    "formato": "Formato del texto"
   },
   "listas": {
     "titulo": "Listas",
@@ -257,7 +265,9 @@
     "cantidadItems": "{total, plural, =0 {Sin ítems} one {# ítem} other {# ítems}}",
     "abrirLista": "Abrir lista",
     "plegarLista": "Plegar lista",
-    "eliminarLista": "Eliminar lista"
+    "eliminarLista": "Eliminar lista",
+    "crear": "Crear lista",
+    "nombreLista": "Nombre de la lista"
   },
   "vitrina": {
     "titulo": "Vitrina",
@@ -341,7 +351,12 @@
     "grabadora": "Grabadora",
     "tocaParaGrabar": "Toca para grabar",
     "tocaParaDetener": "toca el cuadrado para detener",
-    "ayudaGrabar": "Hasta {minutos} minutos. Al terminar se guarda sola; el título lo pones después (o queda la fecha y hora)."
+    "ayudaGrabar": "Hasta {minutos} minutos. Al terminar se guarda sola; el título lo pones después (o queda la fecha y hora).",
+    "reproducir": "Reproducir",
+    "pausar": "Pausar",
+    "posicion": "Posición en la nota",
+    "cargandoAudio": "Cargando…",
+    "guardada": "¡Guardada! Ya está en tu lista."
   },
   "paginacion": {
     "cargarMas": "Cargar más",
@@ -535,6 +550,16 @@
       "tamano": "La imagen pesa demasiado (máximo 2 MB).",
       "sesion": "Se venció la sesión. Vuelve a entrar y prueba de nuevo.",
       "fallo": "No se pudo subir la imagen. Prueba de nuevo."
+    },
+    "indice": "Secciones de personalización",
+    "guardando": "Guardando…",
+    "guardado": "Guardado",
+    "indiceCorto": {
+      "tema": "Tema",
+      "colores": "Colores",
+      "tipografia": "Letras",
+      "cursor": "Cursor",
+      "iconos": "Iconos"
     }
   },
   "decoracion": {

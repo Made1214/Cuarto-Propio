@@ -34,11 +34,9 @@ export default async function AudioPage({
   const notas = pagina.filas;
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-          <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
-        </div>
+      <div className="encabezado-seccion">
+        <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
+        <p className="subtitulo-seccion">{t("subtitulo")}</p>
       </div>
 
       {/* Una sola grabadora, siempre arriba y a la vista: grabar es lo

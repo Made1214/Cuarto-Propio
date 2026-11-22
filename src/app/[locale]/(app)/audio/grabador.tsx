@@ -58,6 +58,7 @@ export function Grabador() {
   const [estado, setEstado] = useState<"inactivo" | "grabando" | "subiendo">("inactivo");
   const [segundos, setSegundos] = useState(0);
   const [error, setError] = useState<CodigoError | null>(null);
+  const [guardada, setGuardada] = useState(false);
   const [limiteAlcanzado, setLimiteAlcanzado] = useState(false);
   /** Grabación lista pero sin subir (falló el intento anterior). */
   const [pendiente, setPendiente] = useState<{ blob: Blob; duracion: number } | null>(null);
@@ -117,6 +118,10 @@ export function Grabador() {
       setPendiente(null);
       setSegundos(0);
       setEstado("inactivo");
+      // Confirmación visible unos segundos: antes la nota aparecía en la
+      // lista sin decir nada, y no quedaba claro si se había guardado.
+      setGuardada(true);
+      window.setTimeout(() => setGuardada(false), 4000);
       router.refresh();
     } catch {
       setPendiente({ blob, duracion });
@@ -133,6 +138,7 @@ export function Grabador() {
 
   async function grabar() {
     setError(null);
+    setGuardada(false);
     setLimiteAlcanzado(false);
     setPendiente(null);
 
@@ -214,7 +220,13 @@ export function Grabador() {
           onClick={grabando ? detener : () => void grabar()}
           disabled={estado === "subiendo"}
           aria-label={grabando ? t("detener") : t("grabar")}
-          className="flex h-19 w-19 shrink-0 items-center justify-center rounded-full border-(length:--borde-grueso) border-ink bg-primary-pink text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-60 sm:h-22 sm:w-22"
+          // Grabando cambia de color y late un anillo alrededor: se nota de
+          // reojo que el micrófono está abierto.
+          className={`relative flex h-19 w-19 shrink-0 items-center justify-center rounded-full border-(length:--borde-grueso) border-ink text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:cursor-wait disabled:opacity-60 sm:h-22 sm:w-22 ${
+            grabando
+              ? "bg-secondary-turquoise after:absolute after:-inset-2 after:rounded-full after:border-2 after:border-primary-pink after:motion-safe:animate-ping"
+              : "bg-primary-pink"
+          }`}
         >
           {grabando ? (
             <span aria-hidden="true" className="h-6 w-6 bg-ink-strong" />
@@ -238,7 +250,7 @@ export function Grabador() {
               </span>
               {/* Barra de tiempo: a los 10 minutos llega al final y la
                   grabación se corta sola, así que conviene verla venir. */}
-              <div className="mt-1 h-2 w-full border-(length:--borde) border-ink/30">
+              <div className="mt-1 h-2.5 w-full border-(length:--borde) border-ink rounded-theme bg-background">
                 <div
                   className="h-full bg-primary-pink transition-[width]"
                   style={{ width: `${Math.min(100, (segundos / DURACION_MAXIMA_SEGUNDOS) * 100)}%` }}
@@ -247,8 +259,8 @@ export function Grabador() {
             </>
           ) : (
             <>
-              <span className="text-[17px] font-bold">
-                {estado === "subiendo" ? t("subiendo") : t("tocaParaGrabar")}
+              <span aria-live="polite" className="text-[17px] font-bold">
+                {estado === "subiendo" ? t("subiendo") : guardada ? t("guardada") : t("tocaParaGrabar")}
               </span>
               <span className="text-[13px] leading-snug text-muted/80">
                 {t("ayudaGrabar", { minutos: Math.round(DURACION_MAXIMA_SEGUNDOS / 60) })}
@@ -276,7 +288,7 @@ export function Grabador() {
               type="button"
               onClick={() => void subir(pendiente.blob, pendiente.duracion)}
               disabled={estado === "subiendo"}
-              className="flex h-9 items-center gap-1.5 border-(length:--borde) border-ink-strong rounded-theme bg-background px-3 text-[13px] font-semibold text-ink transition-colors hover:bg-secondary-purple/10 disabled:opacity-60"
+              className="boton boton-chico"
             >
               <IconoReintentar />
               {t("reintentar")}
@@ -291,7 +303,7 @@ export function Grabador() {
             }}
             aria-label={t("descartar")}
             title={t("descartar")}
-            className="flex h-9 w-9 shrink-0 items-center justify-center text-ink-strong/60 transition-colors hover:text-ink-strong"
+            className="flex h-11 w-11 shrink-0 items-center justify-center text-ink-strong/60 transition-colors hover:text-ink-strong"
           >
             <IconoCerrar />
           </button>

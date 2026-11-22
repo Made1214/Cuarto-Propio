@@ -1,5 +1,6 @@
 import { EsqueletoPantalla, Hueso } from "@/components/esqueleto";
 import { BotonesVentana } from "./iconos";
+import { CLASE_PARED, CLASE_PIEZA_PARED } from "./ventana-imagen";
 
 /** Proporciones de las fotos de mentira. Variadas a propósito: lo que hace
  * reconocible a la cuadrícula masonry es justamente que cada ventana mide
@@ -23,7 +24,7 @@ const HASHTAGS = ["w-16", "w-20", "w-14", "w-24"] as const;
  * fotos de verdad caigan en el mismo lugar. */
 export default function CargandoVitrina() {
   return (
-    <EsqueletoPantalla className="flex w-full flex-col gap-6">
+    <EsqueletoPantalla className="flex w-full flex-col gap-4 sm:gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-2">
           <Hueso className="h-9 w-36" />
@@ -41,16 +42,16 @@ export default function CargandoVitrina() {
         </div>
       </div>
 
-      <div className="columns-[15rem] gap-5 lg:columns-[17rem]">
+      <div className={CLASE_PARED}>
         {PIEZAS.map((pieza, indice) => (
-          <div key={indice} className="mb-5 break-inside-avoid">
-            <div className="border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
-              <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-2 py-1.5 text-background">
+          <div key={indice} className={CLASE_PIEZA_PARED}>
+            <div className="overflow-hidden border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-sm sm:shadow-marco">
+              <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-1.5 py-1 text-background sm:px-2 sm:py-1.5">
                 <BotonesVentana />
               </div>
               <Hueso className={`w-full ${pieza.proporcion}`} />
               {pieza.titulo ? (
-                <div className="border-t-(length:--borde) border-ink px-2.5 py-2.5">
+                <div className="border-t-(length:--borde) border-ink px-2 py-2 sm:px-2.5 sm:py-2.5">
                   <Hueso className={`h-3.5 ${pieza.titulo}`} />
                 </div>
               ) : null}

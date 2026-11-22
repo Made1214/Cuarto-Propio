@@ -856,3 +856,63 @@
     background-attachment: scroll;
   }
 }
+
+/*
+ * ── El celular, en los temas con hoja propia ──
+ *
+ * La carcasa de Softsignal y la ventana de Void son un marco más dentro del
+ * margen de la página: en el celular se sumaban 20 px de margen más 16 de
+ * relleno más el borde a cada lado, y todo lo de adentro (las dos columnas
+ * de la Vitrina, el editor, las listas) quedaba apretado en 310 px. Acá el
+ * marco se estira casi hasta el borde de la pantalla y su relleno se achica;
+ * desde `sm` vuelve a ser lo de siempre. Los títulos de sección, que en
+ * estos temas miden 52–54 px, se achican con el ancho para que una palabra
+ * larga («Personalización») no se salga.
+ */
+@media (max-width: 39.999rem) {
+  [data-tema="softsignal"] .tema-contenido,
+  [data-tema="void"] .tema-contenido {
+    width: auto;
+    margin-inline: -12px;
+  }
+
+  [data-tema="softsignal"] .tema-contenido {
+    padding: 16px 10px;
+    border-radius: 14px;
+  }
+
+  [data-tema="void"] .tema-contenido {
+    padding: 0 10px 20px;
+  }
+
+  [data-tema="void"] .tema-contenido::before {
+    margin: 0 -10px 16px;
+  }
+
+  /* Los filtros que se deslizan de lado salen hasta el borde de la página;
+     adentro del marco tienen que salir solo hasta el borde del marco. */
+  [data-tema="softsignal"] .tema-contenido .tema-fila-chips,
+  [data-tema="void"] .tema-contenido .tema-fila-chips {
+    margin-inline: -10px;
+  }
+
+  [data-tema="softsignal"] .tema-contenido .tema-fila-chips > ul,
+  [data-tema="void"] .tema-contenido .tema-fila-chips > ul {
+    padding-inline: 10px;
+  }
+
+  [data-tema="softsignal"] .tema-titulo {
+    font-size: clamp(2.25rem, 11vw, 3.25rem);
+  }
+
+  /* La marca de la barra en una sola línea, también en un celular de
+     320 px (en Void ocupaba dos y se salía de la barra). */
+  [data-tema="softsignal"] .tema-marca,
+  [data-tema="void"] .tema-marca {
+    font-size: clamp(1.05rem, 5.4vw, 1.35rem);
+  }
+
+  [data-tema="void"] .tema-titulo {
+    font-size: clamp(2.25rem, 11vw, 3.4rem);
+  }
+}

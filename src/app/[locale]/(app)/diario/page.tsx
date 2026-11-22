@@ -77,21 +77,21 @@ export default async function DiarioPage({
   return (
     <ZonaBusqueda>
       <div className="mx-auto grid w-full max-w-3xl grid-cols-1 gap-x-10 gap-y-5 lg:max-w-280 lg:grid-cols-[16.25rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:content-start">
-        <div className="flex items-end lg:col-start-2 justify-between gap-4">
-          <div>
-            <h1 className="tema-titulo font-diario text-4xl font-bold text-secondary-purple">{t("titulo")}</h1>
-            <p className="mt-1 text-sm text-muted/70">{t("subtitulo")}</p>
+        <div className="encabezado-seccion lg:col-start-2">
+          <h1 className="tema-titulo titulo-seccion">{t("titulo")}</h1>
+          <div className="acciones-seccion">
+            <Link
+              href="/diario/nueva"
+              className="boton boton-rosa"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              <span className="hidden sm:inline">{t("nuevaEntrada")}</span>
+              <span className="sm:hidden">{t("nueva")}</span>
+            </Link>
           </div>
-          <Link
-            href="/diario/nueva"
-            className="flex h-11 shrink-0 items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 text-sm font-bold text-ink-strong shadow-marco-sm transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            <span className="hidden sm:inline">{t("nuevaEntrada")}</span>
-            <span className="sm:hidden">{t("nueva")}</span>
-          </Link>
+          <p className="subtitulo-seccion">{t("subtitulo")}</p>
         </div>
 
         <ColumnaFiltros
@@ -143,14 +143,14 @@ export default async function DiarioPage({
               {hayFiltro ? (
                 <Link
                   href="/diario"
-                  className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-secondary-purple/10"
+                  className="boton"
                 >
                   {t("limpiarFiltros")}
                 </Link>
               ) : (
                 <Link
                   href="/diario/nueva"
-                  className="flex h-11 items-center border-(length:--borde) border-ink rounded-theme bg-primary-pink px-5 text-sm font-bold text-ink-strong shadow-marco-sm transition-[filter] hover:brightness-95"
+                  className="boton boton-rosa"
                 >
                   {t("nuevaEntrada")}
                 </Link>

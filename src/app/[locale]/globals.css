@@ -110,6 +110,83 @@ body {
 }
 
 /*
+ * En el celular, iOS agranda la pantalla al tocar cualquier campo con letra
+ * de menos de 16 px (y no la vuelve a achicar sola): por eso al escribir en
+ * el login, el diario o un ítem de lista todo se corría y quedaba cortado.
+ * En pantallas táctiles los campos van a 16 px como mínimo — en escritorio
+ * conservan el tamaño del diseño. Va con !important porque los temas y las
+ * utilidades de cada campo fijan su propio tamaño. Sin `maximum-scale` en el
+ * viewport: eso le quitaría a Android el zoom con dos dedos.
+ */
+@media (pointer: coarse) {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]),
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
+/*
+ * Con el teclado abierto (un campo de texto enfocado en una pantalla
+ * táctil) la barra de secciones de abajo se esconde: no hace falta mientras
+ * se escribe, y en iOS quedaba flotando sobre el texto o encima del teclado
+ * y achicaba todavía más lo poco que se ve.
+ */
+@media (pointer: coarse) {
+  body:has(
+      :is(
+          input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+          textarea,
+          [contenteditable="true"]
+        ):focus
+    )
+    .tema-nav-inferior {
+    display: none;
+  }
+
+  /* Y la barra de arriba deja de estar pegada: con el teclado queda a la
+     vista poco más de un tercio de la pantalla, y la barra de la app más la
+     de una entrada (volver, Guardar, formato) se comían casi todo. Lo que
+     estaba pegado debajo de ella sube hasta el borde. */
+  body:has(
+      :is(
+          input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+          textarea,
+          [contenteditable="true"]
+        ):focus
+    )
+    .tema-barra {
+    position: relative;
+  }
+
+  body:has(
+      :is(
+          input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="button"], [type="submit"]),
+          textarea,
+          [contenteditable="true"]
+        ):focus
+    )
+    .fijo-bajo-barra {
+    top: 0;
+  }
+}
+
+/* Lo que queda pegado justo debajo de la barra de la app (56 px; 64 desde
+   tablet): la barra de una entrada del diario, el índice de
+   Personalización. */
+.fijo-bajo-barra {
+  position: sticky;
+  top: 3.5rem;
+}
+
+@media (min-width: 48rem) {
+  .fijo-bajo-barra {
+    top: 4rem;
+  }
+}
+
+/*
  * Vocabulario compartido de botones y textos. Antes cada pantalla repetía su
  * propia ristra de utilidades y terminaban distintos: «Nueva entrada» en
  * Inter y «NUEVA LISTA» en pixel, «Guardar» de un alto y «EDITAR» de otro.
@@ -224,6 +301,97 @@ body {
     }
   }
 
+  /* Encabezado de cada sección: título, una línea de apoyo y la acción
+     principal («Nueva», «Exhibir»). Una sola definición para las cinco
+     pantallas: antes cada una tenía su ristra de utilidades y en el celular
+     el título de 36 px más el botón se comían la primera pantalla, o el
+     subtítulo quedaba en una columnita de tres palabras por renglón al lado
+     del botón. Ahora, en el celular, el botón va a la altura del título y el
+     subtítulo debajo de los dos, a todo el ancho; desde tablet el botón
+     acompaña a los dos renglones. */
+  .encabezado-seccion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.75rem;
+  }
+
+  .encabezado-seccion > .titulo-seccion {
+    grid-column: 1;
+  }
+
+  .encabezado-seccion > .subtitulo-seccion {
+    grid-column: 1 / -1;
+  }
+
+  .acciones-seccion {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  /* «Nueva lista» abierta: un renglón propio debajo de todo. */
+  .encabezado-seccion > .acciones-seccion:has(.nueva-lista-abierta) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: stretch;
+    margin-top: 0.75rem;
+  }
+
+  .titulo-seccion {
+    font-family: var(--fuente-diario), Georgia, serif;
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--secondary-purple);
+    overflow-wrap: anywhere;
+  }
+
+  .subtitulo-seccion {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+  }
+
+  @media (min-width: 48rem) {
+    .encabezado-seccion {
+      column-gap: 1rem;
+    }
+
+    .encabezado-seccion > .subtitulo-seccion {
+      grid-column: 1;
+    }
+
+    .acciones-seccion {
+      grid-row: 1 / span 2;
+      align-self: end;
+    }
+
+    .titulo-seccion {
+      font-size: 2.25rem;
+    }
+
+    .subtitulo-seccion {
+      font-size: 0.875rem;
+    }
+  }
+
+  /* Botones de la barra de formato del editor. */
+  .boton-formato {
+    height: 2rem;
+    min-width: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  @media (pointer: coarse) {
+    .boton-formato {
+      height: 2.5rem;
+      min-width: 2.5rem;
+    }
+  }
+
   /* Rótulo corto en la letra de rótulos del tema (pixel en Retro). */
   .rotulo {
     font-family: var(--fuente-rotulo, var(--font-silkscreen)), monospace;
@@ -277,6 +445,59 @@ body {
     height: 0.625rem;
     border: 1.5px solid var(--ink-strong);
   }
+}
+
+/* La barra de progreso del reproductor de audio: una pista con el borde del
+   tema, rellena hasta donde va la nota, y un tirador cuadrado (retro) con
+   área de toque generosa. */
+.reproductor-barra {
+  appearance: none;
+  height: 1.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.reproductor-barra::-webkit-slider-runnable-track {
+  height: 0.625rem;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: linear-gradient(to right, var(--secondary-turquoise) var(--progreso, 0%), var(--card) var(--progreso, 0%));
+}
+
+.reproductor-barra::-moz-range-track {
+  height: 0.625rem;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: linear-gradient(to right, var(--secondary-turquoise) var(--progreso, 0%), var(--card) var(--progreso, 0%));
+}
+
+.reproductor-barra::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: calc(-0.25rem - var(--borde));
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: var(--secondary-purple);
+}
+
+.reproductor-barra::-moz-range-thumb {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: var(--borde) solid var(--ink);
+  border-radius: var(--radio);
+  background: var(--secondary-purple);
+}
+
+@media (pointer: coarse) {
+  .reproductor-barra {
+    height: 2.5rem;
+  }
+}
+
+.reproductor-barra:focus-visible {
+  outline: 2px solid var(--secondary-purple);
+  outline-offset: 2px;
 }
 
 /* La ventanita entra con un salto corto, como una ventana que se abre de
@@ -523,4 +744,58 @@ body {
 :root[data-modo="oscuro"] .acceso-panel {
   background-color: color-mix(in srgb, var(--secondary-purple) 22%, var(--background));
   color: var(--foreground);
+}
+
+/*
+ * Texto con el color de acento, en modo oscuro: legible siempre.
+ *
+ * El acento (`--secondary-purple`) está pensado como fondo de botones y
+ * barras; como color de TEXTO sobre el fondo oscuro, en Whimsical da 3,5:1
+ * (#8A6BA3 sobre #2B2033), poco para los rótulos de 12 px, los enlaces o el
+ * día de la semana de las fechas, que piden 4,5:1. Acá el texto con acento
+ * se mezcla con el color del texto: sigue siendo el mismo lila, pero con
+ * contraste de sobra (6,6:1), y vale también para colores elegidos a mano
+ * —acercarse al color del texto siempre aleja del fondo. Los fondos y
+ * botones con acento no cambian.
+ *
+ * Solo en los temas de tokens: Softsignal y Void dibujan sus títulos con
+ * letra propia (pantalla LCD, cromo), que una mezcla rompería.
+ */
+:root[data-modo="oscuro"] :is([data-tema="retro"], [data-tema="whimsical"]) :is(.text-secondary-purple, .titulo-seccion, .rotulo, .enlace-volver) {
+  color: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+}
+
+:root[data-modo="oscuro"] :is([data-tema="retro"], [data-tema="whimsical"]) .diario-prose {
+  --tw-prose-headings: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+  --tw-prose-links: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) :is([data-tema="retro"], [data-tema="whimsical"]) :is(.text-secondary-purple, .titulo-seccion, .rotulo, .enlace-volver) {
+    color: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+  }
+
+  :root:not([data-modo="claro"]) :is([data-tema="retro"], [data-tema="whimsical"]) .diario-prose {
+    --tw-prose-headings: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+    --tw-prose-links: color-mix(in srgb, var(--secondary-purple) 60%, var(--foreground));
+  }
+}
+
+/*
+ * En Whimsical oscuro el acento es un morado medio (#8A6BA3): ni el texto
+ * oscuro ni el claro llegan a 4,5:1 encima de él. Para lo que lleva texto
+ * chico sobre el acento —el chip de filtro elegido y los botones morados—,
+ * el fondo baja un poco hacia el fondo de la página y el texto pasa al
+ * color del texto: 5,2:1. En Retro oscuro el acento es claro y ya se lee.
+ */
+:root[data-modo="oscuro"] [data-tema="whimsical"] :is(.tema-chip-activo, .boton-morado) {
+  background: color-mix(in srgb, var(--secondary-purple) 80%, var(--background));
+  color: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-modo="claro"]) [data-tema="whimsical"] :is(.tema-chip-activo, .boton-morado) {
+    background: color-mix(in srgb, var(--secondary-purple) 80%, var(--background));
+    color: var(--foreground);
+  }
 }

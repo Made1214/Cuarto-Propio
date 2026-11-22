@@ -7,6 +7,15 @@ import type { ImagenEnVitrina } from "@/lib/imagenes/types";
 import { BotonesVentana } from "./iconos";
 
 /**
+ * Las columnas del esqueleto de la pared (`loading.tsx`): las mismas
+ * cantidades que `ParedMasonry` —dos en el celular, más a medida que hay
+ * lugar—, con el mismo espacio entre ventanas.
+ */
+export const CLASE_PARED =
+  "columns-2 gap-2.5 sm:columns-3 sm:gap-4 lg:columns-4 2xl:columns-5";
+export const CLASE_PIEZA_PARED = "mb-2.5 break-inside-avoid sm:mb-4";
+
+/**
  * Una pieza de la cuadrícula, montada como ventanita de escritorio Y2K.
  *
  * Debajo de la foto va el título y nada más: los hashtags y la categoría
@@ -39,14 +48,18 @@ export async function VentanaImagen({
   return (
     <Link
       href={`/vitrina/${imagen.codigo}`}
-      className="block border-(length:--borde) border-ink rounded-theme bg-card shadow-marco transition-[transform,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-marco-lg focus-visible:-translate-x-0.5 focus-visible:-translate-y-0.5"
+      className="block overflow-hidden border-(length:--borde) border-ink rounded-theme bg-card shadow-marco-sm transition-[transform,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-marco-lg focus-visible:-translate-x-0.5 focus-visible:-translate-y-0.5 sm:shadow-marco"
     >
       {/* Barra de ventana sin texto: el título vive abajo, como en un
-          tablero de imágenes, y acá quedan solo los botones de adorno. */}
-      <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-2 py-1.5 text-background">
+          tablero de imágenes, y acá quedan solo los botones de adorno. En
+          el celular es más fina: con dos columnas, cada píxel de marco se
+          lo quita a la foto. */}
+      <div className="flex items-center justify-end gap-2 border-b-(length:--borde) border-ink bg-secondary-purple px-1.5 py-1 text-background sm:px-2 sm:py-1.5">
         <BotonesVentana />
       </div>
 
+      {/* El alto ya está reservado (ancho y alto en el <img>) y el degradé
+          ocupa el lugar mientras baja: la pared no salta al cargar. */}
       <div className="bg-background">
         {imagen.miniaturaUrl ? (
           <Image
@@ -80,8 +93,9 @@ export async function VentanaImagen({
       </div>
 
       {titulo ? (
-        <p className="border-t-(length:--borde) border-ink px-2.5 py-2 font-diario text-sm font-semibold text-foreground">
-          {titulo}
+        <p className="border-t-(length:--borde) border-ink px-2 py-1.5 font-diario text-[13px] leading-snug font-semibold text-foreground sm:px-2.5 sm:py-2 sm:text-sm">
+          {/* Dos renglones como mucho: un título largo no estira la ventana. */}
+          <span className="line-clamp-2 break-words">{titulo}</span>
         </p>
       ) : null}
     </Link>

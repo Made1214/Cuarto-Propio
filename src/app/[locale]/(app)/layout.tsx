@@ -86,7 +86,7 @@ export default async function AppLayout({
           (perfil, Crear, ventanitas) no compiten: el navegador los pinta en
           su capa superior, por encima de cualquier z-index. */}
         <header className="tema-barra sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b-(length:--borde-grueso) border-ink bg-secondary-purple pr-3 pl-5 md:h-16 md:px-8">
-          <div className="flex items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-2.5">
             <Image
               src={marca}
               alt=""
@@ -94,7 +94,7 @@ export default async function AppLayout({
               height={32}
               className="h-7 w-7 shrink-0 rounded-theme border-(length:--borde) border-ink object-cover md:h-8 md:w-8"
             />
-            <span className="tema-marca font-pixel text-sm tracking-wide text-background">
+            <span className="tema-marca truncate font-pixel text-sm tracking-wide whitespace-nowrap text-background">
               CUARTO PROPIO
             </span>
           </div>

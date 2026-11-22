@@ -25,7 +25,7 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
   // Un solo renglón punteado con el "+" adentro: se lee como "acá va el
   // siguiente ítem", y Enter lo agrega sin buscar un botón.
   return (
-    <div className="flex h-10 items-center gap-2 border-(length:--borde) border-dashed border-ink/40 pl-2.5 transition-colors focus-within:border-solid focus-within:border-ink">
+    <div className="flex h-11 items-center gap-2 overflow-hidden border-(length:--borde) border-dashed border-ink/40 rounded-theme pl-2.5 transition-colors focus-within:border-solid focus-within:border-ink">
       <svg
         width="16"
         height="16"
@@ -52,17 +52,18 @@ export function AgregarItemInline({ onAgregar }: { onAgregar: (contenido: string
         }}
         aria-label={t("agregarItem")}
         placeholder={t("itemPlaceholder")}
-        className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted/60"
+        className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted/60"
       />
-      {valor.trim() ? (
-        <button
-          type="button"
-          onClick={enviar}
-          className="h-full shrink-0 border-l-(length:--borde) border-ink bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter] hover:brightness-95"
-        >
-          {t("agregar")}
-        </button>
-      ) : null}
+      {/* Siempre a la vista: en el celular no todos saben que Enter agrega,
+          y el botón que aparecía de golpe movía la fila. Vacío queda apagado. */}
+      <button
+        type="button"
+        onClick={enviar}
+        disabled={!valor.trim()}
+        className="h-full shrink-0 border-l-(length:--borde) border-ink bg-primary-green px-3 text-[13px] font-semibold text-ink-strong transition-[filter,opacity] hover:brightness-95 disabled:border-ink/30 disabled:bg-transparent disabled:text-ink/40"
+      >
+        {t("agregar")}
+      </button>
     </div>
   );
 }

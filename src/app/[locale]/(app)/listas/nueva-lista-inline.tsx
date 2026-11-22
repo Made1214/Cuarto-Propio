@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { AvisoErrorAccion } from "@/components/aviso-error-accion";
 import { clasificarErrorAccion, type ErrorAccion } from "@/lib/acciones/errores";
 import { crearLista } from "@/lib/listas/actions";
-import { IconoEliminar } from "./iconos";
 
 /** Vive en el encabezado, no en el tablero: crear una lista es una acción de
  * la página, y como tarjeta ocupaba un lugar de la cuadrícula. El mismo
@@ -69,8 +68,15 @@ export function NuevaListaInline() {
     });
   }
 
+  // Abierto ocupa todo el ancho (debajo del título de la sección) y se ve
+  // como una ventanita propia, con su barra: antes era una tira apretada al
+  // lado del título que se confundía con las tarjetas de abajo.
   return (
-    <div className="flex flex-wrap items-center gap-2 border-(length:--borde) border-ink rounded-theme bg-card p-2 shadow-marco">
+    <div className="nueva-lista-abierta flex w-full flex-col overflow-hidden border-(length:--borde) border-ink rounded-theme bg-card shadow-marco">
+      <p className="border-b-(length:--borde) border-ink bg-secondary-purple px-3 py-1.5 text-sm font-semibold text-background">
+        {t("nuevaLista")}
+      </p>
+      <div className="flex flex-col gap-3 p-3 sm:p-4">
       <input
         ref={campoRef}
         type="text"
@@ -93,38 +99,34 @@ export function NuevaListaInline() {
         }}
         disabled={pendiente}
         placeholder={t("nombrePlaceholder")}
-        className="min-w-0 flex-1 basis-48 border-(length:--borde) border-ink rounded-theme bg-background px-2.5 py-1.5 text-sm outline-none"
+        className="h-11 w-full border-(length:--borde) border-ink rounded-theme bg-background px-3 font-diario text-base font-semibold outline-none focus:border-secondary-purple"
       />
 
-      <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap text-sm">
+      <label className="flex min-h-11 cursor-pointer items-center gap-2.5 self-start text-sm">
         <input
           type="checkbox"
           checked={conCasillas}
           onChange={(evento) => setConCasillas(evento.target.checked)}
           disabled={pendiente}
-          className="h-4 w-4 shrink-0 cursor-pointer border-(length:--borde) border-ink rounded-theme accent-secondary-purple"
+          className="h-5 w-5 shrink-0 cursor-pointer border-(length:--borde) border-ink rounded-theme accent-secondary-purple"
         />
         {t("listaConCasillas")}
       </label>
 
-      <button
-        type="button"
-        onClick={enviar}
-        disabled={pendiente}
-        className="boton boton-verde boton-chico"
-      >
-        {t("guardar")}
-      </button>
-      <button
-        type="button"
-        onClick={cerrar}
-        aria-label={t("cancelar")}
-        title={t("cancelar")}
-        className="flex h-8 w-8 items-center justify-center text-muted/70 transition-colors hover:bg-primary-pink/30 hover:text-ink"
-      >
-        <IconoEliminar />
-      </button>
-
+      <div className="flex justify-end gap-2">
+        <button type="button" onClick={cerrar} className="boton">
+          {t("cancelar")}
+        </button>
+        <button
+          type="button"
+          onClick={enviar}
+          disabled={pendiente}
+          aria-busy={pendiente}
+          className="boton boton-verde"
+        >
+          {t("crear")}
+        </button>
+      </div>
       {aviso === "nombreVacio" ? (
         <p
           id={avisoId}
@@ -138,6 +140,7 @@ export function NuevaListaInline() {
           <AvisoErrorAccion error={aviso} mensajeFallo={t("errorGuardar")} />
         </div>
       ) : null}
+      </div>
     </div>
   );
 }
