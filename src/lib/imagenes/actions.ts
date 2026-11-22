@@ -52,7 +52,7 @@ export async function actualizarImagen(
     String(formData.get("categoria") ?? ""),
   );
 
-  const hashtags = await resolverHashtags(supabase, String(formData.get("hashtags") ?? ""));
+  const hashtags = await resolverHashtags(supabase, String(formData.get("hashtags") ?? ""), id);
 
   const { data, error } = await supabase
     .from("imagenes")
