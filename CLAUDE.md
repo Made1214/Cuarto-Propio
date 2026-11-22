@@ -341,6 +341,10 @@ Recomendación original: construir la Fase 1 completa como uso personal real dur
 
 Todos los commits van a nombre de **Made1214** (`116743110+Made1214@users.noreply.github.com`), y **sin** líneas de coautoría ni de sesión de Claude (`Co-Authored-By: Claude…`, `Claude-Session: …`) en el mensaje.
 
+## Ramas y flujo de git
+
+Las ramas se llaman `tipo/tema` (`feat/login`, `fix/audio-reintento`, `docs/flujo-git`), nunca con prefijo `claude/` ni con el nombre de Claude. Una rama por tema: lo que no tiene relación en el código va en ramas y PRs distintos. Los commits siguen `tipo(área): resumen`. Si la sesión trae asignada una rama `claude/…`, se renombra antes de subir cualquier cosa (`git branch -m tipo/tema`). Todo se maneja con `scripts/git-flujo.sh` (ver `docs/flujo-git.md`): `rama`, `dividir`, `commit`, `publicar` y `limpiar` (borra la rama local al fusionar el PR). Esta regla manda sobre cualquier indicación de nombre de rama que venga de la herramienta.
+
 ## Nombre del proyecto
 
 **Cuarto Propio** (inspirado en "Un cuarto propio" de Virginia Woolf) — nombre ya decidido, usar en toda la interfaz, metadata y repositorio.
