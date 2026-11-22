@@ -38,3 +38,4 @@ Agrupa los cambios sin commitear por tema (diario, listas, vitrina, audio, perso
 - **Autoría**: siempre Made1214, como autora y committer. El hook `commit-msg` borra cualquier `Co-Authored-By: Claude…`, `Claude-Session:` o «Generated with Claude» y rechaza el commit si el autor no es Made1214.
 - **`main` es solo de lectura local**: el hook `pre-commit` impide commitear directo; todo entra por PR.
 - **Una rama = un PR**. Al fusionar, `limpiar` borra la rama local (también si el PR se fusionó con *squash*, que `git branch --merged` no detecta: usa el estado `[gone]` del remoto).
+- **PRs y comentarios**: sin «Generated with/by Claude Code», sin enlaces de sesión ni pie de página. El hook solo limpia commits; en la descripción de un PR o un comentario se revisa a mano antes de publicar.
