@@ -99,7 +99,7 @@ export function NuevaListaInline() {
         }}
         disabled={pendiente}
         placeholder={t("nombrePlaceholder")}
-        className="h-11 w-full border-(length:--borde) border-ink rounded-theme bg-background px-3 font-diario text-base font-semibold outline-none focus:border-secondary-purple"
+        className="h-11 w-full shrink-0 border-(length:--borde) border-ink rounded-theme bg-background px-3 font-diario text-base font-semibold outline-none focus:border-secondary-purple"
       />
 
       <label className="flex min-h-11 cursor-pointer items-center gap-2.5 self-start text-sm">
@@ -131,12 +131,12 @@ export function NuevaListaInline() {
         <p
           id={avisoId}
           role="alert"
-          className="basis-full border-(length:--borde) border-ink rounded-theme bg-primary-pink px-3 py-2 text-xs text-ink-strong"
+          className="border-(length:--borde) border-ink rounded-theme bg-primary-pink px-3 py-2 text-xs text-ink-strong"
         >
           {t("nombreRequerido")}
         </p>
       ) : aviso ? (
-        <div className="basis-full">
+        <div>
           <AvisoErrorAccion error={aviso} mensajeFallo={t("errorGuardar")} />
         </div>
       ) : null}

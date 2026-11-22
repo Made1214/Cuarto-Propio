@@ -5,10 +5,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   AvisoAcceso,
+  CampoCorreo,
   CampoContrasena,
   CLASE_BOTON,
-  CLASE_CAMPO,
-  CLASE_ETIQUETA,
 } from "../componentes";
 import { login, type EstadoAcceso } from "./actions";
 
@@ -22,17 +21,7 @@ export function LoginForm({ locale, siguiente }: { locale: string; siguiente: st
   return (
     <form action={formAction} className="flex flex-col gap-4">
       {siguiente ? <input type="hidden" name="next" value={siguiente} /> : null}
-      <label className={CLASE_ETIQUETA}>
-        {t("email")}
-        <input
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="tu@correo.com"
-          className={CLASE_CAMPO}
-        />
-      </label>
+      <CampoCorreo etiqueta={t("email")} />
       <CampoContrasena
         id="password"
         etiqueta={t("password")}

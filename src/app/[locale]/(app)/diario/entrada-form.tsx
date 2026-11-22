@@ -175,6 +175,13 @@ export function EntradaForm({
     if (estado?.error) errorRef.current?.focus();
   }, [estado]);
 
+  // Los avisos de "falta" se van solos apenas se completa lo que faltaba: el
+  // de la entrada en blanco quedaba arriba aunque ya se hubiera escrito.
+  const avisoResuelto =
+    (estado?.error === t("contenidoRequerido") && !contenidoVacio(contenido)) ||
+    (estado?.error === t("tituloRequerido") && titulo.trim() !== "");
+  const aviso = avisoResuelto ? null : estado?.error;
+
   function restaurar() {
     if (!borrador) return;
     setTitulo(borrador.titulo);
@@ -197,14 +204,14 @@ export function EntradaForm({
       {...validacion}
       className="flex flex-col gap-5"
     >
-      {estado?.error ? (
+      {aviso ? (
         <p
           ref={errorRef}
           role="alert"
           tabIndex={-1}
           className="boton boton-rosa outline-none"
         >
-          {estado.error}
+          {aviso}
         </p>
       ) : null}
 

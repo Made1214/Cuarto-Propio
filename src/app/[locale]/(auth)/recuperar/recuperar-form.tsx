@@ -5,9 +5,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   AvisoAcceso,
+  CampoCorreo,
   CLASE_BOTON,
-  CLASE_CAMPO,
-  CLASE_ETIQUETA,
 } from "../componentes";
 import { pedirRecuperacion, type EstadoAcceso } from "../login/actions";
 
@@ -38,17 +37,7 @@ export function RecuperarForm({ locale }: { locale: string }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <label className={CLASE_ETIQUETA}>
-        {t("email")}
-        <input
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="tu@correo.com"
-          className={CLASE_CAMPO}
-        />
-      </label>
+      <CampoCorreo etiqueta={t("email")} />
       {state?.error ? (
         <AvisoAcceso tipo="error">{state.error}</AvisoAcceso>
       ) : null}

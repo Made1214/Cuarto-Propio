@@ -13,7 +13,7 @@ import {
 import { IconoAudio as IconoMicrofono } from "@/components/iconos-secciones";
 import { IconoCerrar, IconoReintentar } from "./iconos";
 
-type CodigoError = "permiso" | "soporte" | "formato" | "tamano" | "espacio" | "sesion" | "fallo";
+type CodigoError = "permiso" | "soporte" | "formato" | "tamano" | "espacio" | "sesion" | "vacio" | "fallo";
 
 /** Lo que el navegador prefiera de esta lista: Opus donde se pueda (pesa
  * ~1MB por minuto, que es lo que hace que el tope de 10 minutos alcance sin
@@ -111,6 +111,14 @@ export function Grabador() {
 
       if (!respuesta.ok) {
         const datos = (await respuesta.json().catch(() => ({}))) as { error?: CodigoError };
+        if (datos.error === "vacio") {
+          // Grabación sin contenido: se descarta igual que un toque
+          // accidental, sin "reintentar" (no hay nada que guardar).
+          setPendiente(null);
+          setSegundos(0);
+          setEstado("inactivo");
+          return;
+        }
         setPendiente({ blob, duracion });
         setError(datos.error ?? "fallo");
         setEstado("inactivo");

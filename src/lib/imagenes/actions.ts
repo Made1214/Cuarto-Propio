@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -8,6 +9,14 @@ import { borrarPaths } from "./almacenamiento";
 import { normalizarHashtags } from "./hashtags";
 import { DESCRIPCION_MAXIMA, TITULO_MAXIMO } from "./limites";
 import type { ImagenActionState } from "./types";
+
+/** Vacía la caché de navegación del navegador antes de redirigir (igual que
+ * el Diario). Sin esto, `staleTimes.dynamic` (next.config.ts) mostraba la
+ * ficha con el título viejo y la pared con la pieza recién borrada hasta
+ * recargar. */
+function refrescarVitrina() {
+  revalidatePath("/", "layout");
+}
 
 export async function actualizarImagen(
   locale: string,
@@ -59,6 +68,7 @@ export async function actualizarImagen(
 
   if (error) throw error;
 
+  refrescarVitrina();
   redirect({ href: `/vitrina/${data.codigo}`, locale });
 }
 
@@ -84,5 +94,6 @@ export async function eliminarImagen(locale: string, id: string) {
     console.error("No se pudieron borrar los archivos de la imagen", fallo);
   }
 
+  refrescarVitrina();
   redirect({ href: "/vitrina", locale });
 }

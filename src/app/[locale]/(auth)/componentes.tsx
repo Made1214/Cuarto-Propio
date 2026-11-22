@@ -12,6 +12,29 @@ export const CLASE_ETIQUETA = "flex flex-col gap-1.5 text-[13px] font-semibold";
 export const CLASE_BOTON =
   "flex h-12 w-full items-center justify-center border-(length:--borde) border-ink rounded-theme text-[15px] font-bold text-ink-strong shadow-marco transition-[transform,filter] hover:brightness-95 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-60";
 
+/** El campo de correo de los formularios de acceso. Controlado a propósito:
+ * React vacía los campos no controlados de un `<form action>` después de cada
+ * envío, así que tras una contraseña débil o equivocada el correo quedaba en
+ * blanco y había que escribirlo de nuevo. */
+export function CampoCorreo({ etiqueta }: { etiqueta: string }) {
+  const [valor, setValor] = useState("");
+  return (
+    <label className={CLASE_ETIQUETA}>
+      {etiqueta}
+      <input
+        name="email"
+        type="email"
+        required
+        autoComplete="email"
+        placeholder="tu@correo.com"
+        value={valor}
+        onChange={(evento) => setValor(evento.target.value)}
+        className={CLASE_CAMPO}
+      />
+    </label>
+  );
+}
+
 /** Las pestañas Entrar / Crear cuenta. Son links a dos rutas y no estado
  * local: cada una se puede compartir o guardar, y "atrás" funciona. */
 export function PestanasAcceso({ activa }: { activa: "entrar" | "crear" }) {
