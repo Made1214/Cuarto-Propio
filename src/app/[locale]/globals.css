@@ -110,6 +110,20 @@ body {
 }
 
 /*
+ * En la app instalada, sin el rebote del borde: al tirar hacia abajo para
+ * recargar, iOS estiraba la página y la barra de arriba se despegaba y bajaba
+ * con el contenido (y no recargaba nada, porque la PWA no tiene ese gesto).
+ * El gesto de recargar lo pone `ActualizarApp`. En el navegador se deja el
+ * rebote: ahí sí tira para recargar.
+ */
+@media (display-mode: standalone) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+/*
  * En el celular, iOS agranda la pantalla al tocar cualquier campo con letra
  * de menos de 16 px (y no la vuelve a achicar sola): por eso al escribir en
  * el login, el diario o un ítem de lista todo se corría y quedaba cortado.

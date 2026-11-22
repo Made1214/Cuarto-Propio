@@ -3,6 +3,7 @@ import Image from "next/image";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { SincronizarZona } from "@/components/sincronizar-zona";
+import { ActualizarApp } from "@/components/actualizar-app";
 import { zonaGuardada } from "@/lib/fechas/zona-servidor";
 import {
   createClient,
@@ -76,6 +77,7 @@ export default async function AppLayout({
   return (
     <NextIntlClientProvider timeZone={zona ?? "UTC"}>
     <SincronizarZona actual={zona} />
+    <ActualizarApp />
     <IconosProvider valor={tema.iconos}>
       {/* El tema elegido en Personalización (colores, forma, letras, cursor):
         pisa las variables por defecto de globals.css. Va antes que todo el
