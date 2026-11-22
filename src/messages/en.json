@@ -1,5 +1,8 @@
 {
   "nav": {
+    "tirarParaRecargar": "Pull to reload",
+    "soltarParaRecargar": "Release to reload",
+    "recargando": "Reloading…",
     "diario": "Journal",
     "listas": "Lists",
     "vitrina": "Showcase",

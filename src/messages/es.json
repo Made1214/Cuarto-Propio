@@ -1,5 +1,8 @@
 {
   "nav": {
+    "tirarParaRecargar": "Tira para recargar",
+    "soltarParaRecargar": "Suelta para recargar",
+    "recargando": "Recargando…",
     "diario": "Diario",
     "listas": "Listas",
     "vitrina": "Vitrina",
