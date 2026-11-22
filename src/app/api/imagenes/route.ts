@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { hayEspacioPara } from "@/lib/storage/cuota";
 import { createClient } from "@/lib/supabase/server";
 import { guardarVersiones } from "@/lib/imagenes/almacenamiento";
-import { normalizarHashtags } from "@/lib/imagenes/hashtags";
+import { resolverHashtags } from "@/lib/imagenes/hashtags-servidor";
 import {
   DESCRIPCION_MAXIMA,
   TAMANO_MAXIMO_BYTES,
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   // cortar un título largo es mejor que perder una subida entera por eso.
   const titulo = texto(formData, "titulo", TITULO_MAXIMO) || tituloDesdeArchivo(archivo.name);
   const descripcion = texto(formData, "descripcion", DESCRIPCION_MAXIMA);
-  const hashtags = normalizarHashtags(String(formData.get("hashtags") ?? ""));
+  const hashtags = await resolverHashtags(supabase, String(formData.get("hashtags") ?? ""));
 
   try {
     // El tipo real lo decide sharp al abrir el archivo, no el nombre ni el

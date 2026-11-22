@@ -916,3 +916,19 @@
     font-size: clamp(2.25rem, 11vw, 3.4rem);
   }
 }
+
+/* Desde tablet la barra suma las secciones con su nombre, y entre ~768 y
+   1200 px la marca de Softsignal y Void (más grande que en los otros temas)
+   no entraba: quedaba cortada en «C.» o «cua…». En ese tramo se ve solo la
+   carita del logo; el nombre sigue ahí para los lectores de pantalla. */
+@media (min-width: 48rem) and (max-width: 74.999rem) {
+  [data-tema="softsignal"] .tema-marca,
+  [data-tema="void"] .tema-marca {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

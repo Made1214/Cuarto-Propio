@@ -345,7 +345,14 @@ function SeccionColores({ config, guardar }: PropsSeccion) {
       </div>
 
       {problemas ? (
-        <div role="alert" className="flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-3 text-ink-strong">
+        <div
+          role="alert"
+          // Con los colores de fábrica del tema, no con los que se están
+          // probando: si el problema es justamente el contraste, el aviso y
+          // sus botones quedaban ilegibles.
+          style={variablesPaleta(paletaDerivada(config.preset, modo, {})) as React.CSSProperties}
+          className="flex flex-col gap-3 border-(length:--borde) border-ink rounded-theme bg-primary-pink px-4 py-3 text-ink-strong"
+        >
           <p className="text-sm font-bold">{t("contraste.titulo")}</p>
           <ul className="flex list-disc flex-col gap-1 pl-5 text-sm">
             {problemas.map((problema) => (

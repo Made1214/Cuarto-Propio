@@ -70,7 +70,7 @@ export function TiptapEditor({ name, contenidoInicial, onCambio, barraEn }: Tipt
   const [, avisarSeleccion] = useReducer((tick: number) => tick + 1, 0);
   // Pegar o soltar una foto en el texto la sube igual que el botón. El
   // editor se crea una sola vez, así que mira la función por una ref.
-  const subirRef = useRef<(archivo: File) => void>(() => {});
+  const subirRef = useRef<(archivo: File, posicion?: number) => void>(() => {});
 
   const editor = useEditor({
     extensions: tiptapExtensions,
@@ -89,13 +89,15 @@ export function TiptapEditor({ name, contenidoInicial, onCambio, barraEn }: Tipt
         subirRef.current(archivo);
         return true;
       },
-      handleDrop: (_vista, evento) => {
-        const archivo = [...((evento as DragEvent).dataTransfer?.files ?? [])].find((f) =>
-          f.type.startsWith("image/"),
-        );
+      handleDrop: (vista, evento) => {
+        const arrastre = evento as DragEvent;
+        const archivo = [...(arrastre.dataTransfer?.files ?? [])].find((f) => f.type.startsWith("image/"));
         if (!archivo) return false;
         evento.preventDefault();
-        subirRef.current(archivo);
+        // Va donde se suelta, no sobre la selección: si había una imagen
+        // seleccionada (recién pegada, por ejemplo), soltar otra la reemplazaba.
+        const destino = vista.posAtCoords({ left: arrastre.clientX, top: arrastre.clientY });
+        subirRef.current(archivo, destino?.pos ?? vista.state.selection.to);
         return true;
       },
       attributes: {
@@ -129,7 +131,7 @@ function Barra({
   subirRef,
 }: {
   editor: Editor | null;
-  subirRef: React.RefObject<(archivo: File) => void>;
+  subirRef: React.RefObject<(archivo: File, posicion?: number) => void>;
 }) {
   const t = useTranslations("editor");
   const [enlaceAbierto, setEnlaceAbierto] = useState(false);
@@ -146,7 +148,7 @@ function Barra({
    * inserta donde está el cursor. Lo escrito no se toca si algo falla: queda
    * el aviso con "Reintentar".
    */
-  async function subir(archivo: File) {
+  async function subir(archivo: File, posicion?: number) {
     if (!editor) return;
     setErrorImagen(null);
     if (archivo.size > TAMANO_MAXIMO_ORIGINAL_BYTES) {
@@ -178,10 +180,15 @@ function Barra({
         return;
       }
       const imagen = (await respuesta.json()) as ImagenSubida;
+      // Nunca sobre lo seleccionado: con una imagen seleccionada,
+      // `insertContent` la reemplazaba. Se suma donde se soltó la foto o,
+      // si no, justo después de la selección. Mientras subía se pudo seguir
+      // escribiendo, así que la posición se acota al documento de ahora.
+      const donde = Math.min(posicion ?? editor.state.selection.to, editor.state.doc.content.size);
       editor
         .chain()
         .focus()
-        .insertContent({
+        .insertContentAt(donde, {
           type: "image",
           attrs: { src: imagen.src, completa: imagen.completa, ancho: imagen.ancho, alto: imagen.alto },
         })
@@ -196,7 +203,7 @@ function Barra({
   }
   // Para pegar y soltar (ver `TiptapEditor`).
   // eslint-disable-next-line react-hooks/refs
-  subirRef.current = (archivo) => void subir(archivo);
+  subirRef.current = (archivo, posicion) => void subir(archivo, posicion);
 
   if (!editor) return null;
 

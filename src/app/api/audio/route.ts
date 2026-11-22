@@ -34,6 +34,13 @@ export async function POST(request: Request) {
   if (archivo.size > TAMANO_MAXIMO_BYTES) {
     return NextResponse.json({ error: "tamano" }, { status: 413 });
   }
+  // Una nota sin duración (0 s, o sin el dato) no es una nota: el grabador
+  // ya descarta los toques de menos de un segundo, y esto lo asegura del
+  // lado del servidor para que no aparezcan tarjetas vacías de 0:00.
+  const duracion = duracionValida(formData.get("duracion"));
+  if (duracion === null || duracion < 1) {
+    return NextResponse.json({ error: "vacio" }, { status: 400 });
+  }
   // Tope de espacio por cuenta (src/lib/storage/cuota.ts): se frena antes
   // de procesar y guardar, no cuando ya falló Storage.
   if (!(await hayEspacioPara(archivo.size))) {
@@ -55,7 +62,7 @@ export async function POST(request: Request) {
         // idioma que esté usando la interfaz.
         titulo: null,
         archivo_path: path,
-        duracion_segundos: duracionValida(formData.get("duracion")),
+        duracion_segundos: duracion,
       })
       .select("id")
       .single();

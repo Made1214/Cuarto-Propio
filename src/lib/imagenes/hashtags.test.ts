@@ -1,15 +1,28 @@
 import { describe, expect, it } from "vitest";
-import { formatearHashtags, normalizarHashtags, textoAlternativo } from "./hashtags";
+import { formatearHashtags, normalizarHashtags, textoAlternativo, unificarHashtags } from "./hashtags";
 
 describe("normalizarHashtags", () => {
   it("pasa a minúsculas y une #Viajes con #viajes", () => {
     expect(normalizarHashtags("#Viajes #viajes")).toEqual(["viajes"]);
   });
-  it("quita acentos y símbolos, conserva _ y números", () => {
-    expect(normalizarHashtags("#diseño, #foto_2026 !!")).toEqual(["diseno", "foto_2026"]);
+  it("conserva tildes y ñ, quita símbolos, conserva _ y números", () => {
+    expect(normalizarHashtags("#Diseño, #café! #foto_2026 !!")).toEqual(["diseño", "café", "foto_2026"]);
+  });
+  it("une la misma letra escrita compuesta o con tilde suelta", () => {
+    expect(normalizarHashtags("#cafe\u0301 #caf\u00e9")).toEqual(["café"]);
   });
   it("devuelve vacío sin hashtags válidos", () => {
     expect(normalizarHashtags("  -- ")).toEqual([]);
+  });
+});
+
+describe("unificarHashtags", () => {
+  it("usa la forma que la cuenta ya tenía, con o sin tilde", () => {
+    expect(unificarHashtags(["cafe", "diseno"], ["café", "diseño"])).toEqual(["café", "diseño"]);
+    expect(unificarHashtags(["café"], ["cafe"])).toEqual(["cafe"]);
+  });
+  it("deja lo nuevo como se escribió y no lo repite", () => {
+    expect(unificarHashtags(["niño", "nino"], [])).toEqual(["niño"]);
   });
 });
 
