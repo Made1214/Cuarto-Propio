@@ -6,7 +6,7 @@ import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolverCategoriaId } from "@/lib/categorias/resolver";
 import { borrarPaths } from "./almacenamiento";
-import { normalizarHashtags } from "./hashtags";
+import { resolverHashtags } from "./hashtags-servidor";
 import { DESCRIPCION_MAXIMA, TITULO_MAXIMO } from "./limites";
 import type { ImagenActionState } from "./types";
 
@@ -52,6 +52,8 @@ export async function actualizarImagen(
     String(formData.get("categoria") ?? ""),
   );
 
+  const hashtags = await resolverHashtags(supabase, String(formData.get("hashtags") ?? ""));
+
   const { data, error } = await supabase
     .from("imagenes")
     .update({
@@ -59,7 +61,7 @@ export async function actualizarImagen(
       // defecto ("Sin título") en vez de un renglón en blanco.
       titulo: titulo || null,
       descripcion: descripcion || null,
-      hashtags: normalizarHashtags(String(formData.get("hashtags") ?? "")),
+      hashtags,
       categoria_id: categoriaId,
     })
     .eq("id", id)

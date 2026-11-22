@@ -1,16 +1,41 @@
-/** Hashtags de la Vitrina: solo letras, números y guion bajo, siempre en
- * minúsculas — `#Viajes` y `#viajes` son el mismo hashtag (CLAUDE.md). Los
- * acentos se pliegan a su letra base para que `#diseño` y `#diseno` no
- * queden como dos etiquetas distintas al escribirlas desde teclados
- * diferentes. */
+/** Hashtags de la Vitrina: letras (con sus tildes y la ñ), números y guion
+ * bajo, siempre en minúsculas — `#Viajes` y `#viajes` son el mismo hashtag
+ * (CLAUDE.md). Las tildes se conservan: en español son parte de la palabra
+ * (`#diseño` no es `#diseno`). Que la misma palabra escrita sin tilde desde
+ * otro teclado no quede como una etiqueta aparte lo resuelve
+ * `unificarHashtags` al guardar. */
 export function normalizarHashtags(crudo: string): string[] {
-  const plano = crudo
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
+  const plano = crudo.normalize("NFC").toLocaleLowerCase();
+  const encontrados = plano.match(/[\p{L}\p{M}\p{N}_]+/gu) ?? [];
+  return [...new Set(encontrados.map((hashtag) => hashtag.normalize("NFC")))];
+}
 
-  const encontrados = plano.match(/[a-z0-9_]+/g) ?? [];
-  return [...new Set(encontrados)];
+/** La forma de comparar dos hashtags sin mirar tildes: `café` y `cafe`
+ * pliegan igual. Solo para comparar; nunca es lo que se guarda. */
+export function plegarHashtag(hashtag: string): string {
+  return hashtag.normalize("NFD").replace(/\p{M}/gu, "");
+}
+
+/**
+ * Une los hashtags nuevos con los que la cuenta ya usa: si uno nuevo es una
+ * etiqueta existente escrita con otras tildes (`#cafe` cuando ya hay
+ * `#café`, o al revés), se guarda con la forma que ya estaba, así el filtro
+ * sigue siendo uno solo. Dentro de lo nuevo, también se queda la primera.
+ */
+export function unificarHashtags(nuevos: string[], existentes: Iterable<string>): string[] {
+  const conocidos = new Map<string, string>();
+  for (const hashtag of existentes) {
+    const clave = plegarHashtag(hashtag);
+    if (!conocidos.has(clave)) conocidos.set(clave, hashtag);
+  }
+  const resultado: string[] = [];
+  for (const hashtag of nuevos) {
+    const clave = plegarHashtag(hashtag);
+    const forma = conocidos.get(clave) ?? hashtag;
+    conocidos.set(clave, forma);
+    if (!resultado.includes(forma)) resultado.push(forma);
+  }
+  return resultado;
 }
 
 /** Lo inverso, para rellenar el campo de texto al editar. */
